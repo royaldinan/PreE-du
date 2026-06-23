@@ -1,11 +1,10 @@
-Sekarang saya akan buat halaman TopicPage yang akan menampilkan intro, game online, dan real-life activity card. Saya akan mulai dengan struktur utama dan game pertama:
-Action: file_editor create /app/frontend/src/pages/TopicPage.js --file-text "import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { getProgress, updateTopicProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
-import CompletionScreen from '../components/CompletionScreen';
+import { ArrowLeft, Star, Printer, Play } from 'lucide-react';
 
-// Import game components
+// Import all games
 import SortingGame from '../games/SortingGame';
 import PatternGame from '../games/PatternGame';
 import AlgorithmGame from '../games/AlgorithmGame';
@@ -16,7 +15,7 @@ import EmpathyGame from '../games/EmpathyGame';
 import IdeationGame from '../games/IdeationGame';
 import PrototypeGame from '../games/PrototypeGame';
 
-// Import real-life components
+// Import all real life activities
 import SortingRealLife from '../reallife/SortingRealLife';
 import PatternRealLife from '../reallife/PatternRealLife';
 import AlgorithmRealLife from '../reallife/AlgorithmRealLife';
@@ -30,177 +29,188 @@ import PrototypeRealLife from '../reallife/PrototypeRealLife';
 const TopicPage = () => {
   const { trackId, topicId } = useParams();
   const navigate = useNavigate();
-  const [stage, setStage] = useState('intro'); // intro, game, reallife, completion
-  const [gameResult, setGameResult] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [gameComplete, setGameComplete] = useState(false);
+  const [showRealLife, setShowRealLife] = useState(false);
+  const [topicComplete, setTopicComplete] = useState(false);
+  const [stars, setStars] = useState(0);
+  const [mascotMood, setMascotMood] = useState('idle');
 
-  const topicContent = {
-    // Computational Thinking
-    sorting: {
-      title: 'Mengurutkan Angka',
-      icon: '🔢',
-      color: '#4D96FF',
-      intro: 'Hai! Hari ini kita akan belajar mengurutkan angka dari yang terkecil ke yang terbesar. Komputer sering melakukan ini untuk mengatur data. Yuk coba!',
-      GameComponent: SortingGame,
-      RealLifeComponent: SortingRealLife
-    },
-    patterns: {
-      title: 'Menemukan Pola',
-      icon: '🔴🔵',
-      color: '#4D96FF',
-      intro: 'Pola ada di mana-mana! Di alam, musik, bahkan di komputer. Ayo kita belajar mengenali dan melanjutkan pola!',
-      GameComponent: PatternGame,
-      RealLifeComponent: PatternRealLife
-    },
-    algorithms: {
-      title: 'Instruksi Langkah demi Langkah',
-      icon: '🤖',
-      color: '#4D96FF',
-      intro: 'Algoritma adalah langkah-langkah untuk menyelesaikan masalah. Seperti resep masakan! Mari kita buat instruksi untuk robot kita!',
-      GameComponent: AlgorithmGame,
-      RealLifeComponent: AlgorithmRealLife
-    },
-    // Critical Thinking
-    oddOneOut: {
-      title: 'Mana yang Berbeda?',
-      icon: '🔍',
-      color: '#6BCB77',
-      intro: 'Belajar menemukan perbedaan membantu kita berpikir lebih tajam. Mari temukan mana yang tidak sama!',
-      GameComponent: OddOneOutGame,
-      RealLifeComponent: OddOneOutRealLife
-    },
-    factOpinion: {
-      title: 'Fakta atau Opini?',
-      icon: '💭',
-      color: '#6BCB77',
-      intro: 'Fakta itu benar untuk semua orang. Opini adalah pendapat pribadi. Yuk belajar membedakannya!',
-      GameComponent: FactOpinionGame,
-      RealLifeComponent: FactOpinionRealLife
-    },
-    causeEffect: {
-      title: 'Apa Akibatnya?',
-      icon: '⚡',
-      color: '#6BCB77',
-      intro: 'Setiap tindakan ada akibatnya! Mari belajar melihat hubungan sebab dan akibat.',
-      GameComponent: CauseEffectGame,
-      RealLifeComponent: CauseEffectRealLife
-    },
-    // Design Thinking
-    empathy: {
-      title: 'Apa Masalahnya?',
-      icon: '❤️',
-      color: '#9D4CDD',
-      intro: 'Untuk membuat solusi yang baik, kita harus memahami masalahnya dulu. Yuk belajar empati!',
-      GameComponent: EmpathyGame,
-      RealLifeComponent: EmpathyRealLife
-    },
-    ideation: {
-      title: 'Ide Sebanyak Mungkin!',
-      icon: '💡',
-      color: '#9D4CDD',
-      intro: 'Semakin banyak ide, semakin banyak pilihan! Tidak ada ide yang salah. Ayo brainstorm!',
-      GameComponent: IdeationGame,
-      RealLifeComponent: IdeationRealLife
-    },
-    prototype: {
-      title: 'Buat dan Coba!',
-      icon: '🛠️',
-      color: '#9D4CDD',
-      intro: 'Cara terbaik mengetahui apakah ide kita bagus adalah dengan mencobanya! Mari buat prototipe!',
-      GameComponent: PrototypeGame,
-      RealLifeComponent: PrototypeRealLife
-    }
+  useEffect(() => {
+    setProgress(getProgress());
+  }, []);
+
+  if (!progress) return null;
+
+  const gameComponents = {
+    sorting: SortingGame,
+    patterns: PatternGame,
+    algorithms: AlgorithmGame,
+    oddOneOut: OddOneOutGame,
+    factOpinion: FactOpinionGame,
+    causeEffect: CauseEffectGame,
+    empathy: EmpathyGame,
+    ideation: IdeationGame,
+    prototype: PrototypeGame
   };
 
-  const topic = topicContent[topicId];
-
-  if (!topic) {
-    navigate('/');
-    return null;
-  }
-
-  const handleGameComplete = (result) => {
-    setGameResult(result);
-    setStage('reallife');
+  const realLifeComponents = {
+    sorting: SortingRealLife,
+    patterns: PatternRealLife,
+    algorithms: AlgorithmRealLife,
+    oddOneOut: OddOneOutRealLife,
+    factOpinion: FactOpinionRealLife,
+    causeEffect: CauseEffectRealLife,
+    empathy: EmpathyRealLife,
+    ideation: IdeationRealLife,
+    prototype: PrototypeRealLife
   };
 
-  const handleRealLifeComplete = () => {
-    setStage('completion');
+  const GameComponent = gameComponents[topicId];
+  const RealLifeComponent = realLifeComponents[topicId];
+
+  const handleGameComplete = (earnedStars) => {
+    setGameComplete(true);
+    setStars(earnedStars);
+    setMascotMood('happy');
   };
 
-  const GameComponent = topic.GameComponent;
-  const RealLifeComponent = topic.RealLifeComponent;
+  const handleTopicComplete = () => {
+    updateTopicProgress(trackId, topicId, stars);
+    setTopicComplete(true);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const topicTitles = {
+    sorting: 'Mengurutkan Angka',
+    patterns: 'Menemukan Pola',
+    algorithms: 'Instruksi Langkah demi Langkah',
+    oddOneOut: 'Mana yang Berbeda?',
+    factOpinion: 'Fakta atau Opini?',
+    causeEffect: 'Apa Akibatnya?',
+    empathy: 'Apa Masalahnya?',
+    ideation: 'Ide Sebanyak Mungkin!',
+    prototype: 'Buat dan Coba!'
+  };
+
+  const trackColors = {
+    computational: '#4D96FF',
+    critical: '#6BCB77',
+    design: '#9D4CDD'
+  };
 
   return (
-    <div className=\"min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8\" data-testid={`topic-page-${topicId}`}>
-      <div className=\"max-w-5xl mx-auto\">
+    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className=\"flex items-center gap-4 mb-8\">
-          <button
-            data-testid=\"back-button\"
-            onClick={() => navigate(`/track/${trackId}`)}
-            className=\"bouncy-button bg-white p-4 rounded-full shadow-lg\"
-          >
-            <ArrowLeft className=\"w-6 h-6 text-[#2B2D42]\" />
-          </button>
-          <div>
-            <h1 className=\"heading-font text-3xl md:text-4xl text-[#2B2D42]\">
-              {topic.icon} {topic.title}
-            </h1>
+        <button
+          onClick={() => navigate(`/track/${trackId}`)}
+          className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold mb-8 flex items-center gap-2 shadow-lg"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Kembali
+        </button>
+
+        {/* Topic Header */}
+        <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+          <div className="flex justify-center mb-4">
+            <Mascot mood={mascotMood} size="large" />
           </div>
+          <h1 
+            className="heading-font text-3xl md:text-4xl text-[#2B2D42] mb-2"
+            style={{ color: trackColors[trackId] }}
+          >
+            {topicTitles[topicId]}
+          </h1>
+          <p className="body-font text-lg text-[#6C757D]">
+            Selesaikan permainan online, lalu coba aktivitas di dunia nyata!
+          </p>
         </div>
 
-        {/* Intro Stage */}
-        {stage === 'intro' && (
-          <div className=\"space-y-8\">
-            <div
-              className=\"rounded-[32px] p-8 md:p-12 shadow-xl\"
-              style={{ backgroundColor: topic.color }}
-            >
-              <div className=\"flex flex-col md:flex-row items-center gap-8\">
-                <Mascot mood=\"idle\" size=\"large\" />
-                <div className=\"flex-1\">
-                  <p className=\"body-font text-xl md:text-2xl text-white leading-relaxed\">
-                    {topic.intro}
-                  </p>
-                </div>
-              </div>
+        {/* Game Section */}
+        {!gameComplete && !showRealLife && (
+          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8">
+            <div className="text-center mb-6">
+              <h2 className="heading-font text-2xl text-[#2B2D42] mb-2">
+                🎮 Permainan Online
+              </h2>
+              <p className="body-font text-lg text-[#6C757D]">
+                Mainkan game ini dulu, yuk!
+              </p>
             </div>
-
-            <div className=\"text-center\">
-              <button
-                data-testid=\"start-game-button\"
-                onClick={() => setStage('game')}
-                className=\"bouncy-button px-12 py-6 rounded-full font-bold text-2xl text-white shadow-xl\"
-                style={{ backgroundColor: topic.color }}
-              >
-                Ayo Main! 🎮
-              </button>
-            </div>
+            <GameComponent onComplete={handleGameComplete} />
           </div>
         )}
 
-        {/* Game Stage */}
-        {stage === 'game' && (
-          <GameComponent onComplete={handleGameComplete} color={topic.color} />
+        {/* Real Life Section Button */}
+        {gameComplete && !showRealLife && !topicComplete && (
+          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+            <div className="flex justify-center mb-6">
+              <Mascot mood="happy" size="large" />
+            </div>
+            <h2 className="heading-font text-2xl text-[#2B2D42] mb-4">
+              🎉 Hebat! Kamu dapat {stars} bintang!
+            </h2>
+            <button
+              onClick={() => setShowRealLife(true)}
+              className="bouncy-button bg-[#6BCB77] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg flex items-center gap-3 mx-auto"
+            >
+              <Play className="w-6 h-6" />
+              Sekarang Kita Main Beneran! 🎊
+            </button>
+          </div>
         )}
 
-        {/* Real Life Stage */}
-        {stage === 'reallife' && (
-          <RealLifeComponent
-            onComplete={handleRealLifeComplete}
-            color={topic.color}
-            gameResult={gameResult}
-          />
+        {/* Real Life Activity */}
+        {showRealLife && !topicComplete && (
+          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 print:shadow-none">
+            <div className="flex items-center justify-between mb-6 no-print">
+              <h2 className="heading-font text-2xl text-[#2B2D42]">
+                📋 Aktivitas Dunia Nyata
+              </h2>
+              <button
+                onClick={handlePrint}
+                className="bouncy-button bg-[#4D96FF] text-white px-4 py-2 rounded-full font-bold flex items-center gap-2"
+              >
+                <Printer className="w-5 h-5" />
+                Cetak
+              </button>
+            </div>
+            <RealLifeComponent />
+            <button
+              onClick={handleTopicComplete}
+              className="bouncy-button mt-8 w-full bg-[#FFD166] text-[#2B2D42] py-4 px-8 rounded-full font-bold text-xl shadow-lg"
+            >
+              ✅ Saya Sudah Selesai!
+            </button>
+          </div>
         )}
 
-        {/* Completion Stage */}
-        {stage === 'completion' && (
-          <CompletionScreen
-            trackId={trackId}
-            topicId={topicId}
-            stars={gameResult?.stars || 3}
-            color={topic.color}
-          />
+        {/* Completion Screen */}
+        {topicComplete && (
+          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+            <div className="text-6xl mb-4">🎊</div>
+            <h2 className="heading-font text-3xl text-[#2B2D42] mb-4">
+              SELAMAT! TOPIK SELESAI!
+            </h2>
+            <div className="flex justify-center gap-2 mb-6">
+              {[...Array(stars)].map((_, i) => (
+                <Star key={i} className="w-12 h-12 fill-[#FFD166] text-[#FFD166]" />
+              ))}
+            </div>
+            <p className="body-font text-xl text-[#6C757D] mb-8">
+              Kamu sudah menyelesaikan topik ini dengan {stars} bintang!
+            </p>
+            <button
+              onClick={() => navigate(`/track/${trackId}`)}
+              className="bouncy-button bg-[#4D96FF] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg"
+            >
+              Lanjut ke Topik Berikutnya →
+            </button>
+          </div>
         )}
       </div>
     </div>
@@ -208,5 +218,3 @@ const TopicPage = () => {
 };
 
 export default TopicPage;
-"
-Observation: Create successful: /app/frontend/src/pages/TopicPage.js
