@@ -1,0 +1,52 @@
+# Digital Safety Adventure - Audio Recommendations
+# Drop audio files into the specified paths. All files should be .ogg format for Godot.
+
+# ============================================================
+# BACKGROUND MUSIC (BGM)
+# Place in: res://assets/audio/music/
+# Recommended sources: Incompetech, Pixabay Audio, FreePD.com
+# ============================================================
+
+bgm_main.ogg      - Main menu theme. Uplifting chiptune/orchestral hybrid, adventurous feel. ~2min loop.
+bgm_map.ogg       - World map. Calm, exploratory, light orchestral. ~2min loop.
+bgm_world1.ogg    - Password Castle. Medieval/castle themed, mysterious but playful. ~3min loop.
+bgm_world2.ogg    - Stranger Chat Forest. Mysterious, slightly tense, forest ambience. ~3min loop.
+bgm_world3.ogg    - Cyberbully City. Urban/modern beat, emotional undertone. ~3min loop.
+bgm_world4.ogg    - Fake News Volcano. Dramatic, urgent, volcanic tension. ~3min loop.
+bgm_world5.ogg    - Privacy Island. Tropical, relaxed but with sneaky undertones. ~3min loop.
+bgm_boss.ogg      - Final boss battle. Epic, intense, multi-phase orchestral. ~5min loop.
+bgm_victory.ogg   - Victory/celebration. Triumphant, happy, achievement fanfare. ~1min.
+bgm_menu.ogg      - Settings/Credits. Soft, calm, ambient piano. ~2min loop.
+
+# ============================================================
+# SOUND EFFECTS (SFX)
+# Place in: res://assets/audio/sfx/
+# Recommended sources: Freesound.org, Zapsplat, SoundBible
+# ============================================================
+
+sfx_tap.ogg       - Generic UI tap. Short click/tap sound. ~0.1s.
+sfx_correct.ogg   - Correct answer chime. Positive ding/bell. ~0.5s.
+sfx_wrong.ogg     - Wrong answer buzzer. Low buzz/error tone. ~0.5s.
+sfx_success.ogg   - Level complete. Happy fanfare/celebration. ~2s.
+sfx_fail.ogg      - Level failed. Sad trombone or gentle fail tone. ~1.5s.
+sfx_click.ogg     - Button click. Soft mechanical click. ~0.1s.
+sfx_whoosh.ogg    - Transition whoosh. Air swoosh sound. ~0.3s.
+sfx_hit.ogg       - Boss hit. Impact/punch sound. ~0.3s.
+sfx_powerup.ogg   - Power up / item collected. Rising sparkle. ~0.5s.
+sfx_alarm.ogg     - Warning alarm. Short alert beep. ~0.5s.
+sfx_unlock.ogg    - Unlock sound. Key turning / door opening. ~0.5s.
+sfx_badge.ogg     - Badge earned. Magical shimmer + chime. ~1s.
+sfx_transition.ogg - Scene transition. Gentle sweep/fade sound. ~0.5s.
+sfx_typewriter.ogg - Text typewriter. Single keystroke click. ~0.05s.
+sfx_explosion.ogg  - Explosion (boss defeated). Big boom. ~1s.
+
+# ============================================================
+# GENRE/MOOD GUIDE
+# ============================================================
+# World 1 (Password Castle): Medieval + chiptune. Think "castle adventure" with lute and drums.
+# World 2 (Stranger Forest): Ambient forest sounds + mysterious xylophone/marimba.
+# World 3 (Cyberbully City): Lo-fi hip hop beat with emotional piano undertones.
+# World 4 (Fake News Volcano): Dramatic orchestral with timpani and brass, building tension.
+# World 5 (Privacy Island): Tropical steel drums + ukulele, with sneaky spy-movie breaks.
+# Final Boss: Full orchestra + electronic elements. Multi-phase with intensity changes.
+# Main Menu: Bright, welcoming chiptune/orchestral with catchy melody.

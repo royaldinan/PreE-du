@@ -1,57 +1,121 @@
 class AudioManager {
   constructor() {
-    this.enabled = true;
-    // Menggunakan URL Langsung (CDN) agar tidak perlu download file manual & anti 404
-    this.sounds = {
-      click: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=click-17934.mp3',
-      correct: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3',
-      wrong: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_33dde17b75.mp3?filename=error-1-24892.mp3',
-      win: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_5b33e45855.mp3?filename=level-up-6297.mp3',
-      bgm: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=happy-kids-11305.mp3'
-    };
+    this.enabled = false; // Start muted to comply with autoplay policies
+    this.initialized = false;
+    this.basePath = '/sounds/';
     
+    // Definisi Suara & Konfigurasi
+    this.config = {
+      click: { volume: 0.6, loop: false },
+      correct: { volume: 0.8, loop: false },
+      wrong: { volume: 0.6, loop: false },
+      win: { volume: 0.9, loop: false },
+      bgm: { volume: 0.4, loop: true }
+    };
+
     this.audioElements = {};
-    this.initAudio();
+    this.preloadSounds();
   }
 
-  initAudio() {
-    Object.keys(this.sounds).forEach(key => {
-      const audio = new Audio(this.sounds[key]);
-      audio.loop = (key === 'bgm');
-      audio.volume = (key === 'bgm') ? 0.3 : 0.6;
-      // Preload
-      audio.load();
+  preloadSounds() {
+    Object.keys(this.config).forEach(key => {
+      const src = `${this.basePath}${key}.mp3`;
+      const audio = new Audio(src);
+      
+      // Set config
+      audio.loop = this.config[key].loop;
+      audio.volume = this.config[key].volume;
+      audio.preload = 'auto';
+
+      // Error Handling Detail
+      audio.addEventListener('error', (e) => {
+        console.error(`❌ GAGAL MEMUAT SUARA: ${key} (${src}). Cek file atau CORS.`, e);
+      });
+
+      // Load event
+      audio.addEventListener('canplaythrough', () => {
+        console.log(`✅ Suara siap: ${key}`);
+      });
+
       this.audioElements[key] = audio;
     });
   }
 
-  toggle() {
-    this.enabled = !this.enabled;
-    if (!this.enabled) {
-      this.pauseAll();
-    } else {
+  // WAJIB DIPANGGIL SAAT USER KLIK TOMBOL "UNMUTE" PERTAMA KALI
+  async initialize() {
+    if (this.initialized) return true;
+    
+    try {
+      // Memaksa browser mengizinkan audio dengan play() singkat lalu pause
+      const testAudio = this.audioElements['click'];
+      if (testAudio) {
+        testAudio.muted = false;
+        await testAudio.play();
+        testAudio.pause();
+        testAudio.currentTime = 0;
+      }
+      
+      this.enabled = true;
+      this.initialized = true;
+      
+      // Langsung mainkan BGM setelah inisialisasi berhasil
       this.play('bgm');
+      
+      console.log("🔊 Audio System Initialized Successfully!");
+      return true;
+    } catch (err) {
+      console.warn("⚠️ Audio initialization pending user interaction:", err);
+      return false;
+    }
+  }
+
+  toggle() {
+    if (!this.initialized) {
+      // Jika belum init, coba init dulu
+      const success = this.initialize();
+      return success;
+    }
+
+    this.enabled = !this.enabled;
+    if (this.enabled) {
+      this.play('bgm');
+    } else {
+      this.pauseAll();
     }
     return this.enabled;
   }
 
   play(soundName) {
-    if (!this.enabled) return;
+    if (!this.enabled || !this.initialized) return;
+
     const audio = this.audioElements[soundName];
     if (audio) {
-      audio.currentTime = 0;
-      // Promise handling untuk autoplay policy browser
-      audio.play().catch(e => console.log("Menunggu interaksi user untuk audio"));
+      // Reset waktu untuk SFX agar bisa diputar ulang dengan cepat
+      if (!this.config[soundName].loop) {
+        audio.currentTime = 0;
+      }
+      
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn(`Playback prevented for ${soundName}:`, error);
+        });
+      }
+    } else {
+      console.warn(`Sound '${soundName}' not found in library.`);
     }
   }
 
   pauseAll() {
     Object.values(this.audioElements).forEach(audio => {
       audio.pause();
+      // Jangan reset currentTime untuk BGM biar bisa lanjut nanti kalau mau
+      if (audio.loop) return; 
       audio.currentTime = 0;
     });
   }
 }
 
+// Singleton Instance
 export const audioManager = new AudioManager();
 export default audioManager;
