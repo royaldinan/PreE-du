@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProgress, resetProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
-import { Trophy, Star, RotateCcw, Home } from 'lucide-react';
+import { Star, RotateCcw, Home } from 'lucide-react';
 
-const Trophy = () => {
+const TrophyPage = () => {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(null);
 
@@ -204,4 +204,4 @@ const Trophy = () => {
   );
 };
 
-export default Trophy;
+export default TrophyPage;

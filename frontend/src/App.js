@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "@/pages/Home";
 import TrackOverview from "@/pages/TrackOverview";
 import TopicPage from "@/pages/TopicPage";
-import Trophy from "@/pages/Trophy";
+import TrophyPage from "@/pages/Trophy";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/track/:trackId" element={<TrackOverview />} />
           <Route path="/topic/:trackId/:topicId" element={<TopicPage />} />
-          <Route path="/trophy" element={<Trophy />} />
+          <Route path="/trophy" element={<TrophyPage />} />
         </Routes>
       </BrowserRouter>
     </div>
