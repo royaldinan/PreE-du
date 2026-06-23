@@ -1,8 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-primary: #4D96FF;
+  --color-secondary: #6BCB77;
+  --color-accent: #FFD166;
+  --color-purple: #9D4CDD;
+  --color-orange: #FF8C42;
+  --color-dark: #2B2D42;
+  --color-light: #FEFAF6;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #6BCB77 0%, #4D96FF 100%);
+  --gradient-warm: linear-gradient(135deg, #FFD166 0%, #FF8C42 100%);
+  --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.1);
+  --shadow-premium-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --radius-xl: 24px;
+  --radius-xxl: 32px;
+}
 
 body {
     margin: 0;
@@ -11,9 +29,188 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #FEFAF6;
+    background: linear-gradient(180deg, #FEFAF6 0%, #F8F4F0 100%);
+    min-height: 100vh;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.heading-font {
+    font-family: 'Fredoka', cursive;
+    font-weight: 600;
+}
+
+.body-font {
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Premium Button Styles */
+.bouncy-button {
+    @apply relative overflow-hidden font-bold rounded-full transition-all duration-300 transform;
+    @apply hover:scale-105 active:scale-95;
+    @apply shadow-lg hover:shadow-xl;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.bouncy-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.bouncy-button:hover::before {
+    left: 100%;
+}
+
+/* Premium Card Styles */
+.premium-card {
+    @apply bg-white rounded-3xl shadow-lg;
+    @apply transition-all duration-300 transform hover:scale-[1.02];
+    box-shadow: var(--shadow-premium);
+}
+
+.premium-card:hover {
+    box-shadow: var(--shadow-premium-hover);
+}
+
+/* Glassmorphism Effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Animated Background Pattern */
+.animated-bg {
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(77, 150, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 209, 102, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(157, 76, 221, 0.08) 0%, transparent 50%);
+    animation: bgShift 15s ease-in-out infinite;
+}
+
+@keyframes bgShift {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Hover Animations */
+.hover-lift {
+    @apply transition-all duration-300 transform;
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-premium-hover);
+}
+
+.hover-glow {
+    @apply transition-all duration-300;
+}
+
+.hover-glow:hover {
+    filter: drop-shadow(0 0 20px rgba(77, 150, 255, 0.4));
+}
+
+/* Stagger Animation for Lists */
+.stagger-item {
+    animation: staggerIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes staggerIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Confetti Animation */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: #f00;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Progress Bar Animation */
+.progress-fill {
+    @apply transition-all duration-1000 ease-out;
+    animation: progressGrow 1s ease-out forwards;
+}
+
+@keyframes progressGrow {
+    from { width: 0; }
+}
+
+/* Pulse Animation for Interactive Elements */
+.pulse-animation {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Bounce Animation */
+.bounce-animation {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #4D96FF, #9D4CDD);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #3A7BD5, #7A3CC4);
 }
