@@ -1,4 +1,207 @@
-Sekarang saya akan buat Trophy page dan komponen game pertama untuk Track Computational Thinking:
-Action: {"type": "mcp_tool", "tool_name": "mcp_bulk_file_writer", "tool_arguments": {"files": [{"content": "import React, { useState, useEffect } from 'react';\nimport { useNavigate } from 'react-router-dom';\nimport { getProgress, resetProgress } from '../utils/localStorage';\nimport Mascot from '../components/Mascot';\nimport { Trophy as TrophyIcon, Home, Star, Award, RotateCcw } from 'lucide-react';\nimport { motion } from 'framer-motion';\n\nconst Trophy = () => {\n  const navigate = useNavigate();\n  const [progress, setProgress] = useState(null);\n  const [showReset, setShowReset] = useState(false);\n\n  useEffect(() => {\n    setProgress(getProgress());\n  }, []);\n\n  if (!progress) return null;\n\n  const handleReset = () => {\n    if (window.confirm('Apakah kamu yakin ingin mengulang dari awal? Semua bintang akan hilang!')) {\n      const newProgress = resetProgress();\n      setProgress(newProgress);\n      setShowReset(false);\n      navigate('/');\n    }\n  };\n\n  const totalTopics = 9;\n  const completedTopics = progress.computational.completed + progress.critical.completed + progress.design.completed;\n  const maxStars = totalTopics * 3;\n\n  const badges = [\n    { threshold: 3, name: 'Pemula Hebat', icon: '\ud83c\udf1f', color: '#FFD166' },\n    { threshold: 9, name: 'Penjelajah Pintar', icon: '\ud83d\ude80', color: '#FF8C42' },\n    { threshold: 15, name: 'Bintang Cemerlang', icon: '\u2b50', color: '#6BCB77' },\n    { threshold: 21, name: 'Juara Pembelajar', icon: '\ud83c\udfc6', color: '#9D4CDD' },\n    { threshold: 27, name: 'Master PreE-du!', icon: '\ud83d\udc51', color: '#EF476F' }\n  ];\n\n  const earnedBadges = badges.filter(badge => progress.totalStars >= badge.threshold);\n\n  return (\n    <div className=\"min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8\" data-testid=\"trophy-page\">\n      <div className=\"max-w-5xl mx-auto\">\n        {/* Header */}\n        <div className=\"flex items-center justify-between mb-8\">\n          <button\n            data-testid=\"back-to-home-trophy\"\n            onClick={() => navigate('/')}\n            className=\"bouncy-button bg-white p-4 rounded-full shadow-lg flex items-center gap-2 px-6\"\n          >\n            <Home className=\"w-6 h-6 text-[#2B2D42]\" />\n            <span className=\"font-bold\">Beranda</span>\n          </button>\n        </div>\n\n        {/* Trophy Header with Mascot */}\n        <div className=\"bg-gradient-to-br from-[#FFD166] to-[#FF8C42] rounded-[32px] p-8 md:p-12 shadow-xl mb-8\">\n          <div className=\"flex flex-col md:flex-row items-center justify-between gap-8\">\n            <div className=\"text-center md:text-left\">\n              <h1 className=\"heading-font text-4xl md:text-5xl text-white mb-4\">\n                Trofi Ku! \ud83c\udfc6\n              </h1>\n              <div className=\"body-font text-2xl md:text-3xl text-white font-bold mb-2\">\n                {progress.totalStars} / {maxStars} Bintang \u2b50\n              </div>\n              <div className=\"body-font text-xl text-white/90\">\n                {completedTopics} / {totalTopics} Topik Selesai\n              </div>\n            </div>\n            <Mascot mood={progress.totalStars >= maxStars ? 'happy' : 'idle'} size=\"large\" />\n          </div>\n        </div>\n\n        {/* Badges Grid */}\n        <div className=\"mb-8\">\n          <h2 className=\"heading-font text-3xl text-[#2B2D42] mb-6\">Badge Kamu \ud83c\udf96\ufe0f</h2>\n          <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6\">\n            {badges.map((badge, index) => {\n              const isEarned = progress.totalStars >= badge.threshold;\n              return (\n                <motion.div\n                  key={badge.name}\n                  data-testid={`badge-${index}`}\n                  className={`rounded-[32px] p-6 shadow-xl border-4 ${\n                    isEarned ? 'border-white/50' : 'border-gray-300 opacity-50'\n                  }`}\n                  style={{\n                    backgroundColor: isEarned ? badge.color : '#E0E0E0'\n                  }}\n                  initial={{ scale: 0 }}\n                  animate={{ scale: 1 }}\n                  transition={{ delay: index * 0.1 }}\n                >\n                  <div className=\"text-center\">\n                    <div className=\"text-6xl mb-3\">{isEarned ? badge.icon : '\ud83d\udd12'}</div>\n                    <h3 className=\"heading-font text-xl text-white mb-2\">{badge.name}</h3>\n                    <p className=\"body-font text-sm text-white/90\">\n                      {isEarned ? 'Didapat!' : `Butuh ${badge.threshold} bintang`}\n                    </p>\n                  </div>\n                </motion.div>\n              );\n            })}\n          </div>\n        </div>\n\n        {/* Track Progress Details */}\n        <div className=\"mb-8\">\n          <h2 className=\"heading-font text-3xl text-[#2B2D42] mb-6\">Detail Progres \ud83d\udcca</h2>\n          <div className=\"grid grid-cols-1 md:grid-cols-3 gap-6\">\n            {/* Computational */}\n            <div className=\"bg-[#4D96FF] rounded-[32px] p-6 shadow-xl\">\n              <div className=\"text-center text-white\">\n                <div className=\"text-5xl mb-3\">\ud83e\udde0</div>\n                <h3 className=\"heading-font text-2xl mb-2\">Komputasional</h3>\n                <div className=\"flex justify-center items-center gap-2 mb-2\">\n                  {[1, 2, 3].map((i) => (\n                    <Star\n                      key={i}\n                      className={`w-6 h-6 ${\n                        i <= Object.values(progress.computational.topics).filter(t => t.stars > 0).length\n                          ? 'fill-white text-white'\n                          : 'text-white/30'\n                      }`}\n                    />\n                  ))}\n                </div>\n                <p className=\"body-font text-lg\">\n                  {progress.computational.completed} / 3 topik\n                </p>\n              </div>\n            </div>\n\n            {/* Critical */}\n            <div className=\"bg-[#6BCB77] rounded-[32px] p-6 shadow-xl\">\n              <div className=\"text-center text-white\">\n                <div className=\"text-5xl mb-3\">\ud83d\udd0d</div>\n                <h3 className=\"heading-font text-2xl mb-2\">Kritis</h3>\n                <div className=\"flex justify-center items-center gap-2 mb-2\">\n                  {[1, 2, 3].map((i) => (\n                    <Star\n                      key={i}\n                      className={`w-6 h-6 ${\n                        i <= Object.values(progress.critical.topics).filter(t => t.stars > 0).length\n                          ? 'fill-white text-white'\n                          : 'text-white/30'\n                      }`}\n                    />\n                  ))}\n                </div>\n                <p className=\"body-font text-lg\">\n                  {progress.critical.completed} / 3 topik\n                </p>\n              </div>\n            </div>\n\n            {/* Design */}\n            <div className=\"bg-[#9D4CDD] rounded-[32px] p-6 shadow-xl\">\n              <div className=\"text-center text-white\">\n                <div className=\"text-5xl mb-3\">\ud83c\udfa8</div>\n                <h3 className=\"heading-font text-2xl mb-2\">Desain</h3>\n                <div className=\"flex justify-center items-center gap-2 mb-2\">\n                  {[1, 2, 3].map((i) => (\n                    <Star\n                      key={i}\n                      className={`w-6 h-6 ${\n                        i <= Object.values(progress.design.topics).filter(t => t.stars > 0).length\n                          ? 'fill-white text-white'\n                          : 'text-white/30'\n                      }`}\n                    />\n                  ))}\n                </div>\n                <p className=\"body-font text-lg\">\n                  {progress.design.completed} / 3 topik\n                </p>\n              </div>\n            </div>\n          </div>\n        </div>\n\n        {/* Motivational Message */}\n        <div className=\"bg-white rounded-[32px] p-8 shadow-xl border-4 border-[#FFD166]/30 mb-8\">\n          <div className=\"text-center\">\n            <div className=\"text-5xl mb-4\">\n              {progress.totalStars === maxStars ? '\ud83c\udf89' : progress.totalStars > maxStars / 2 ? '\ud83d\udcaa' : '\ud83d\ude80'}\n            </div>\n            <p className=\"heading-font text-2xl text-[#2B2D42] mb-2\">\n              {progress.totalStars === maxStars\n                ? 'Kamu Luar Biasa!'\n                : progress.totalStars > maxStars / 2\n                ? 'Terus Semangat!'\n                : 'Ayo Mulai Petualangan!'}\n            </p>\n            <p className=\"body-font text-lg text-[#6C757D]\">\n              {progress.totalStars === maxStars\n                ? 'Kamu sudah menyelesaikan semua topik! Kamu adalah Master PreE-du!'\n                : progress.totalStars > maxStars / 2\n                ? 'Kamu sudah sangat dekat! Selesaikan topik lainnya untuk mengumpulkan semua bintang!'\n                : 'Mainkan semua topik dan kumpulkan bintang sebanyak-banyaknya!'}\n            </p>\n          </div>\n        </div>\n\n        {/* Reset Button */}\n        <div className=\"text-center\">\n          <button\n            data-testid=\"reset-progress-button\"\n            onClick={handleReset}\n            className=\"bouncy-button bg-gray-200 text-gray-600 px-6 py-3 rounded-full font-bold text-lg flex items-center gap-2 mx-auto hover:bg-gray-300\"\n          >\n            <RotateCcw className=\"w-5 h-5\" />\n            Mulai dari Awal\n          </button>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default Trophy;\n", "path": "/app/frontend/src/pages/Trophy.js"}]}}
-Observation: Successfully wrote 1 files:
-- /app/frontend/src/pages/Trophy.js
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getProgress, resetProgress } from '../utils/localStorage';
+import Mascot from '../components/Mascot';
+import { Trophy, Star, RotateCcw, Home } from 'lucide-react';
+
+const Trophy = () => {
+  const navigate = useNavigate();
+  const [progress, setProgress] = useState(null);
+
+  useEffect(() => {
+    setProgress(getProgress());
+  }, []);
+
+  if (!progress) return null;
+
+  const totalTopics = 9;
+  const completedTopics = progress.computational.completed + progress.critical.completed + progress.design.completed;
+  const percentage = Math.round((completedTopics / totalTopics) * 100);
+
+  const handleReset = () => {
+    if (window.confirm('Yakin ingin menghapus semua progress?')) {
+      resetProgress();
+      setProgress(getProgress());
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => navigate('/')}
+            className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg"
+          >
+            <Home className="w-5 h-5" />
+            Kembali
+          </button>
+          <button
+            onClick={handleReset}
+            className="bouncy-button bg-[#FF6B6B] text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg"
+          >
+            <RotateCcw className="w-5 h-5" />
+            Reset Progress
+          </button>
+        </div>
+
+        {/* Trophy Display */}
+        <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+          <div className="flex justify-center mb-6">
+            <Mascot mood={progress.totalStars >= 15 ? 'happy' : 'idle'} size="large" />
+          </div>
+          
+          <h1 className="heading-font text-4xl md:text-5xl text-[#2B2D42] mb-4">
+            🏆 Trofi Ku 🏆
+          </h1>
+          
+          <div className="bg-[#FFD166]/20 rounded-2xl p-8 mb-8">
+            <div className="text-8xl mb-4">
+              {percentage === 100 ? '🏆' : percentage >= 50 ? '🥈' : '🥉'}
+            </div>
+            <p className="body-font text-2xl text-[#2B2D42] mb-2">
+              Total Bintang: <span className="heading-font text-4xl text-[#FFD166]">{progress.totalStars}</span> / 27 ⭐
+            </p>
+            <p className="body-font text-xl text-[#6C757D]">
+              Topik Selesai: {completedTopics} dari {totalTopics} ({percentage}%)
+            </p>
+          </div>
+
+          {/* Achievement Messages */}
+          <div className="space-y-4">
+            {progress.totalStars === 0 && (
+              <p className="body-font text-xl text-[#6C757D]">
+                💪 Ayo mulai belajar dan kumpulkan bintang pertamamu!
+              </p>
+            )}
+            {progress.totalStars > 0 && progress.totalStars < 9 && (
+              <p className="body-font text-xl text-[#6C757D]">
+                🌟 Bagus! Terus semangat belajarnya!
+              </p>
+            )}
+            {progress.totalStars >= 9 && progress.totalStars < 18 && (
+              <p className="body-font text-xl text-[#6BCB77]">
+                🎉 Hebat! Kamu sudah mengumpulkan banyak bintang!
+              </p>
+            )}
+            {progress.totalStars >= 18 && progress.totalStars < 27 && (
+              <p className="body-font text-xl text-[#4D96FF]">
+                🚀 Luar biasa! Hampir sempurna!
+              </p>
+            )}
+            {progress.totalStars === 27 && (
+              <p className="heading-font text-2xl text-[#9D4CDD]">
+                🎊 SELAMAT! KAMU SUDAH MENYELESAIKAN SEMUA TOPIK! 🎊
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Track Breakdown */}
+        <div className="bg-white rounded-[32px] p-8 shadow-xl">
+          <h2 className="heading-font text-2xl text-[#2B2D42] mb-6 text-center">
+            Detail Progress per Track
+          </h2>
+          
+          <div className="space-y-6">
+            {/* Computational Thinking */}
+            <div className="bg-[#4D96FF]/10 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="heading-font text-xl text-[#4D96FF]">🧠 Berpikir Komputasional</h3>
+                <div className="flex gap-1">
+                  {[...Array(3)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`w-6 h-6 ${
+                        i < progress.computational.topics.sorting?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2 text-sm body-font text-[#6C757D]">
+                <div className="flex justify-between">
+                  <span>Mengurutkan Angka:</span>
+                  <span>{progress.computational.topics.sorting?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Menemukan Pola:</span>
+                  <span>{progress.computational.topics.patterns?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Instruksi Langkah:</span>
+                  <span>{progress.computational.topics.algorithms?.stars || 0} ⭐</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Critical Thinking */}
+            <div className="bg-[#6BCB77]/10 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="heading-font text-xl text-[#6BCB77]">🔍 Berpikir Kritis</h3>
+                <div className="flex gap-1">
+                  {[...Array(3)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`w-6 h-6 ${
+                        i < progress.critical.topics.oddOneOut?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2 text-sm body-font text-[#6C757D]">
+                <div className="flex justify-between">
+                  <span>Mana yang Berbeda:</span>
+                  <span>{progress.critical.topics.oddOneOut?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Fakta atau Opini:</span>
+                  <span>{progress.critical.topics.factOpinion?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Apa Akibatnya:</span>
+                  <span>{progress.critical.topics.causeEffect?.stars || 0} ⭐</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Design Thinking */}
+            <div className="bg-[#9D4CDD]/10 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="heading-font text-xl text-[#9D4CDD]">🎨 Berpikir Desain</h3>
+                <div className="flex gap-1">
+                  {[...Array(3)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`w-6 h-6 ${
+                        i < progress.design.topics.empathy?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2 text-sm body-font text-[#6C757D]">
+                <div className="flex justify-between">
+                  <span>Apa Masalahnya:</span>
+                  <span>{progress.design.topics.empathy?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ide Sebanyak Mungkin:</span>
+                  <span>{progress.design.topics.ideation?.stars || 0} ⭐</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Buat dan Coba:</span>
+                  <span>{progress.design.topics.prototype?.stars || 0} ⭐</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Trophy;
