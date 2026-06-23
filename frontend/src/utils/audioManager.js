@@ -1,155 +1,57 @@
-// Audio Manager menggunakan Web Audio API untuk sound effects
-class SoundManager {
+class AudioManager {
   constructor() {
-    this.audioContext = null;
-    this.isMuted = false;
-    this.masterGain = null;
-    this.initialized = false;
-  }
-
-  init() {
-    if (this.initialized) return;
+    this.enabled = true;
+    // Menggunakan URL Langsung (CDN) agar tidak perlu download file manual & anti 404
+    this.sounds = {
+      click: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=click-17934.mp3',
+      correct: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3',
+      wrong: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_33dde17b75.mp3?filename=error-1-24892.mp3',
+      win: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_5b33e45855.mp3?filename=level-up-6297.mp3',
+      bgm: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=happy-kids-11305.mp3'
+    };
     
-    try {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      this.masterGain = this.audioContext.createGain();
-      this.masterGain.connect(this.audioContext.destination);
-      this.masterGain.gain.value = 0.3;
-      this.initialized = true;
-    } catch (e) {
-      console.warn('Web Audio API tidak didukung');
-    }
+    this.audioElements = {};
+    this.initAudio();
   }
 
-  ensureInit() {
-    if (!this.initialized) {
-      this.init();
-    }
-    if (this.audioContext && this.audioContext.state === 'suspended') {
-      this.audioContext.resume();
-    }
-  }
-
-  playTone(frequency, duration, type = 'sine', volume = 0.5, startTime = 0) {
-    this.ensureInit();
-    if (!this.audioContext || this.isMuted) return;
-
-    const oscillator = this.audioContext.createOscillator();
-    const gainNode = this.audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(this.masterGain);
-
-    oscillator.type = type;
-    oscillator.frequency.value = frequency;
-
-    const now = this.audioContext.currentTime + startTime;
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(volume, now + 0.01);
-    gainNode.gain.linearRampToValueAtTime(0, now + duration);
-
-    oscillator.start(now);
-    oscillator.stop(now + duration);
-  }
-
-  playHover() {
-    this.playTone(600, 0.1, 'sine', 0.2);
-  }
-
-  playClick() {
-    this.playTone(800, 0.08, 'square', 0.15);
-  }
-
-  playSelect() {
-    this.playTone(523.25, 0.15, 'sine', 0.3);
-    setTimeout(() => this.playTone(659.25, 0.15, 'sine', 0.3), 100);
-  }
-
-  playCorrect() {
-    this.playTone(523.25, 0.15, 'sine', 0.4, 0);
-    this.playTone(659.25, 0.15, 'sine', 0.4, 0.1);
-    this.playTone(783.99, 0.2, 'sine', 0.4, 0.2);
-  }
-
-  playSuccess() {
-    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-      this.playTone(freq, 0.2, 'triangle', 0.3, i * 0.1);
+  initAudio() {
+    Object.keys(this.sounds).forEach(key => {
+      const audio = new Audio(this.sounds[key]);
+      audio.loop = (key === 'bgm');
+      audio.volume = (key === 'bgm') ? 0.3 : 0.6;
+      // Preload
+      audio.load();
+      this.audioElements[key] = audio;
     });
   }
 
-  playComplete() {
-    [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
-      this.playTone(freq, 0.3, 'sine', 0.4, i * 0.15);
-    });
-  }
-
-  playWrong() {
-    this.playTone(200, 0.2, 'sawtooth', 0.2);
-    setTimeout(() => this.playTone(150, 0.2, 'sawtooth', 0.2), 150);
-  }
-
-  playPop() {
-    this.playTone(800, 0.08, 'sine', 0.3);
-  }
-
-  playStar() {
-    [1046.50, 1318.51, 1567.98].forEach((freq, i) => {
-      this.playTone(freq, 0.15, 'sine', 0.35, i * 0.08);
-    });
-  }
-
-  playTrophy() {
-    [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach((freq, i) => {
-      this.playTone(freq, 0.4, 'triangle', 0.4, i * 0.12);
-    });
-  }
-
-  playMatch() {
-    this.playTone(880, 0.1, 'sine', 0.3);
-    setTimeout(() => this.playTone(1100, 0.12, 'sine', 0.3), 80);
-  }
-
-  playThink() {
-    this.playTone(400, 0.3, 'sine', 0.15);
-  }
-
-  playHappy() {
-    [659.25, 783.99, 987.77].forEach((freq, i) => {
-      this.playTone(freq, 0.15, 'sine', 0.3, i * 0.08);
-    });
-  }
-
-  mute() {
-    this.isMuted = true;
-    if (this.masterGain) {
-      this.masterGain.gain.value = 0;
-    }
-  }
-
-  unmute() {
-    this.isMuted = false;
-    if (this.masterGain) {
-      this.masterGain.gain.value = 0.3;
-    }
-  }
-
-  toggleMute() {
-    if (this.isMuted) {
-      this.unmute();
+  toggle() {
+    this.enabled = !this.enabled;
+    if (!this.enabled) {
+      this.pauseAll();
     } else {
-      this.mute();
+      this.play('bgm');
     }
-    return this.isMuted;
+    return this.enabled;
   }
 
-  setVolume(volume) {
-    if (this.masterGain) {
-      this.masterGain.gain.value = Math.max(0, Math.min(0.5, volume));
+  play(soundName) {
+    if (!this.enabled) return;
+    const audio = this.audioElements[soundName];
+    if (audio) {
+      audio.currentTime = 0;
+      // Promise handling untuk autoplay policy browser
+      audio.play().catch(e => console.log("Menunggu interaksi user untuk audio"));
     }
+  }
+
+  pauseAll() {
+    Object.values(this.audioElements).forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
   }
 }
 
-const soundManager = new SoundManager();
-
-export default soundManager;
-export { SoundManager };
+export const audioManager = new AudioManager();
+export default audioManager;
