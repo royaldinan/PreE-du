@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const PrototypeGame = ({ onComplete }) => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -18,6 +19,7 @@ const PrototypeGame = ({ onComplete }) => {
   ];
 
   const handlePartClick = (part) => {
+    audioManager.playSfx('click');
     if (selectedParts.includes(part)) {
       setSelectedParts(selectedParts.filter(p => p !== part));
     } else if (selectedParts.length < 3) {
@@ -30,7 +32,9 @@ const PrototypeGame = ({ onComplete }) => {
     const correctCount = selectedParts.filter(p => current.needed.some(n => p.includes(n) || current.parts.indexOf(p) < 3)).length;
     
     if (correctCount >= 2) {
-      setScore(score + 1);
+      audioManager.playSfx('correct');
+      const newScore = score + 1;
+      setScore(newScore);
       setFeedback('Hebat! Solusi yang kreatif! 🎉');
       setMascotMood('happy');
       setTimeout(() => {
@@ -39,12 +43,14 @@ const PrototypeGame = ({ onComplete }) => {
           setSelectedParts([]);
           setFeedback('');
         } else {
-          const totalStars = score + 1 >= 4 ? 3 : score + 1 >= 2 ? 2 : 1;
+          // 0 level berhasil -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
       }, 1500);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Coba pilih bagian yang lebih tepat! 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);

@@ -1,14 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProgressBar from './ProgressBar';
+import { audioManager } from '../utils/audioManager';
 
 const TrackCard = ({ track, title, description, icon, color, completed, total }) => {
   const navigate = useNavigate();
 
+  const goToTrack = () => {
+    audioManager.playSfx('click');
+    navigate(`/track/${track}`);
+  };
+
   return (
     <div
       data-testid={`track-card-${track}`}
-      onClick={() => navigate(`/track/${track}`)}
+      onClick={goToTrack}
       className="chunky-card cursor-pointer p-8 h-full"
       style={{ backgroundColor: color }}
     >
@@ -39,7 +45,7 @@ const TrackCard = ({ track, title, description, icon, color, completed, total })
           className="bouncy-button mt-6 w-full bg-white text-[#2B2D42] py-4 px-8 rounded-full font-bold text-xl shadow-lg hover:shadow-xl"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/track/${track}`);
+            goToTrack();
           }}
         >
           {completed === 0 ? 'Mulai Belajar! 🚀' : completed === total ? 'Ulangi Lagi! ✨' : 'Lanjutkan Belajar! 💪'}

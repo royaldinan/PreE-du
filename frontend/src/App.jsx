@@ -10,16 +10,19 @@ import { audioManager } from './utils/audioManager';
 import './index.css';
 
 function App() {
-  // Inisialisasi audio saat pertama kali ada interaksi user di mana saja
+  // Buka kunci audio browser saat interaksi pertama user di mana saja.
+  // Setelah ini, BGM yang sedang "menunggu" (di-set sebelum interaksi user)
+  // akan otomatis lanjut diputar.
   useEffect(() => {
-    const handleFirstInteraction = () => {
-      // Coba mainkan BGM sekali saat user klik apa saja di aplikasi
-      if (audioManager.enabled) {
-        audioManager.play('bgm');
+    const handleFirstInteraction = async () => {
+      const success = await audioManager.unlock();
+      if (success) {
+        if (!audioManager.isMuted && audioManager.bgmAudio && audioManager.bgmAudio.paused) {
+          audioManager.bgmAudio.play().catch(() => {});
+        }
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('keydown', handleFirstInteraction);
       }
-      // Hapus listener setelah berhasil
-      document.removeEventListener('click', handleFirstInteraction);
-      document.removeEventListener('keydown', handleFirstInteraction);
     };
 
     document.addEventListener('click', handleFirstInteraction);

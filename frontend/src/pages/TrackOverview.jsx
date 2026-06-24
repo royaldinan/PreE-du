@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 import { ArrowLeft, Star } from 'lucide-react';
 
 const TrackOverview = () => {
@@ -11,7 +12,9 @@ const TrackOverview = () => {
 
   useEffect(() => {
     setProgress(getProgress());
-  }, []);
+    // BGM diatur per-track (computational/critical/design), bukan per-topik.
+    audioManager.playBgm(trackId);
+  }, [trackId]);
 
   if (!progress) return null;
 
@@ -55,7 +58,10 @@ const TrackOverview = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <button
-          onClick={() => navigate('/')}
+          onClick={() => {
+            audioManager.playSfx('click');
+            navigate('/');
+          }}
           className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold mb-8 flex items-center gap-2 shadow-lg"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -103,7 +109,10 @@ const TrackOverview = () => {
             return (
               <div
                 key={topic.id}
-                onClick={() => navigate(`/topic/${trackId}/${topic.id}`)}
+                onClick={() => {
+                  audioManager.playSfx('click');
+                  navigate(`/topic/${trackId}/${topic.id}`);
+                }}
                 className="chunky-card cursor-pointer bg-white p-6 flex items-center gap-6"
               >
                 <div className="text-5xl">{topic.icon}</div>

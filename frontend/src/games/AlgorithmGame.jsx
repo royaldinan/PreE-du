@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const AlgorithmGame = ({ onComplete }) => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -72,6 +73,7 @@ const AlgorithmGame = ({ onComplete }) => {
       else if (dir === 'right') newPos.x = Math.min(gridSize - 1, pos.x + 1);
 
       if (obstacles.some(o => o.x === newPos.x && o.y === newPos.y)) {
+        audioManager.playSfx('wrong');
         setFeedback('Aduh! Nabrak rintangan! 💥');
         setMascotMood('sad');
         setTimeout(() => {
@@ -87,20 +89,24 @@ const AlgorithmGame = ({ onComplete }) => {
     }
 
     if (pos.x === targetPos.x && pos.y === targetPos.y) {
+      audioManager.playSfx('correct');
       setFeedback('Hore! Sampai tujuan! 🎉');
       setMascotMood('happy');
-      setScore(score + 1);
+      const newScore = score + 1;
+      setScore(newScore);
       setTimeout(() => {
         if (currentLevel < 5) {
           setCurrentLevel(currentLevel + 1);
         } else {
-          const totalStars = score + 1 >= 4 ? 3 : score + 1 >= 2 ? 2 : 1;
+          // 0 level berhasil dicapai -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
         setIsRunning(false);
       }, 1000);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Belum sampai! Coba lagi! 💪');
       setMascotMood('sad');
       setTimeout(() => {

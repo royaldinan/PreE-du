@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TrackCard from '../components/TrackCard';
 import Mascot from '../components/Mascot';
 import { getProgress } from '../utils/localStorage';
+import { audioManager } from '../utils/audioManager';
 import { Trophy } from 'lucide-react';
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     setProgress(getProgress());
+    audioManager.playBgm('mainMenu');
   }, []);
 
   if (!progress) return null;
@@ -62,7 +64,10 @@ const Home = () => {
             <Mascot mood="idle" size="large" />
             <button
               data-testid="trophy-button"
-              onClick={() => navigate('/trophy')}
+              onClick={() => {
+                audioManager.playSfx('click');
+                navigate('/trophy');
+              }}
               className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-6 py-3 rounded-full font-bold text-lg flex items-center gap-2 shadow-lg"
             >
               <Trophy className="w-6 h-6" />

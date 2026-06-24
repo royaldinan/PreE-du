@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const EmpathyGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -19,7 +20,9 @@ const EmpathyGame = ({ onComplete }) => {
 
   const handleChoice = (index) => {
     if (index === rounds[currentRound - 1].correct) {
-      setScore(score + 1);
+      audioManager.playSfx('correct');
+      const newScore = score + 1;
+      setScore(newScore);
       setFeedback('Benar! Kamu mengerti perasaan mereka! 🎉');
       setMascotMood('happy');
       setTimeout(() => {
@@ -27,12 +30,14 @@ const EmpathyGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
         } else {
-          const totalStars = score + 1 >= 5 ? 3 : score + 1 >= 3 ? 2 : 1;
+          // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 5 ? 3 : newScore >= 3 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
       }, 1500);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan apa yang mereka rasakan 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);

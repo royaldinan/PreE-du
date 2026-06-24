@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const PatternGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -42,7 +43,9 @@ const PatternGame = ({ onComplete }) => {
     const correctAnswer = pattern[pattern.length - 1] || generatePattern(currentRound)[pattern.length];
     
     if (option === correctAnswer) {
-      setScore(score + 1);
+      audioManager.playSfx('correct');
+      const newScore = score + 1;
+      setScore(newScore);
       setFeedback('Benar! 🎉');
       setMascotMood('happy');
       
@@ -50,12 +53,14 @@ const PatternGame = ({ onComplete }) => {
         if (currentRound < 10) {
           setCurrentRound(currentRound + 1);
         } else {
-          const totalStars = score >= 8 ? 3 : score >= 5 ? 2 : 1;
+          // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 8 ? 3 : newScore >= 5 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
       }, 1000);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Coba lagi! 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);

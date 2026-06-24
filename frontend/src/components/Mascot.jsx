@@ -10,15 +10,9 @@ const Mascot = ({ mood = 'idle', message = "" }) => {
     thinking: { rotate: [0, -10, 10, 0], transition: { duration: 3, repeat: Infinity } },
   };
 
-  const handleClick = () => {
-    // Pastikan audio initialized dulu
-    if (!audioManager.initialized) {
-      audioManager.initialize().then(() => {
-         audioManager.play('click');
-      });
-    } else {
-      audioManager.play('click');
-    }
+  const handleClick = async () => {
+    await audioManager.unlock();
+    audioManager.playSfx('click');
     // Bisa tambahkan logic ganti mood di sini jika mau
   };
 

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const SortingGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
   const [numbers, setNumbers] = useState([]);
   const [sortedNumbers, setSortedNumbers] = useState([]);
+  // "score" = jumlah ronde yang diselesaikan TANPA satu pun klik salah
+  // (ronde "sempurna"). Dipakai untuk menentukan bintang & menang/kalah.
   const [score, setScore] = useState(0);
+  const [missedThisRound, setMissedThisRound] = useState(false);
   const [gameComplete, setGameComplete] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
@@ -25,6 +29,7 @@ const SortingGame = ({ onComplete }) => {
     if (currentRound <= 5 && !gameComplete) {
       setNumbers(generateRound(currentRound));
       setSortedNumbers([]);
+      setMissedThisRound(false);
       setFeedback('');
       setMascotMood('idle');
     }
@@ -32,21 +37,28 @@ const SortingGame = ({ onComplete }) => {
 
   const handleNumberClick = (num) => {
     if (sortedNumbers.includes(num)) return;
-    
+
     const expectedNext = [...numbers].sort((a, b) => a - b)[sortedNumbers.length];
-    
+
     if (num === expectedNext) {
+      audioManager.playSfx('correct');
       const newSorted = [...sortedNumbers, num];
       setSortedNumbers(newSorted);
       setFeedback('Benar! 🎉');
       setMascotMood('happy');
-      
+
       if (newSorted.length === numbers.length) {
+        // Ronde selesai. Hanya tambah skor kalau ronde ini sempurna
+        // (tidak pernah klik salah sepanjang ronde).
+        const newScore = missedThisRound ? score : score + 1;
+        setScore(newScore);
+
         setTimeout(() => {
           if (currentRound < 5) {
             setCurrentRound(currentRound + 1);
           } else {
-            const totalStars = score >= 4 ? 3 : score >= 2 ? 2 : 1;
+            // 0 ronde sempurna -> kalah (0 bintang). Selain itu -> menang.
+            const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
             setGameComplete(true);
             onComplete(totalStars);
           }
@@ -55,6 +67,8 @@ const SortingGame = ({ onComplete }) => {
         setTimeout(() => setFeedback(''), 500);
       }
     } else {
+      audioManager.playSfx('wrong');
+      setMissedThisRound(true);
       setFeedback('Coba lagi! 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);
@@ -64,6 +78,7 @@ const SortingGame = ({ onComplete }) => {
   const resetGame = () => {
     setCurrentRound(1);
     setScore(0);
+    setMissedThisRound(false);
     setGameComplete(false);
     setNumbers(generateRound(1));
     setSortedNumbers([]);

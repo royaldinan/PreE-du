@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProgress, updateTopicProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 import { ArrowLeft, Star, Printer, Play } from 'lucide-react';
 
 // Import all games
@@ -38,7 +39,10 @@ const TopicPage = () => {
 
   useEffect(() => {
     setProgress(getProgress());
-  }, []);
+    // BGM diatur per-track (computational/critical/design), sama dengan
+    // BGM yang sudah main di TrackOverview track ini — tidak di-restart.
+    audioManager.playBgm(trackId);
+  }, [trackId]);
 
   if (!progress) return null;
 
@@ -72,16 +76,37 @@ const TopicPage = () => {
   const handleGameComplete = (earnedStars) => {
     setGameComplete(true);
     setStars(earnedStars);
-    setMascotMood('happy');
+
+    // Keputusan menang/kalah: 0 bintang (semua jawaban salah) = kalah,
+    // 1-3 bintang = menang. Lihat juga komentar di tiap file game/*.jsx.
+    if (earnedStars === 0) {
+      setMascotMood('sad');
+      audioManager.playSfx('lose');
+    } else {
+      setMascotMood('happy');
+      audioManager.playSfx('win');
+    }
   };
 
   const handleTopicComplete = () => {
+    audioManager.playSfx('click');
     updateTopicProgress(trackId, topicId, stars);
     setTopicComplete(true);
   };
 
   const handlePrint = () => {
+    audioManager.playSfx('click');
     window.print();
+  };
+
+  const handleStartRealLife = () => {
+    audioManager.playSfx('click');
+    setShowRealLife(true);
+  };
+
+  const handleBackToTrack = () => {
+    audioManager.playSfx('click');
+    navigate(`/track/${trackId}`);
   };
 
   const topicTitles = {
@@ -107,7 +132,7 @@ const TopicPage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <button
-          onClick={() => navigate(`/track/${trackId}`)}
+          onClick={handleBackToTrack}
           className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold mb-8 flex items-center gap-2 shadow-lg"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -155,7 +180,7 @@ const TopicPage = () => {
               🎉 Hebat! Kamu dapat {stars} bintang!
             </h2>
             <button
-              onClick={() => setShowRealLife(true)}
+              onClick={handleStartRealLife}
               className="bouncy-button bg-[#6BCB77] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg flex items-center gap-3 mx-auto"
             >
               <Play className="w-6 h-6" />
@@ -205,7 +230,10 @@ const TopicPage = () => {
               Kamu sudah menyelesaikan topik ini dengan {stars} bintang!
             </p>
             <button
-              onClick={() => navigate(`/track/${trackId}`)}
+              onClick={() => {
+                audioManager.playSfx('click');
+                navigate(`/track/${trackId}`);
+              }}
               className="bouncy-button bg-[#4D96FF] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg"
             >
               Lanjut ke Topik Berikutnya →

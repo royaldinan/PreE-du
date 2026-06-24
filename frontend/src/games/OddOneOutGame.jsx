@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const OddOneOutGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -21,7 +22,9 @@ const OddOneOutGame = ({ onComplete }) => {
 
   const handleChoice = (index) => {
     if (index === rounds[currentRound - 1].correct) {
-      setScore(score + 1);
+      audioManager.playSfx('correct');
+      const newScore = score + 1;
+      setScore(newScore);
       setFeedback(`Benar! ${rounds[currentRound - 1].explanation} 🎉`);
       setMascotMood('happy');
       setTimeout(() => {
@@ -29,12 +32,14 @@ const OddOneOutGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
         } else {
-          const totalStars = score + 1 >= 6 ? 3 : score + 1 >= 4 ? 2 : 1;
+          // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 6 ? 3 : newScore >= 4 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
       }, 2000);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan mana yang berbeda 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);

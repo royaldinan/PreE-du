@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const IdeationGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -32,6 +33,7 @@ const IdeationGame = ({ onComplete }) => {
   }, [isPlaying, timeLeft]);
 
   const startGame = () => {
+    audioManager.playSfx('click');
     setIsPlaying(true);
     setTimeLeft(60);
     setIdeas([]);
@@ -40,6 +42,9 @@ const IdeationGame = ({ onComplete }) => {
 
   const addIdea = () => {
     if (!isPlaying) return;
+    // Tidak ada jawaban "salah" di game ini — setiap ide yang berhasil
+    // dikumpulkan dianggap sebagai keberhasilan kecil (SFX correct).
+    audioManager.playSfx('correct');
     const randomEmoji = ideaEmojis[Math.floor(Math.random() * ideaEmojis.length)];
     setIdeas([...ideas, randomEmoji]);
     setMascotMood('happy');
@@ -49,12 +54,14 @@ const IdeationGame = ({ onComplete }) => {
   const endGame = () => {
     setIsPlaying(false);
     setGameComplete(true);
-    const totalStars = ideas.length >= 8 ? 3 : ideas.length >= 5 ? 2 : 1;
+    // 0 ide terkumpul -> kalah (0 bintang). Selain itu -> menang.
+    const totalStars = ideas.length >= 8 ? 3 : ideas.length >= 5 ? 2 : ideas.length >= 1 ? 1 : 0;
     setFeedback(`Kamu dapat ${ideas.length} ide!`);
     onComplete(totalStars);
   };
 
   const resetGame = () => {
+    audioManager.playSfx('click');
     setCurrentRound(1);
     setGameComplete(false);
     setIdeas([]);

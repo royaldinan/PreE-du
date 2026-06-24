@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProgress, resetProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 import { Star, RotateCcw, Home } from 'lucide-react';
 
 const TrophyPage = () => {
@@ -10,6 +11,9 @@ const TrophyPage = () => {
 
   useEffect(() => {
     setProgress(getProgress());
+    // Halaman Trofi Ku termasuk bagian "menu", pakai BGM main menu yang sama
+    // dengan Beranda — tidak di-restart kalau memang sudah main dari Home.
+    audioManager.playBgm('mainMenu');
   }, []);
 
   if (!progress) return null;
@@ -31,14 +35,20 @@ const TrophyPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => {
+              audioManager.playSfx('click');
+              navigate('/');
+            }}
             className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg"
           >
             <Home className="w-5 h-5" />
             Kembali
           </button>
           <button
-            onClick={handleReset}
+            onClick={() => {
+              audioManager.playSfx('click');
+              handleReset();
+            }}
             className="bouncy-button bg-[#FF6B6B] text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 shadow-lg"
           >
             <RotateCcw className="w-5 h-5" />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Mascot from '../components/Mascot';
+import { audioManager } from '../utils/audioManager';
 
 const FactOpinionGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -26,7 +27,9 @@ const FactOpinionGame = ({ onComplete }) => {
     const isCorrect = (choice === 'fact' && current.isFact) || (choice === 'opinion' && !current.isFact);
 
     if (isCorrect) {
-      setScore(score + 1);
+      audioManager.playSfx('correct');
+      const newScore = score + 1;
+      setScore(newScore);
       setFeedback(`Benar! ${current.explanation} 🎉`);
       setMascotMood('happy');
       setTimeout(() => {
@@ -34,12 +37,14 @@ const FactOpinionGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
         } else {
-          const totalStars = score + 1 >= 8 ? 3 : score + 1 >= 5 ? 2 : 1;
+          // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
+          const totalStars = newScore >= 8 ? 3 : newScore >= 5 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
       }, 2000);
     } else {
+      audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan baik-baik 💪');
       setMascotMood('sad');
       setTimeout(() => setFeedback(''), 500);
