@@ -30,7 +30,7 @@ const AnimatedBackground = ({ type = 'default' }) => {
       y: Math.random() * height,
       size: Math.random() * 20 + 10,
       speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random - 0.5) * 2,
+      speedY: (Math.random() - 0.5) * 2,
       color: colors[Math.floor(Math.random() * colors.length)],
       shape: ['circle', 'square', 'triangle', 'star'][Math.floor(Math.random() * 4)],
       rotation: Math.random() * 360,

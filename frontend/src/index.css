@@ -80,6 +80,25 @@ code {
     box-shadow: var(--shadow-premium-hover);
 }
 
+/* Chunky Card — kartu dengan border tebal & shadow "blok" ala mainan anak.
+   Sebelumnya class ini hanya ada di App.css yang tidak pernah di-import,
+   jadi efeknya tidak pernah benar-benar tampil di browser. */
+.chunky-card {
+    border-radius: 32px;
+    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.chunky-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.chunky-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.12);
+}
+
 /* Glassmorphism Effect */
 .glass-effect {
     background: rgba(255, 255, 255, 0.85);
@@ -185,6 +204,28 @@ code {
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
+}
+
+/* Float — gerakan naik-turun lembut, dipakai untuk icon/ornamen mengambang.
+   Sebelumnya hanya ada di App.css yang tidak pernah di-import. */
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Wiggle — goyangan kecil untuk feedback playful (mis. saat hover ornamen) */
+.wiggle-animation {
+    animation: wiggle 0.5s ease-in-out;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
 }
 
 /* Gradient Text */

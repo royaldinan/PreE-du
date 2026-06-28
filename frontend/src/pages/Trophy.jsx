@@ -117,14 +117,19 @@ const TrophyPage = () => {
           <div className="space-y-6">
             {/* Computational Thinking */}
             <div className="bg-[#4D96FF]/10 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#4D96FF]">🧠 Berpikir Komputasional</h3>
-                <div className="flex gap-1">
-                  {[...Array(3)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className={`w-6 h-6 ${
-                        i < progress.computational.topics.sorting?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                <div className="flex items-center gap-1">
+                  {[...Array(9)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i <
+                        (progress.computational.topics.sorting?.stars || 0) +
+                          (progress.computational.topics.patterns?.stars || 0) +
+                          (progress.computational.topics.algorithms?.stars || 0)
+                          ? 'fill-[#FFD166] text-[#FFD166]'
+                          : 'text-gray-300'
                       }`}
                     />
                   ))}
@@ -148,14 +153,19 @@ const TrophyPage = () => {
 
             {/* Critical Thinking */}
             <div className="bg-[#6BCB77]/10 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#6BCB77]">🔍 Berpikir Kritis</h3>
-                <div className="flex gap-1">
-                  {[...Array(3)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className={`w-6 h-6 ${
-                        i < progress.critical.topics.oddOneOut?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                <div className="flex items-center gap-1">
+                  {[...Array(9)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i <
+                        (progress.critical.topics.oddOneOut?.stars || 0) +
+                          (progress.critical.topics.factOpinion?.stars || 0) +
+                          (progress.critical.topics.causeEffect?.stars || 0)
+                          ? 'fill-[#FFD166] text-[#FFD166]'
+                          : 'text-gray-300'
                       }`}
                     />
                   ))}
@@ -179,14 +189,19 @@ const TrophyPage = () => {
 
             {/* Design Thinking */}
             <div className="bg-[#9D4CDD]/10 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#9D4CDD]">🎨 Berpikir Desain</h3>
-                <div className="flex gap-1">
-                  {[...Array(3)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className={`w-6 h-6 ${
-                        i < progress.design.topics.empathy?.stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-300'
+                <div className="flex items-center gap-1">
+                  {[...Array(9)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i <
+                        (progress.design.topics.empathy?.stars || 0) +
+                          (progress.design.topics.ideation?.stars || 0) +
+                          (progress.design.topics.prototype?.stars || 0)
+                          ? 'fill-[#FFD166] text-[#FFD166]'
+                          : 'text-gray-300'
                       }`}
                     />
                   ))}
