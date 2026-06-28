@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getProgress, updateTopicProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateWin, celebrateBigWin } from '../utils/confetti';
 import { ArrowLeft, Star, Printer, Play } from 'lucide-react';
 
 // Import all games
@@ -85,6 +87,11 @@ const TopicPage = () => {
     } else {
       setMascotMood('happy');
       audioManager.playSfx('win');
+      if (earnedStars >= 3) {
+        celebrateBigWin();
+      } else {
+        celebrateWin();
+      }
     }
   };
 
@@ -92,6 +99,7 @@ const TopicPage = () => {
     audioManager.playSfx('click');
     updateTopicProgress(trackId, topicId, stars);
     setTopicComplete(true);
+    if (stars >= 3) celebrateBigWin();
   };
 
   const handlePrint = () => {
@@ -131,21 +139,23 @@ const TopicPage = () => {
     <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <button
+        <motion.button
           onClick={handleBackToTrack}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
           className="bouncy-button bg-white text-[#2B2D42] px-6 py-3 rounded-full font-bold mb-8 flex items-center gap-2 shadow-lg"
         >
           <ArrowLeft className="w-5 h-5" />
           Kembali
-        </button>
+        </motion.button>
 
         {/* Topic Header */}
-        <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+        <div className="chunky-card bg-white p-8 mb-8 text-center">
           <div className="flex justify-center mb-4">
             <Mascot mood={mascotMood} size="large" />
           </div>
-          <h1 
-            className="heading-font text-3xl md:text-4xl text-[#2B2D42] mb-2"
+          <h1
+            className="heading-font text-3xl md:text-4xl mb-2"
             style={{ color: trackColors[trackId] }}
           >
             {topicTitles[topicId]}
@@ -155,94 +165,152 @@ const TopicPage = () => {
           </p>
         </div>
 
-        {/* Game Section */}
-        {!gameComplete && !showRealLife && (
-          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8">
-            <div className="text-center mb-6">
-              <h2 className="heading-font text-2xl text-[#2B2D42] mb-2">
-                🎮 Permainan Online
-              </h2>
-              <p className="body-font text-lg text-[#6C757D]">
-                Mainkan game ini dulu, yuk!
-              </p>
-            </div>
-            <GameComponent onComplete={handleGameComplete} />
-          </div>
-        )}
-
-        {/* Real Life Section Button */}
-        {gameComplete && !showRealLife && !topicComplete && (
-          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
-            <div className="flex justify-center mb-6">
-              <Mascot mood="happy" size="large" />
-            </div>
-            <h2 className="heading-font text-2xl text-[#2B2D42] mb-4">
-              🎉 Hebat! Kamu dapat {stars} bintang!
-            </h2>
-            <button
-              onClick={handleStartRealLife}
-              className="bouncy-button bg-[#6BCB77] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg flex items-center gap-3 mx-auto"
+        <AnimatePresence mode="wait">
+          {/* Game Section */}
+          {!gameComplete && !showRealLife && (
+            <motion.div
+              key="game"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="chunky-card bg-white p-8 mb-8"
             >
-              <Play className="w-6 h-6" />
-              Sekarang Kita Main Beneran! 🎊
-            </button>
-          </div>
-        )}
+              <div className="text-center mb-6">
+                <h2 className="heading-font text-2xl text-[#2B2D42] mb-2">
+                  🎮 Permainan Online
+                </h2>
+                <p className="body-font text-lg text-[#6C757D]">
+                  Mainkan game ini dulu, yuk!
+                </p>
+              </div>
+              <GameComponent onComplete={handleGameComplete} />
+            </motion.div>
+          )}
 
-        {/* Real Life Activity */}
-        {showRealLife && !topicComplete && (
-          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 print:shadow-none">
-            <div className="flex items-center justify-between mb-6 no-print">
-              <h2 className="heading-font text-2xl text-[#2B2D42]">
-                📋 Aktivitas Dunia Nyata
+          {/* Real Life Section Button */}
+          {gameComplete && !showRealLife && !topicComplete && (
+            <motion.div
+              key="bridge"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="chunky-card bg-white p-8 mb-8 text-center"
+            >
+              <div className="flex justify-center mb-6">
+                <Mascot mood="happy" size="large" />
+              </div>
+              <h2 className="heading-font text-2xl text-[#2B2D42] mb-4">
+                🎉 Hebat! Kamu dapat {stars} bintang!
               </h2>
-              <button
-                onClick={handlePrint}
-                className="bouncy-button bg-[#4D96FF] text-white px-4 py-2 rounded-full font-bold flex items-center gap-2"
+              <div className="flex justify-center gap-1 mb-6">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, rotate: -45 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.15 + i * 0.12, type: 'spring', stiffness: 220 }}
+                  >
+                    <Star className={`w-10 h-10 ${i < stars ? 'fill-[#FFD166] text-[#FFD166]' : 'text-gray-200'}`} />
+                  </motion.div>
+                ))}
+              </div>
+              <motion.button
+                onClick={handleStartRealLife}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.96 }}
+                className="bouncy-button bg-[#6BCB77] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg flex items-center gap-3 mx-auto"
               >
-                <Printer className="w-5 h-5" />
-                Cetak
-              </button>
-            </div>
-            <RealLifeComponent />
-            <button
-              onClick={handleTopicComplete}
-              className="bouncy-button mt-8 w-full bg-[#FFD166] text-[#2B2D42] py-4 px-8 rounded-full font-bold text-xl shadow-lg"
-            >
-              ✅ Saya Sudah Selesai!
-            </button>
-          </div>
-        )}
+                <Play className="w-6 h-6" />
+                Sekarang Kita Main Beneran! 🎊
+              </motion.button>
+            </motion.div>
+          )}
 
-        {/* Completion Screen */}
-        {topicComplete && (
-          <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
-            <div className="text-6xl mb-4">🎊</div>
-            <h2 className="heading-font text-3xl text-[#2B2D42] mb-4">
-              SELAMAT! TOPIK SELESAI!
-            </h2>
-            <div className="flex justify-center gap-2 mb-6">
-              {[...Array(stars)].map((_, i) => (
-                <Star key={i} className="w-12 h-12 fill-[#FFD166] text-[#FFD166]" />
-              ))}
-            </div>
-            <p className="body-font text-xl text-[#6C757D] mb-8">
-              Kamu sudah menyelesaikan topik ini dengan {stars} bintang!
-            </p>
-            <button
-              onClick={() => {
-                audioManager.playSfx('click');
-                navigate(`/track/${trackId}`);
-              }}
-              className="bouncy-button bg-[#4D96FF] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg"
+          {/* Real Life Activity */}
+          {showRealLife && !topicComplete && (
+            <motion.div
+              key="reallife"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="chunky-card bg-white p-8 mb-8 print:shadow-none"
             >
-              Lanjut ke Topik Berikutnya →
-            </button>
-          </div>
-        )}
+              <div className="flex items-center justify-between mb-6 no-print">
+                <h2 className="heading-font text-2xl text-[#2B2D42]">
+                  📋 Aktivitas Dunia Nyata
+                </h2>
+                <button
+                  onClick={handlePrint}
+                  className="bouncy-button bg-[#4D96FF] text-white px-4 py-2 rounded-full font-bold flex items-center gap-2"
+                >
+                  <Printer className="w-5 h-5" />
+                  Cetak
+                </button>
+              </div>
+              <RealLifeComponent />
+              <motion.button
+                onClick={handleTopicComplete}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className="bouncy-button mt-8 w-full bg-[#FFD166] text-[#2B2D42] py-4 px-8 rounded-full font-bold text-xl shadow-lg"
+              >
+                ✅ Saya Sudah Selesai!
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* Completion Screen */}
+          {topicComplete && (
+            <motion.div
+              key="complete"
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="chunky-card bg-white p-8 mb-8 text-center"
+            >
+              <motion.div
+                className="text-6xl mb-4"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
+                transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+              >
+                🎊
+              </motion.div>
+              <h2 className="heading-font text-3xl text-[#2B2D42] mb-4">
+                SELAMAT! TOPIK SELESAI!
+              </h2>
+              <div className="flex justify-center gap-2 mb-6">
+                {[...Array(stars)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.2 + i * 0.15, type: 'spring', stiffness: 220 }}
+                  >
+                    <Star className="w-12 h-12 fill-[#FFD166] text-[#FFD166]" />
+                  </motion.div>
+                ))}
+              </div>
+              <p className="body-font text-xl text-[#6C757D] mb-8">
+                Kamu sudah menyelesaikan topik ini dengan {stars} bintang!
+              </p>
+              <motion.button
+                onClick={() => {
+                  audioManager.playSfx('click');
+                  navigate(`/track/${trackId}`);
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.96 }}
+                className="bouncy-button bg-[#4D96FF] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg"
+              >
+                Lanjut ke Topik Berikutnya →
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
 };
 
 export default TopicPage;
+
