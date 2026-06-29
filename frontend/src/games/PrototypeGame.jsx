@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateCorrectAnswer } from '../utils/confetti';
 
 const PrototypeGame = ({ onComplete }) => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -61,6 +62,7 @@ const PrototypeGame = ({ onComplete }) => {
     if (correctCount >= 2) {
       setLockChoice(true);
       audioManager.playSfx('correct');
+      celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
       setFeedback('Hebat! Solusi yang kreatif! 🎉');

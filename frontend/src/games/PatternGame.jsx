@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateCorrectAnswer } from '../utils/confetti';
 
 // Shuffle non-mutating (Fisher-Yates di atas salinan array)
 const shuffle = (arr) => {
@@ -78,6 +79,7 @@ const PatternGame = ({ onComplete }) => {
     if (option === correctAnswer) {
       setLockChoice(true);
       audioManager.playSfx('correct');
+      celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
       setFeedback('Benar! 🎉');
