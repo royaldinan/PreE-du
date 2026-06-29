@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { getProgress, resetProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateBigWin } from '../utils/confetti';
 import { Star, RotateCcw, Home } from 'lucide-react';
 
 const TrophyPage = () => {
@@ -10,10 +12,14 @@ const TrophyPage = () => {
   const [progress, setProgress] = useState(null);
 
   useEffect(() => {
-    setProgress(getProgress());
+    const p = getProgress();
+    setProgress(p);
     // Halaman Trofi Ku termasuk bagian "menu", pakai BGM main menu yang sama
     // dengan Beranda — tidak di-restart kalau memang sudah main dari Home.
     audioManager.playBgm('mainMenu');
+    if (p && p.totalStars === 27) {
+      celebrateBigWin();
+    }
   }, []);
 
   if (!progress) return null;
@@ -34,7 +40,9 @@ const TrophyPage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => {
               audioManager.playSfx('click');
               navigate('/');
@@ -43,8 +51,10 @@ const TrophyPage = () => {
           >
             <Home className="w-5 h-5" />
             Kembali
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => {
               audioManager.playSfx('click');
               handleReset();
@@ -53,23 +63,32 @@ const TrophyPage = () => {
           >
             <RotateCcw className="w-5 h-5" />
             Reset Progress
-          </button>
+          </motion.button>
         </div>
 
         {/* Trophy Display */}
-        <div className="bg-white rounded-[32px] p-8 shadow-xl mb-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="chunky-card bg-white p-8 mb-8 text-center"
+        >
           <div className="flex justify-center mb-6">
             <Mascot mood={progress.totalStars >= 15 ? 'happy' : 'idle'} size="large" />
           </div>
-          
+
           <h1 className="heading-font text-4xl md:text-5xl text-[#2B2D42] mb-4">
             🏆 Trofi Ku 🏆
           </h1>
-          
+
           <div className="bg-[#FFD166]/20 rounded-2xl p-8 mb-8">
-            <div className="text-8xl mb-4">
+            <motion.div
+              className="text-8xl mb-4"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}
+            >
               {percentage === 100 ? '🏆' : percentage >= 50 ? '🥈' : '🥉'}
-            </div>
+            </motion.div>
             <p className="body-font text-2xl text-[#2B2D42] mb-2">
               Total Bintang: <span className="heading-font text-4xl text-[#FFD166]">{progress.totalStars}</span> / 27 ⭐
             </p>
@@ -106,17 +125,27 @@ const TrophyPage = () => {
               </p>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Track Breakdown */}
-        <div className="bg-white rounded-[32px] p-8 shadow-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="chunky-card bg-white p-8"
+        >
           <h2 className="heading-font text-2xl text-[#2B2D42] mb-6 text-center">
             Detail Progress per Track
           </h2>
-          
+
           <div className="space-y-6">
             {/* Computational Thinking */}
-            <div className="bg-[#4D96FF]/10 rounded-2xl p-6">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-[#4D96FF]/10 rounded-2xl p-6"
+            >
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#4D96FF]">🧠 Berpikir Komputasional</h3>
                 <div className="flex items-center gap-1">
@@ -149,10 +178,15 @@ const TrophyPage = () => {
                   <span>{progress.computational.topics.algorithms?.stars || 0} ⭐</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Critical Thinking */}
-            <div className="bg-[#6BCB77]/10 rounded-2xl p-6">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.28 }}
+              className="bg-[#6BCB77]/10 rounded-2xl p-6"
+            >
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#6BCB77]">🔍 Berpikir Kritis</h3>
                 <div className="flex items-center gap-1">
@@ -185,10 +219,15 @@ const TrophyPage = () => {
                   <span>{progress.critical.topics.causeEffect?.stars || 0} ⭐</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Design Thinking */}
-            <div className="bg-[#9D4CDD]/10 rounded-2xl p-6">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.36 }}
+              className="bg-[#9D4CDD]/10 rounded-2xl p-6"
+            >
               <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="heading-font text-xl text-[#9D4CDD]">🎨 Berpikir Desain</h3>
                 <div className="flex items-center gap-1">
@@ -221,12 +260,13 @@ const TrophyPage = () => {
                   <span>{progress.design.topics.prototype?.stars || 0} ⭐</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
 };
 
 export default TrophyPage;
+

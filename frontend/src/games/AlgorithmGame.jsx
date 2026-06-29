@@ -18,27 +18,71 @@ const AlgorithmGame = ({ onComplete }) => {
 
   const gridSize = 5;
 
+  // BFS sederhana untuk memastikan target masih bisa dicapai dari (0,0)
+  // tanpa menabrak obstacle apa pun (hanya gerak atas/bawah/kiri/kanan).
+  const isReachable = (target, obs) => {
+    const obsSet = new Set(obs.map((o) => `${o.x},${o.y}`));
+    const visited = new Set(['0,0']);
+    const queue = [{ x: 0, y: 0 }];
+
+    while (queue.length > 0) {
+      const cur = queue.shift();
+      if (cur.x === target.x && cur.y === target.y) return true;
+
+      const neighbors = [
+        { x: cur.x, y: cur.y - 1 },
+        { x: cur.x, y: cur.y + 1 },
+        { x: cur.x - 1, y: cur.y },
+        { x: cur.x + 1, y: cur.y },
+      ];
+      for (const n of neighbors) {
+        if (n.x < 0 || n.x >= gridSize || n.y < 0 || n.y >= gridSize) continue;
+        const key = `${n.x},${n.y}`;
+        if (visited.has(key) || obsSet.has(key)) continue;
+        visited.add(key);
+        queue.push(n);
+      }
+    }
+    return false;
+  };
+
   const generateLevel = (level) => {
-    const target = { 
-      x: Math.min(level + 1, gridSize - 1), 
-      y: Math.min(level + 1, gridSize - 1) 
+    const target = {
+      x: Math.min(level + 1, gridSize - 1),
+      y: Math.min(level + 1, gridSize - 1)
     };
-    const obs = [];
-    if (level > 1) {
-      const numObstacles = Math.min(level - 1, 4);
+    const numObstacles = level > 1 ? Math.min(level - 1, 4) : 0;
+
+    // Sebelumnya, obstacle ditempatkan murni acak tanpa pernah memeriksa
+    // apakah target masih bisa dicapai. Sekitar 2% kemunculan level
+    // (terutama level dengan target di pojok grid, mis. (4,4)) berakhir
+    // dengan obstacle yang mengepung target dari segala sisi sehingga
+    // TIDAK ADA jalur valid sama sekali -- pemain tidak mungkin menang
+    // apa pun instruksi yang dicoba. Sekarang setiap kandidat susunan
+    // obstacle diverifikasi dengan BFS sebelum dipakai; jika tidak
+    // reachable, susunan diulang dari awal (maksimal 50 percobaan,
+    // lalu fallback ke grid tanpa obstacle sama sekali supaya level
+    // tetap selalu bisa dimenangkan).
+    for (let attempt = 0; attempt < 50; attempt++) {
+      const obs = [];
       while (obs.length < numObstacles) {
-        const pos = { 
-          x: Math.floor(Math.random() * gridSize), 
-          y: Math.floor(Math.random() * gridSize) 
+        const pos = {
+          x: Math.floor(Math.random() * gridSize),
+          y: Math.floor(Math.random() * gridSize)
         };
         if ((pos.x !== 0 || pos.y !== 0) && (pos.x !== target.x || pos.y !== target.y)) {
-          if (!obs.some(o => o.x === pos.x && o.y === pos.y)) {
+          if (!obs.some((o) => o.x === pos.x && o.y === pos.y)) {
             obs.push(pos);
           }
         }
       }
+      if (isReachable(target, obs)) {
+        return { target, obstacles: obs };
+      }
     }
-    return { target, obstacles: obs };
+    // Fallback (sangat jarang tercapai): tanpa obstacle, target dari (0,0)
+    // pada grid kosong selalu reachable.
+    return { target, obstacles: [] };
   };
 
   useEffect(() => {
