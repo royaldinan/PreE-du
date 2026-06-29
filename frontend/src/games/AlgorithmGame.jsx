@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateCorrectAnswer } from '../utils/confetti';
 
 const AlgorithmGame = ({ onComplete }) => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -90,6 +92,7 @@ const AlgorithmGame = ({ onComplete }) => {
 
     if (pos.x === targetPos.x && pos.y === targetPos.y) {
       audioManager.playSfx('correct');
+      celebrateCorrectAnswer();
       setFeedback('Hore! Sampai tujuan! 🎉');
       setMascotMood('happy');
       const newScore = score + 1;
@@ -138,12 +141,14 @@ const AlgorithmGame = ({ onComplete }) => {
         <p className="body-font text-lg text-[#6C757D] mb-6">
           Skor kamu: {score} dari 5
         </p>
-        <button
+        <motion.button
           onClick={resetGame}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           className="bouncy-button bg-[#4D96FF] text-white px-6 py-3 rounded-full font-bold"
         >
           Main Lagi
-        </button>
+        </motion.button>
       </div>
     );
   }
@@ -153,17 +158,25 @@ const AlgorithmGame = ({ onComplete }) => {
       <div className="mb-4">
         <Mascot mood={mascotMood} size="medium" />
       </div>
-      
+
       <div className="flex justify-between items-center mb-4">
         <span className="body-font text-lg text-[#6C757D]">Level {currentLevel}/5</span>
         <span className="body-font text-lg text-[#6C757D]">Skor: {score}</span>
       </div>
 
-      {feedback && (
-        <div className={`text-xl font-bold mb-4 ${feedback.includes('Hore') ? 'text-green-600' : 'text-orange-500'}`}>
-          {feedback}
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {feedback && (
+          <motion.div
+            key={feedback}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`text-xl font-bold mb-4 ${feedback.includes('Hore') ? 'text-green-600' : 'text-orange-500'}`}
+          >
+            {feedback}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <p className="body-font text-lg text-[#6C757D] mb-4">
         Buat instruksi untuk mencapai target! ⭐
@@ -177,52 +190,63 @@ const AlgorithmGame = ({ onComplete }) => {
             const isPlayer = playerPos.x === x && playerPos.y === y;
             const isTarget = targetPos.x === x && targetPos.y === y;
             const isObstacle = obstacles.some(o => o.x === x && o.y === y);
-            
+
             return (
-              <div
+              <motion.div
                 key={i}
+                animate={isPlayer ? { scale: [1, 1.15, 1] } : {}}
+                transition={{ duration: 0.3 }}
                 className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-xl ${
                   isPlayer ? 'bg-[#4D96FF]' : isTarget ? 'bg-[#FFD166]' : isObstacle ? 'bg-red-400' : 'bg-white'
                 }`}
               >
                 {isPlayer ? '🤖' : isTarget ? '⭐' : isObstacle ? '🚫' : ''}
-              </div>
+              </motion.div>
             );
           })}
         </div>
       </div>
 
       <div className="flex justify-center gap-2 mb-4">
-        <button onClick={() => addInstruction('up')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬆️</button>
+        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('up')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬆️</motion.button>
       </div>
       <div className="flex justify-center gap-2 mb-4">
-        <button onClick={() => addInstruction('left')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬅️</button>
-        <button onClick={() => addInstruction('down')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬇️</button>
-        <button onClick={() => addInstruction('right')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">➡️</button>
+        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('left')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬅️</motion.button>
+        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('down')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬇️</motion.button>
+        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('right')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">➡️</motion.button>
       </div>
 
       <div className="bg-white rounded-xl p-4 mb-4 min-h-[50px]">
         <p className="body-font text-sm text-[#6C757D] mb-2">Instruksimu:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {instructions.map((dir, i) => (
-            <span key={i} className="bg-[#6BCB77] text-white px-3 py-1 rounded-lg">
-              {dir === 'up' ? '⬆️' : dir === 'down' ? '⬇️' : dir === 'left' ? '⬅️' : '➡️'}
-            </span>
-          ))}
+          <AnimatePresence>
+            {instructions.map((dir, i) => (
+              <motion.span
+                key={`${i}-${dir}`}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                className="bg-[#6BCB77] text-white px-3 py-1 rounded-lg"
+              >
+                {dir === 'up' ? '⬆️' : dir === 'down' ? '⬇️' : dir === 'left' ? '⬅️' : '➡️'}
+              </motion.span>
+            ))}
+          </AnimatePresence>
           {instructions.length === 0 && <span className="text-gray-400">Klik tombol panah untuk menambah instruksi</span>}
         </div>
       </div>
 
       <div className="flex justify-center gap-4">
-        <button onClick={clearInstructions} disabled={isRunning} className="bouncy-button bg-gray-400 text-white px-6 py-3 rounded-full font-bold disabled:opacity-50">
+        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }} onClick={clearInstructions} disabled={isRunning} className="bouncy-button bg-gray-400 text-white px-6 py-3 rounded-full font-bold disabled:opacity-50">
           Hapus
-        </button>
-        <button onClick={runInstructions} disabled={isRunning || instructions.length === 0} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-6 py-3 rounded-full font-bold disabled:opacity-50">
+        </motion.button>
+        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }} onClick={runInstructions} disabled={isRunning || instructions.length === 0} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-6 py-3 rounded-full font-bold disabled:opacity-50">
           Jalankan! 🚀
-        </button>
+        </motion.button>
       </div>
     </div>
   );
 };
 
 export default AlgorithmGame;
+

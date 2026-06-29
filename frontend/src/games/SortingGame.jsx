@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Star } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
+import { celebrateCorrectAnswer } from '../utils/confetti';
 
 const SortingGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -48,6 +49,7 @@ const SortingGame = ({ onComplete }) => {
       setMascotMood('happy');
 
       if (newSorted.length === numbers.length) {
+        celebrateCorrectAnswer();
         // Ronde selesai. Hanya tambah skor kalau ronde ini sempurna
         // (tidak pernah klik salah sepanjang ronde).
         const newScore = missedThisRound ? score : score + 1;
@@ -94,12 +96,14 @@ const SortingGame = ({ onComplete }) => {
         <p className="body-font text-lg text-[#6C757D] mb-6">
           Skor kamu: {score} dari 5
         </p>
-        <button
+        <motion.button
           onClick={resetGame}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           className="bouncy-button bg-[#4D96FF] text-white px-6 py-3 rounded-full font-bold"
         >
           Main Lagi
-        </button>
+        </motion.button>
       </div>
     );
   }
@@ -109,7 +113,7 @@ const SortingGame = ({ onComplete }) => {
       <div className="mb-6">
         <Mascot mood={mascotMood} size="medium" />
       </div>
-      
+
       <div className="flex justify-between items-center mb-6">
         <span className="body-font text-lg text-[#6C757D]">
           Ronde {currentRound}/5
@@ -119,44 +123,61 @@ const SortingGame = ({ onComplete }) => {
         </span>
       </div>
 
-      {feedback && (
-        <div className={`text-xl font-bold mb-4 ${feedback.includes('Benar') ? 'text-green-600' : 'text-orange-500'}`}>
-          {feedback}
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {feedback && (
+          <motion.div
+            key={feedback}
+            initial={{ opacity: 0, y: -10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.9 }}
+            className={`text-xl font-bold mb-4 ${feedback.includes('Benar') ? 'text-green-600' : 'text-orange-500'}`}
+          >
+            {feedback}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <p className="body-font text-lg text-[#6C757D] mb-6">
         Klik angka dari yang TERKECIL hingga TERBESAR!
       </p>
 
       <div className="flex flex-wrap justify-center gap-4 mb-8">
-        {numbers.map((num) => (
-          <button
+        {numbers.map((num, index) => (
+          <motion.button
             key={num}
             onClick={() => handleNumberClick(num)}
             disabled={sortedNumbers.includes(num)}
-            className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl font-bold text-2xl transition-all transform hover:scale-105 ${
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={!sortedNumbers.includes(num) ? { scale: 1.08 } : {}}
+            whileTap={!sortedNumbers.includes(num) ? { scale: 0.94 } : {}}
+            className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl font-bold text-2xl transition-colors ${
               sortedNumbers.includes(num)
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-[#4D96FF] text-white shadow-lg hover:bg-[#3A7BD5]'
             }`}
           >
             {num}
-          </button>
+          </motion.button>
         ))}
       </div>
 
       <div className="bg-[#FEFAF6] rounded-2xl p-4 min-h-[80px]">
         <p className="body-font text-sm text-[#6C757D] mb-2">Urutanmu:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {sortedNumbers.map((num) => (
-            <div
-              key={num}
-              className="w-12 h-12 md:w-16 md:h-16 bg-[#6BCB77] text-white rounded-xl flex items-center justify-center font-bold text-xl"
-            >
-              {num}
-            </div>
-          ))}
+          <AnimatePresence>
+            {sortedNumbers.map((num) => (
+              <motion.div
+                key={num}
+                initial={{ opacity: 0, scale: 0.5, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className="w-12 h-12 md:w-16 md:h-16 bg-[#6BCB77] text-white rounded-xl flex items-center justify-center font-bold text-xl"
+              >
+                {num}
+              </motion.div>
+            ))}
+          </AnimatePresence>
           {sortedNumbers.length === 0 && (
             <span className="text-gray-400">Klik angka untuk mulai mengurutkan</span>
           )}
@@ -167,3 +188,4 @@ const SortingGame = ({ onComplete }) => {
 };
 
 export default SortingGame;
+
