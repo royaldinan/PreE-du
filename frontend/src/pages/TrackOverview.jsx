@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { getProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
 import { audioManager } from '../utils/audioManager';
@@ -107,15 +108,20 @@ const TrackOverview = () => {
             const isCompleted = topicProgress?.completed;
 
             return (
-              <div
+              <motion.div
                 key={topic.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+                whileHover={{ scale: 1.015, x: 4 }}
+                whileTap={{ scale: 0.99 }}
                 onClick={() => {
                   audioManager.playSfx('click');
                   navigate(`/topic/${trackId}/${topic.id}`);
                 }}
                 className="chunky-card cursor-pointer bg-white p-6 flex items-center gap-6"
               >
-                <div className="text-5xl">{topic.icon}</div>
+                <div className="text-5xl float-animation">{topic.icon}</div>
                 <div className="flex-1">
                   <h3 className="heading-font text-2xl text-[#2B2D42] mb-2">
                     {index + 1}. {topic.title}
@@ -134,7 +140,7 @@ const TrackOverview = () => {
                 {!isCompleted && (
                   <div className="text-3xl">▶️</div>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import ProgressBar from './ProgressBar';
 import { audioManager } from '../utils/audioManager';
 
@@ -12,9 +13,11 @@ const TrackCard = ({ track, title, description, icon, color, completed, total })
   };
 
   return (
-    <div
+    <motion.div
       data-testid={`track-card-${track}`}
       onClick={goToTrack}
+      whileHover={{ scale: 1.02, y: -6 }}
+      whileTap={{ scale: 0.99 }}
       className="chunky-card cursor-pointer p-8 h-full"
       style={{ backgroundColor: color }}
     >
@@ -40,8 +43,10 @@ const TrackCard = ({ track, title, description, icon, color, completed, total })
         </div>
 
         {/* Call to Action */}
-        <button
+        <motion.button
           data-testid={`start-track-${track}`}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
           className="bouncy-button mt-6 w-full bg-white text-[#2B2D42] py-4 px-8 rounded-full font-bold text-xl shadow-lg hover:shadow-xl"
           onClick={(e) => {
             e.stopPropagation();
@@ -49,10 +54,11 @@ const TrackCard = ({ track, title, description, icon, color, completed, total })
           }}
         >
           {completed === 0 ? 'Mulai Belajar! 🚀' : completed === total ? 'Ulangi Lagi! ✨' : 'Lanjutkan Belajar! 💪'}
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 export default TrackCard;
+

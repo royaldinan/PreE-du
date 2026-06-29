@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import TrackCard from '../components/TrackCard';
 import Mascot from '../components/Mascot';
 import { getProgress } from '../utils/localStorage';
@@ -51,10 +52,19 @@ const Home = () => {
     <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8" data-testid="home-page">
       {/* Header with Mascot */}
       <div className="max-w-7xl mx-auto mb-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8"
+        >
           <div className="flex-1 text-center md:text-left">
             <h1 className="heading-font text-4xl sm:text-5xl lg:text-6xl text-[#2B2D42] mb-4">
-              PreE-du 🌟
+              PreE-du <motion.span
+                className="inline-block"
+                animate={{ rotate: [0, 15, -15, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5 }}
+              >🌟</motion.span>
             </h1>
             <p className="body-font text-xl md:text-2xl text-[#6C757D] leading-relaxed">
               Belajar sambil bermain — khusus untuk kamu!
@@ -62,8 +72,10 @@ const Home = () => {
           </div>
           <div className="flex flex-col items-center gap-4">
             <Mascot mood="idle" size="large" />
-            <button
+            <motion.button
               data-testid="trophy-button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 audioManager.playSfx('click');
                 navigate('/trophy');
@@ -72,30 +84,43 @@ const Home = () => {
             >
               <Trophy className="w-6 h-6" />
               Trofi Ku ({progress.totalStars} ⭐)
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Track Cards Grid */}
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {tracks.map((track) => (
-            <TrackCard key={track.track} {...track} />
+          {tracks.map((track, index) => (
+            <motion.div
+              key={track.track}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + index * 0.12, duration: 0.5 }}
+            >
+              <TrackCard {...track} />
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Fun Footer Message */}
-      <div className="max-w-7xl mx-auto mt-12 text-center">
-        <div className="bg-white rounded-[32px] p-8 shadow-xl border-4 border-[#FFD166]/30">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="max-w-7xl mx-auto mt-12 text-center"
+      >
+        <div className="chunky-card bg-white p-8 border-4 border-[#FFD166]/30">
           <p className="body-font text-xl text-[#2B2D42] leading-relaxed">
             💡 <strong>Setiap topik</strong> punya permainan online DAN aktivitas seru di dunia nyata! Mainkan semuanya dan kumpulkan bintang! ⭐
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
 export default Home;
+
