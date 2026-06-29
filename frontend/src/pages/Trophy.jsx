@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getProgress, resetProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import { RainbowArc, StarSparkle } from '../components/Decorations';
 import { audioManager } from '../utils/audioManager';
 import { celebrateBigWin } from '../utils/confetti';
 import { Star, RotateCcw, Home } from 'lucide-react';
@@ -70,8 +71,15 @@ const TrophyPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="chunky-card bg-white p-8 mb-8 text-center"
+          className="chunky-card bg-white p-8 mb-8 text-center relative overflow-hidden"
         >
+          {progress.totalStars >= 18 && (
+            <>
+              <RainbowArc className="hidden sm:block absolute top-0 left-1/2 -translate-x-1/2 w-48 opacity-40 pointer-events-none" />
+              <StarSparkle className="hidden sm:block absolute top-6 left-6 w-7 pointer-events-none" delay={0.2} />
+              <StarSparkle className="hidden sm:block absolute top-6 right-6 w-7 pointer-events-none" color="#6BCB77" delay={0.6} />
+            </>
+          )}
           <div className="flex justify-center mb-6">
             <Mascot mood={progress.totalStars >= 15 ? 'happy' : 'idle'} size="large" />
           </div>

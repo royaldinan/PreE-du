@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProgress, updateTopicProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import { BalloonDecoration, StarSparkle } from '../components/Decorations';
 import { audioManager } from '../utils/audioManager';
 import { celebrateWin, celebrateBigWin } from '../utils/confetti';
 import { ArrowLeft, Star, Printer, Play } from 'lucide-react';
@@ -265,8 +266,12 @@ const TopicPage = () => {
               key="complete"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="chunky-card bg-white p-8 mb-8 text-center"
+              className="chunky-card bg-white p-8 mb-8 text-center relative overflow-hidden"
             >
+              <BalloonDecoration className="hidden sm:block absolute top-2 left-2 w-10 pointer-events-none" color="#FF6B6B" delay={0} />
+              <BalloonDecoration className="hidden sm:block absolute top-2 right-4 w-9 pointer-events-none" color="#4D96FF" delay={0.25} />
+              <StarSparkle className="hidden sm:block absolute bottom-4 left-8 w-8 pointer-events-none" delay={0.5} />
+              <StarSparkle className="hidden sm:block absolute bottom-6 right-10 w-7 pointer-events-none" color="#9D4CDD" delay={0.8} />
               <motion.div
                 className="text-6xl mb-4"
                 initial={{ scale: 0 }}

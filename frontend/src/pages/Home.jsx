@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TrackCard from '../components/TrackCard';
 import Mascot from '../components/Mascot';
+import { CloudDecoration, StarSparkle, BalloonDecoration } from '../components/Decorations';
 import { getProgress } from '../utils/localStorage';
 import { audioManager } from '../utils/audioManager';
 import { Trophy } from 'lucide-react';
@@ -49,14 +50,23 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8" data-testid="home-page">
+    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8 overflow-hidden" data-testid="home-page">
       {/* Header with Mascot */}
-      <div className="max-w-7xl mx-auto mb-12">
+      <div className="max-w-7xl mx-auto mb-12 relative">
+        {/* Ornamen dekoratif — awan, bintang, balon mengambang di sekitar
+            header. Posisi absolute, disembunyikan di layar kecil supaya
+            tidak menutupi konten pada mobile. */}
+        <CloudDecoration className="hidden lg:block absolute -top-6 left-0 w-28 pointer-events-none" delay={0} />
+        <CloudDecoration className="hidden lg:block absolute top-2 right-10 w-20 pointer-events-none" delay={0.4} />
+        <StarSparkle className="hidden md:block absolute top-0 left-[28%] w-8 pointer-events-none" delay={0.2} />
+        <StarSparkle className="hidden md:block absolute bottom-0 right-[22%] w-6 pointer-events-none" color="#6BCB77" delay={0.9} />
+        <BalloonDecoration className="hidden lg:block absolute -top-4 right-0 w-10 pointer-events-none" color="#9D4CDD" delay={0.3} />
+
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8"
+          className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8 relative"
         >
           <div className="flex-1 text-center md:text-left">
             <h1 className="heading-font text-4xl sm:text-5xl lg:text-6xl text-[#2B2D42] mb-4">
