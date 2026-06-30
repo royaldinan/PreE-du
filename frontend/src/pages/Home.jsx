@@ -50,7 +50,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8 overflow-hidden" data-testid="home-page">
+    <div className="min-h-screen py-8 px-4 md:px-8 overflow-hidden" data-testid="home-page">
       {/* Header with Mascot */}
       <div className="max-w-7xl mx-auto mb-12 relative">
         {/* Ornamen dekoratif — awan, bintang, balon mengambang di sekitar
@@ -122,7 +122,7 @@ const Home = () => {
         transition={{ delay: 0.6 }}
         className="max-w-7xl mx-auto mt-12 text-center"
       >
-        <div className="chunky-card bg-white p-8 border-4 border-[#FFD166]/30">
+        <div className="chunky-card glass-card p-8 border-4 border-[#FFD166]/30">
           <p className="body-font text-xl text-[#2B2D42] leading-relaxed">
             💡 <strong>Setiap topik</strong> punya permainan online DAN aktivitas seru di dunia nyata! Mainkan semuanya dan kumpulkan bintang! ⭐
           </p>

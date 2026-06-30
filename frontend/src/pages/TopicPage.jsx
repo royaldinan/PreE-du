@@ -137,7 +137,7 @@ const TopicPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8">
+    <div className="min-h-screen py-8 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.button
@@ -151,7 +151,7 @@ const TopicPage = () => {
         </motion.button>
 
         {/* Topic Header */}
-        <div className="chunky-card bg-white p-8 mb-8 text-center">
+        <div className="chunky-card glass-card p-8 mb-8 text-center">
           <div className="flex justify-center mb-4">
             <Mascot mood={mascotMood} size="large" />
           </div>
@@ -174,7 +174,7 @@ const TopicPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="chunky-card bg-white p-8 mb-8"
+              className="chunky-card glass-card p-8 mb-8"
             >
               <div className="text-center mb-6">
                 <h2 className="heading-font text-2xl text-[#2B2D42] mb-2">
@@ -195,7 +195,7 @@ const TopicPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="chunky-card bg-white p-8 mb-8 text-center"
+              className="chunky-card glass-card p-8 mb-8 text-center"
             >
               <div className="flex justify-center mb-6">
                 <Mascot mood="happy" size="large" />
@@ -234,7 +234,7 @@ const TopicPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="chunky-card bg-white p-8 mb-8 print:shadow-none"
+              className="chunky-card glass-card p-8 mb-8 print:shadow-none"
             >
               <div className="flex items-center justify-between mb-6 no-print">
                 <h2 className="heading-font text-2xl text-[#2B2D42]">
@@ -266,7 +266,7 @@ const TopicPage = () => {
               key="complete"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="chunky-card bg-white p-8 mb-8 text-center relative overflow-hidden"
+              className="chunky-card glass-card p-8 mb-8 text-center relative overflow-hidden"
             >
               <BalloonDecoration className="hidden sm:block absolute top-2 left-2 w-10 pointer-events-none" color="#FF6B6B" delay={0} />
               <BalloonDecoration className="hidden sm:block absolute top-2 right-4 w-9 pointer-events-none" color="#4D96FF" delay={0.25} />

@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
+// Lapisan partikel ambient yang melayang DI ATAS SceneBackground (langit +
+// bukit). Sebelumnya komponen ini sendirian menjadi satu-satunya background
+// (warna solid + shape kecil dengan garis koneksi ala diagram jaringan) --
+// kesannya lebih "teknis" daripada "ramah anak". Sekarang fokusnya cuma
+// ornamen lembut (awan kecil, balon, bintang berkedip) tanpa garis koneksi,
+// karena rasa "tempat" sudah dibawa oleh SceneBackground di belakangnya.
 const AnimatedBackground = ({ type = 'default' }) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
@@ -14,7 +20,6 @@ const AnimatedBackground = ({ type = 'default' }) => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
-    // Warna berdasarkan tipe
     const colorSchemes = {
       default: ['#4D96FF', '#6BCB77', '#FFD166', '#FF6B6B', '#C77DFF'],
       computational: ['#4D96FF', '#6BCB77', '#FFD166'],
@@ -24,63 +29,43 @@ const AnimatedBackground = ({ type = 'default' }) => {
 
     const colors = colorSchemes[type] || colorSchemes.default;
 
-    // Setiap partikel adalah salah satu "ornamen": shape geometris dasar,
-    // ATAU ornamen bertema anak-anak (awan / balon / bintang berkedip).
-    const ORNAMENT_KINDS = ['circle', 'square', 'triangle', 'star', 'cloud', 'balloon', 'twinkle'];
+    // Hanya ornamen bertema anak-anak yang melayang lembut -- shape
+    // geometris polos (circle/square/triangle/star) dan garis koneksi
+    // sebelumnya dihapus karena terasa seperti diagram jaringan, bukan
+    // dekorasi anak-anak.
+    const ORNAMENT_KINDS = ['cloud', 'balloon', 'twinkle', 'star'];
 
     const createParticle = () => {
       const kind = ORNAMENT_KINDS[Math.floor(Math.random() * ORNAMENT_KINDS.length)];
-      const isOrnament = kind === 'cloud' || kind === 'balloon' || kind === 'twinkle';
+      const isCloud = kind === 'cloud';
       return {
         x: Math.random() * width,
         y: Math.random() * height,
-        size: isOrnament ? Math.random() * 14 + 14 : Math.random() * 16 + 8,
-        speedX: (Math.random() - 0.5) * (kind === 'cloud' ? 0.4 : 1.6),
-        speedY: kind === 'balloon' ? -(Math.random() * 0.3 + 0.1) : (Math.random() - 0.5) * 1.6,
+        size: isCloud ? Math.random() * 22 + 26 : Math.random() * 14 + 12,
+        speedX: (Math.random() - 0.5) * (isCloud ? 0.3 : 0.8),
+        speedY: kind === 'balloon' ? -(Math.random() * 0.25 + 0.08) : (Math.random() - 0.5) * 0.6,
         color: colors[Math.floor(Math.random() * colors.length)],
         shape: kind,
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * (isOrnament ? 0.3 : 2),
-        opacity: Math.random() * 0.35 + 0.25,
+        rotationSpeed: (Math.random() - 0.5) * 0.6,
+        opacity: Math.random() * 0.3 + 0.4,
         twinklePhase: Math.random() * Math.PI * 2,
       };
     };
 
-    // Inisialisasi partikel
-    particlesRef.current = Array.from({ length: 26 }, createParticle);
+    // Lebih sedikit partikel dibanding sebelumnya (26 -> 14) karena setiap
+    // partikel sekarang lebih besar dan lebih opaque, jadi tidak perlu
+    // banyak untuk terasa "ramai" -- terlalu banyak elemen besar akan
+    // menutupi konten utama.
+    particlesRef.current = Array.from({ length: 14 }, createParticle);
 
     const drawShape = (ctx, p, t) => {
       ctx.save();
       ctx.translate(p.x, p.y);
-      ctx.rotate((p.rotation * Math.PI) / 180);
 
       switch (p.shape) {
-        case 'circle': {
-          ctx.globalAlpha = p.opacity;
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          break;
-        }
-        case 'square': {
-          ctx.globalAlpha = p.opacity;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2);
-          break;
-        }
-        case 'triangle': {
-          ctx.globalAlpha = p.opacity;
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.moveTo(0, -p.size);
-          ctx.lineTo(p.size, p.size);
-          ctx.lineTo(-p.size, p.size);
-          ctx.closePath();
-          ctx.fill();
-          break;
-        }
         case 'star': {
+          ctx.rotate((p.rotation * Math.PI) / 180);
           ctx.globalAlpha = p.opacity;
           ctx.fillStyle = p.color;
           ctx.beginPath();
@@ -96,9 +81,7 @@ const AnimatedBackground = ({ type = 'default' }) => {
           break;
         }
         case 'cloud': {
-          // Awan lembut: 3 lingkaran overlap, tanpa rotasi (lebih natural)
-          ctx.rotate((-p.rotation * Math.PI) / 180); // batalkan rotasi untuk awan
-          ctx.globalAlpha = p.opacity * 0.8;
+          ctx.globalAlpha = p.opacity * 0.85;
           ctx.fillStyle = '#FFFFFF';
           const s = p.size;
           ctx.beginPath();
@@ -110,7 +93,6 @@ const AnimatedBackground = ({ type = 'default' }) => {
           break;
         }
         case 'balloon': {
-          ctx.rotate((-p.rotation * Math.PI) / 180);
           ctx.globalAlpha = p.opacity + 0.15;
           ctx.fillStyle = p.color;
           ctx.beginPath();
@@ -121,17 +103,16 @@ const AnimatedBackground = ({ type = 'default' }) => {
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.moveTo(0, p.size * 0.7);
-          ctx.lineTo(0, p.size * 0.7 + 14);
+          ctx.lineTo(0, p.size * 0.7 + 16);
           ctx.stroke();
           break;
         }
         case 'twinkle': {
-          // Bintang kecil berkedip (opacity berosilasi terlepas dari shape star besar)
           const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.0025 + p.twinklePhase));
           ctx.globalAlpha = tw;
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          const s = p.size * 0.5;
+          const s = p.size * 0.55;
           ctx.moveTo(0, -s);
           ctx.lineTo(s * 0.25, -s * 0.25);
           ctx.lineTo(s, 0);
@@ -164,51 +145,23 @@ const AnimatedBackground = ({ type = 'default' }) => {
         particle.y += particle.speedY;
         particle.rotation += particle.rotationSpeed;
 
-        // Interaksi mouse (ornamen lembut seperti awan tidak ikut tertarik,
-        // supaya tidak terasa "kaget")
         if (particle.shape !== 'cloud') {
           const dx = mouseRef.current.x - particle.x;
           const dy = mouseRef.current.y - particle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < 100) {
-            particle.x -= dx * 0.02;
-            particle.y -= dy * 0.02;
+            particle.x -= dx * 0.015;
+            particle.y -= dy * 0.015;
           }
         }
 
-        // Wrap around screen
-        if (particle.x < -60) particle.x = width + 60;
-        if (particle.x > width + 60) particle.x = -60;
-        if (particle.y < -60) particle.y = height + 60;
-        if (particle.y > height + 60) particle.y = -60;
+        if (particle.x < -80) particle.x = width + 80;
+        if (particle.x > width + 80) particle.x = -80;
+        if (particle.y < -80) particle.y = height + 80;
+        if (particle.y > height + 80) particle.y = -80;
 
         drawShape(ctx, particle, t || 0);
       });
-
-      // Garis koneksi antar partikel "geometris" (bukan ornamen lembut)
-      // supaya tidak terlalu ramai/berisik secara visual.
-      const linkable = particlesRef.current.filter(
-        (p) => p.shape === 'circle' || p.shape === 'square' || p.shape === 'triangle' || p.shape === 'star'
-      );
-      ctx.strokeStyle = 'rgba(77, 150, 255, 0.08)';
-      ctx.lineWidth = 1;
-      for (let i = 0; i < linkable.length; i++) {
-        for (let j = i + 1; j < linkable.length; j++) {
-          const p1 = linkable[i];
-          const p2 = linkable[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 150) {
-            ctx.globalAlpha = 1 - distance / 150;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
-        }
-      }
 
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -240,11 +193,11 @@ const AnimatedBackground = ({ type = 'default' }) => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
       aria-hidden="true"
     />
   );
 };
 
 export default AnimatedBackground;
+
 

@@ -37,7 +37,7 @@ const TrophyPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8">
+    <div className="min-h-screen py-8 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -71,7 +71,7 @@ const TrophyPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="chunky-card bg-white p-8 mb-8 text-center relative overflow-hidden"
+          className="chunky-card glass-card p-8 mb-8 text-center relative overflow-hidden"
         >
           {progress.totalStars >= 18 && (
             <>
@@ -140,7 +140,7 @@ const TrophyPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="chunky-card bg-white p-8"
+          className="chunky-card glass-card p-8"
         >
           <h2 className="heading-font text-2xl text-[#2B2D42] mb-6 text-center">
             Detail Progress per Track

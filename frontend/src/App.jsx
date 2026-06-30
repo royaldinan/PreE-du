@@ -6,6 +6,7 @@ import TopicPage from './pages/TopicPage';
 import TrophyPage from './pages/Trophy';
 import SoundButton from './components/SoundButton';
 import AnimatedBackground from './components/AnimatedBackground';
+import SceneBackground from './components/SceneBackground';
 import { audioManager } from './utils/audioManager';
 import './index.css';
 
@@ -16,9 +17,13 @@ import './index.css';
 const ThemedBackground = () => {
   const location = useLocation();
   const segments = location.pathname.split('/').filter(Boolean);
-  // /track/:trackId atau /topic/:trackId/:topicId -> trackId selalu di index 1
   const trackId = (segments[0] === 'track' || segments[0] === 'topic') ? segments[1] : 'default';
-  return <AnimatedBackground type={trackId || 'default'} />;
+  return (
+    <>
+      <SceneBackground type={trackId || 'default'} />
+      <AnimatedBackground type={trackId || 'default'} />
+    </>
+  );
 };
 
 function AppShell() {

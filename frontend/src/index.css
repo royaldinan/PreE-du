@@ -69,7 +69,16 @@ code {
     left: 100%;
 }
 
-/* Premium Card Styles */
+/* Glass Card — kartu dengan frosted glass effect untuk terbaca di atas
+   scene background. Dipakai di TrackOverview header card dan beberapa
+   komponen yang perlu terlihat "mengambang" di atas scene. */
+.glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+}
 .premium-card {
     @apply bg-white rounded-3xl shadow-lg;
     @apply transition-all duration-300 transform hover:scale-[1.02];

@@ -55,7 +55,7 @@ const TrackOverview = () => {
   const trackProgress = progress[trackId];
 
   return (
-    <div className="min-h-screen bg-[#FEFAF6] py-8 px-4 md:px-8" style={{ backgroundColor: track.color }}>
+    <div className="min-h-screen py-8 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <button
@@ -82,7 +82,7 @@ const TrackOverview = () => {
           </p>
 
           {/* Progress */}
-          <div className="bg-[#FEFAF6] rounded-2xl p-6 mb-8">
+          <div className="glass-card rounded-3xl p-8 mb-8 text-center">
             <div className="flex items-center gap-4 mb-4">
               <Star className="w-8 h-8 fill-[#FFD166] text-[#FFD166]" />
               <span className="heading-font text-2xl text-[#2B2D42]">
