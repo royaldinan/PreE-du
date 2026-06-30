@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const SortingGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -15,6 +18,9 @@ const SortingGame = ({ onComplete }) => {
   const [gameComplete, setGameComplete] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
+  // Status visual per-angka: { [num]: 'correct' | 'wrong' } untuk reaksi
+  // lokal sesaat sebelum kartu pindah ke "Urutanmu" atau di-reset.
+  const [tileStatus, setTileStatus] = useState({});
 
   const generateRound = (round) => {
     const count = Math.min(3 + round, 8);
@@ -33,16 +39,19 @@ const SortingGame = ({ onComplete }) => {
       setMissedThisRound(false);
       setFeedback('');
       setMascotMood('idle');
+      setTileStatus({});
     }
   }, [currentRound, gameComplete]);
 
-  const handleNumberClick = (num) => {
+  const handleNumberClick = (num, event) => {
     if (sortedNumbers.includes(num)) return;
 
     const expectedNext = [...numbers].sort((a, b) => a - b)[sortedNumbers.length];
 
     if (num === expectedNext) {
       audioManager.playSfx('correct');
+      sparkleAt(event.currentTarget);
+      setTileStatus((s) => ({ ...s, [num]: 'correct' }));
       const newSorted = [...sortedNumbers, num];
       setSortedNumbers(newSorted);
       setFeedback('Benar! 🎉');
@@ -71,9 +80,13 @@ const SortingGame = ({ onComplete }) => {
     } else {
       audioManager.playSfx('wrong');
       setMissedThisRound(true);
+      setTileStatus((s) => ({ ...s, [num]: 'wrong' }));
       setFeedback('Coba lagi! 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 500);
+      setTimeout(() => {
+        setFeedback('');
+        setTileStatus((s) => ({ ...s, [num]: null }));
+      }, 500);
     }
   };
 
@@ -143,27 +156,25 @@ const SortingGame = ({ onComplete }) => {
 
       <div className="flex flex-wrap justify-center gap-4 mb-8">
         {numbers.map((num, index) => (
-          <motion.button
+          <GameButton
             key={num}
-            onClick={() => handleNumberClick(num)}
+            onClick={(e) => handleNumberClick(num, e)}
             disabled={sortedNumbers.includes(num)}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.05 }}
-            whileHover={!sortedNumbers.includes(num) ? { scale: 1.08 } : {}}
-            whileTap={!sortedNumbers.includes(num) ? { scale: 0.94 } : {}}
-            className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl font-bold text-2xl transition-colors ${
-              sortedNumbers.includes(num)
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-[#4D96FF] text-white shadow-lg hover:bg-[#3A7BD5]'
-            }`}
+            variant={sortedNumbers.includes(num) ? 'done' : 'blue'}
+            status={tileStatus[num]}
+            size="tile"
+            motionProps={{
+              initial: { opacity: 0, scale: 0.6 },
+              animate: { opacity: 1, scale: 1 },
+              transition: { delay: index * 0.05 },
+            }}
           >
             {num}
-          </motion.button>
+          </GameButton>
         ))}
       </div>
 
-      <div className="bg-[#FEFAF6] rounded-2xl p-4 min-h-[80px]">
+      <GameTile tone="well" className="p-4 min-h-[80px]">
         <p className="body-font text-sm text-[#6C757D] mb-2">Urutanmu:</p>
         <div className="flex flex-wrap justify-center gap-2">
           <AnimatePresence>
@@ -172,9 +183,17 @@ const SortingGame = ({ onComplete }) => {
                 key={num}
                 initial={{ opacity: 0, scale: 0.5, y: -10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="w-12 h-12 md:w-16 md:h-16 bg-[#6BCB77] text-white rounded-xl flex items-center justify-center font-bold text-xl"
+                className="w-12 h-12 md:w-16 md:h-16 rounded-xl flex items-center justify-center font-bold text-xl text-white relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(155deg, #8EDD96 0%, #6BCB77 60%, #6BCB77 100%)',
+                  boxShadow: '0 3px 0 0 #4AA957, 0 5px 8px rgba(0,0,0,0.15)',
+                }}
               >
-                {num}
+                <span
+                  className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50"
+                  style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)' }}
+                />
+                <span className="relative z-10">{num}</span>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -182,7 +201,7 @@ const SortingGame = ({ onComplete }) => {
             <span className="text-gray-400">Klik angka untuk mulai mengurutkan</span>
           )}
         </div>
-      </div>
+      </GameTile>
     </div>
   );
 };
