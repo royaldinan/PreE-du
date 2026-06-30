@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProgress, updateTopicProgress } from '../utils/localStorage';
 import Mascot from '../components/Mascot';
+import GameStage from '../components/GameStage';
 import { BalloonDecoration, StarSparkle } from '../components/Decorations';
 import { audioManager } from '../utils/audioManager';
 import { celebrateWin, celebrateBigWin } from '../utils/confetti';
@@ -130,6 +131,12 @@ const TopicPage = () => {
     prototype: 'Buat dan Coba!'
   };
 
+  const topicIcons = {
+    sorting: '🔢', patterns: '🔷', algorithms: '📝',
+    oddOneOut: '❓', factOpinion: '💭', causeEffect: '⚡',
+    empathy: '❤️', ideation: '💡', prototype: '🛠️'
+  };
+
   const trackColors = {
     computational: '#4D96FF',
     critical: '#6BCB77',
@@ -150,20 +157,40 @@ const TopicPage = () => {
           Kembali
         </motion.button>
 
-        {/* Topic Header */}
-        <div className="chunky-card glass-card p-8 mb-8 text-center">
-          <div className="flex justify-center mb-4">
-            <Mascot mood={mascotMood} size="large" />
-          </div>
-          <h1
-            className="heading-font text-3xl md:text-4xl mb-2"
-            style={{ color: trackColors[trackId] }}
+        {/* Topic Header — mascot di atas "panggung" bercorak warna track */}
+        <div className="chunky-card glass-card mb-8 overflow-hidden">
+          {/* Banner warna track sebagai panggung */}
+          <div
+            className="px-8 pt-8 pb-2 flex flex-col items-center relative"
+            style={{ background: `linear-gradient(160deg, ${trackColors[trackId]}dd 0%, ${trackColors[trackId]}99 100%)` }}
           >
-            {topicTitles[topicId]}
-          </h1>
-          <p className="body-font text-lg text-[#6C757D]">
-            Selesaikan permainan online, lalu coba aktivitas di dunia nyata!
-          </p>
+            {/* Dekorasi lingkaran di belakang mascot */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
+              <div className="absolute top-4 left-4 w-16 h-16 rounded-full bg-white/10" />
+            </div>
+            {/* Mascot di atas panggung */}
+            <div className="relative z-10 mb-2">
+              <Mascot mood={mascotMood} size="large" />
+            </div>
+            {/* Platform / alas mascot */}
+            <div
+              className="w-28 h-4 rounded-full opacity-40 -mt-3 mb-4"
+              style={{ backgroundColor: '#2B2D42', filter: 'blur(6px)' }}
+            />
+          </div>
+          {/* Judul topik */}
+          <div className="px-8 py-5 text-center">
+            <h1
+              className="heading-font text-3xl md:text-4xl mb-2"
+              style={{ color: trackColors[trackId] }}
+            >
+              {topicTitles[topicId]}
+            </h1>
+            <p className="body-font text-lg text-[#6C757D]">
+              Selesaikan permainan online, lalu coba aktivitas di dunia nyata!
+            </p>
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -174,17 +201,15 @@ const TopicPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="chunky-card glass-card p-8 mb-8"
+              className="mb-8"
             >
-              <div className="text-center mb-6">
-                <h2 className="heading-font text-2xl text-[#2B2D42] mb-2">
-                  🎮 Permainan Online
-                </h2>
-                <p className="body-font text-lg text-[#6C757D]">
-                  Mainkan game ini dulu, yuk!
-                </p>
-              </div>
-              <GameComponent onComplete={handleGameComplete} />
+              <GameStage
+                topicIcon={topicIcons[topicId] || '🎮'}
+                topicTitle={topicTitles[topicId]}
+                trackColor={trackColors[trackId]}
+              >
+                <GameComponent onComplete={handleGameComplete} />
+              </GameStage>
             </motion.div>
           )}
 
