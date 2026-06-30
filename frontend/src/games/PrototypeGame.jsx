@@ -117,7 +117,7 @@ const PrototypeGame = ({ onComplete }) => {
         <Mascot mood="happy" size="large" />
         <h3 className="heading-font text-2xl text-[#2B2D42] mb-4">🎉 Hebat! Kamu inovator cilik!</h3>
         <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 5</p>
-        <button onClick={resetGame} className="bouncy-button bg-[#4D96FF] text-white px-6 py-3 rounded-full font-bold">Main Lagi</button>
+        <GameButton onClick={resetGame} variant="blue" size="pill">Main Lagi</GameButton>
       </div>
     );
   }
