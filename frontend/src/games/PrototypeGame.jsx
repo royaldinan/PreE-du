@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const PrototypeGame = ({ onComplete }) => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -12,6 +15,10 @@ const PrototypeGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [lockChoice, setLockChoice] = useState(false);
+  // Status pada tombol "Cek Solusi!" itu sendiri setelah dicek — di game
+  // ini reaksi benar/salah bukan per-part yang diklik (karena user pilih
+  // 3 part dulu sebelum dicek sekaligus), tapi pada tombol cek itu.
+  const [solutionStatus, setSolutionStatus] = useState(null);
 
   // Tiap level: "parts" adalah semua pilihan yang ditampilkan, "correctParts"
   // adalah bagian-bagian yang benar-benar relevan untuk solusi (dicocokkan
@@ -44,12 +51,13 @@ const PrototypeGame = ({ onComplete }) => {
     },
   ];
 
-  const handlePartClick = (part) => {
+  const handlePartClick = (part, event) => {
     if (lockChoice) return;
     audioManager.playSfx('click');
     if (selectedParts.includes(part)) {
       setSelectedParts(selectedParts.filter((p) => p !== part));
     } else if (selectedParts.length < 3) {
+      sparkleAt(event.currentTarget, { count: 5 });
       setSelectedParts([...selectedParts, part]);
     }
   };
@@ -61,6 +69,7 @@ const PrototypeGame = ({ onComplete }) => {
     // Butuh minimal 2 dari 3 part yang dipilih benar-benar relevan dengan solusi.
     if (correctCount >= 2) {
       setLockChoice(true);
+      setSolutionStatus('correct');
       audioManager.playSfx('correct');
       celebrateCorrectAnswer();
       const newScore = score + 1;
@@ -73,6 +82,7 @@ const PrototypeGame = ({ onComplete }) => {
           setSelectedParts([]);
           setFeedback('');
           setLockChoice(false);
+          setSolutionStatus(null);
         } else {
           // 0 level berhasil -> kalah (0 bintang). Selain itu -> menang.
           const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
@@ -81,10 +91,14 @@ const PrototypeGame = ({ onComplete }) => {
         }
       }, 1400);
     } else {
+      setSolutionStatus('wrong');
       audioManager.playSfx('wrong');
       setFeedback('Coba pilih bagian yang lebih tepat! 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 700);
+      setTimeout(() => {
+        setFeedback('');
+        setSolutionStatus(null);
+      }, 700);
     }
   };
 
@@ -94,6 +108,7 @@ const PrototypeGame = ({ onComplete }) => {
     setGameComplete(false);
     setSelectedParts([]);
     setLockChoice(false);
+    setSolutionStatus(null);
   };
 
   if (gameComplete) {
@@ -133,31 +148,58 @@ const PrototypeGame = ({ onComplete }) => {
       <p className="body-font text-md text-[#6C757D] mb-6">Pilih 3 bagian untuk membuat solusi!</p>
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         {current.parts.map((part, index) => (
-          <motion.button
+          <GameButton
             key={part}
-            onClick={() => handlePartClick(part)}
+            onClick={(e) => handlePartClick(part, e)}
             disabled={lockChoice}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-            className={`w-24 h-24 rounded-2xl font-bold text-lg shadow-lg transition-colors ${selectedParts.includes(part) ? 'bg-[#6BCB77] text-white ring-4 ring-[#4D96FF]' : 'bg-white text-[#2B2D42]'}`}
+            variant={selectedParts.includes(part) ? 'green' : 'white'}
+            size="labelTile"
+            motionProps={{
+              initial: { opacity: 0, y: 10 },
+              animate: { opacity: 1, y: 0 },
+              transition: { delay: index * 0.05 },
+            }}
           >
             {part}
-          </motion.button>
+          </GameButton>
         ))}
       </div>
-      <div className="bg-[#FEFAF6] rounded-xl p-4 mb-6 min-h-[60px]">
+      <GameTile tone="well" className="p-4 mb-6 min-h-[60px]">
         <p className="body-font text-sm text-[#6C757D] mb-2">Solusimu:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {selectedParts.map((part) => (
-            <span key={part} className="bg-[#9D4CDD] text-white px-3 py-1 rounded-lg">{part}</span>
-          ))}
+          <AnimatePresence>
+            {selectedParts.map((part) => (
+              <motion.span
+                key={part}
+                initial={{ opacity: 0, scale: 0.5, y: -8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                className="text-white px-3 py-1 rounded-lg font-bold relative overflow-hidden inline-block"
+                style={{
+                  background: 'linear-gradient(155deg, #C08AF0 0%, #9D4CDD 60%, #9D4CDD 100%)',
+                  boxShadow: '0 2px 0 0 #7C32B8, 0 3px 6px rgba(0,0,0,0.12)',
+                }}
+              >
+                <span
+                  className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50"
+                  style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)' }}
+                />
+                <span className="relative z-10">{part}</span>
+              </motion.span>
+            ))}
+          </AnimatePresence>
           {selectedParts.length === 0 && <span className="text-gray-400">Klik bagian untuk memilih</span>}
         </div>
-      </div>
-      <button onClick={checkSolution} disabled={selectedParts.length < 3 || lockChoice} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-8 py-4 rounded-full font-bold text-xl disabled:opacity-50">Cek Solusi! 🔍</button>
+      </GameTile>
+      <GameButton
+        onClick={checkSolution}
+        disabled={selectedParts.length < 3 || lockChoice}
+        variant="yellow"
+        status={solutionStatus}
+        size="pillLg"
+      >
+        Cek Solusi! 🔍
+      </GameButton>
     </div>
   );
 };

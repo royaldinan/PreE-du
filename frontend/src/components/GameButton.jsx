@@ -107,6 +107,11 @@ const SIZE_PRESETS = {
   tile: 'w-20 h-20 md:w-24 md:h-24 text-3xl md:text-4xl rounded-2xl',
   tileSm: 'w-14 h-14 md:w-16 md:h-16 text-xl md:text-2xl rounded-xl',
   tileLg: 'w-24 h-24 md:w-28 md:h-28 text-4xl md:text-5xl rounded-2xl',
+  // Untuk tombol kotak berisi label pendek (emoji + kata, mis. "📏 Penggaris")
+  // — beda dari tile/tileLg yang didesain untuk satu emoji besar saja.
+  // Lebih lebar dari tinggi (bukan bujur sangkar ketat) dan font lebih kecil
+  // supaya teks tidak overflow.
+  labelTile: 'w-[6.5rem] h-24 md:w-28 md:h-24 px-2 text-sm md:text-base leading-snug rounded-2xl',
   // Untuk tombol full-width (opsi sebab-akibat, opsi empati, dst)
   wide: 'w-full px-6 py-4 text-lg rounded-2xl',
   // Untuk tombol aksi/pill (Main Lagi, Jalankan!, dst)
