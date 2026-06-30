@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const IdeationGame = ({ onComplete }) => {
   const [ideas, setIdeas] = useState([]);
@@ -11,6 +14,11 @@ const IdeationGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [isPlaying, setIsPlaying] = useState(false);
+  // Sama seperti tileStatus di game lain — di-set 'pulse' sesaat lalu
+  // di-reset ke null lewat timeout, supaya animasi bounce GameButton
+  // ter-retrigger TIAP klik (karena trigger-nya adalah perubahan prop
+  // status, bukan cuma re-render dengan array animate yang sama).
+  const [buttonStatus, setButtonStatus] = useState(null);
 
   const problems = [
     'Tas sekolah terlalu berat',
@@ -45,18 +53,24 @@ const IdeationGame = ({ onComplete }) => {
     setTimeLeft(60);
     setIdeas([]);
     setFeedback('');
+    setButtonStatus(null);
   };
 
-  const addIdea = () => {
+  const addIdea = (event) => {
     if (!isPlaying) return;
     // Tidak ada jawaban "salah" di game ini — setiap ide yang berhasil
     // dikumpulkan dianggap sebagai keberhasilan kecil (SFX correct).
     audioManager.playSfx('correct');
+    sparkleAt(event.currentTarget, { count: 6 });
     celebrateCorrectAnswer();
     const randomEmoji = ideaEmojis[Math.floor(Math.random() * ideaEmojis.length)];
-    setIdeas([...ideas, randomEmoji]);
+    setIdeas((prev) => [...prev, randomEmoji]);
     setMascotMood('happy');
-    setTimeout(() => setMascotMood('idle'), 500);
+    setButtonStatus('pulse');
+    setTimeout(() => {
+      setMascotMood('idle');
+      setButtonStatus(null);
+    }, 280);
   };
 
   const endGame = () => {
@@ -74,6 +88,7 @@ const IdeationGame = ({ onComplete }) => {
     setIdeas([]);
     setTimeLeft(60);
     setIsPlaying(false);
+    setButtonStatus(null);
     setProblemIndex(Math.floor(Math.random() * problems.length));
   };
 
@@ -83,7 +98,7 @@ const IdeationGame = ({ onComplete }) => {
         <Mascot mood="happy" size="large" />
         <h3 className="heading-font text-2xl text-[#2B2D42] mb-4">🎉 Hebat! Banyak ide kreatif!</h3>
         <p className="body-font text-lg text-[#6C757D] mb-6">Kamu mengumpulkan {ideas.length} ide!</p>
-        <motion.button onClick={resetGame} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="bouncy-button bg-[#4D96FF] text-white px-6 py-3 rounded-full font-bold">Main Lagi</motion.button>
+        <GameButton onClick={resetGame} variant="blue" size="pillLg">Main Lagi</GameButton>
       </div>
     );
   }
@@ -96,7 +111,7 @@ const IdeationGame = ({ onComplete }) => {
       {!isPlaying ? (
         <>
           <p className="body-font text-lg text-[#6C757D] mb-6">Masalah: <span className="font-bold">{currentProblem}</span></p>
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={startGame} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-8 py-4 rounded-full font-bold text-xl">Mulai Brainstorm! ⏱️</motion.button>
+          <GameButton onClick={startGame} variant="yellow" size="pillLg">Mulai Brainstorm! ⏱️</GameButton>
         </>
       ) : (
         <>
@@ -106,28 +121,31 @@ const IdeationGame = ({ onComplete }) => {
           </div>
           <p className="body-font text-lg text-[#6C757D] mb-4">Klik tombol secepatnya untuk kumpulkan ide!</p>
           <p className="heading-font text-xl text-[#2B2D42] mb-6">{currentProblem}</p>
-          <motion.button
-            onClick={addIdea}
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.88, rotate: -8 }}
-            className="bouncy-button w-32 h-32 bg-[#9D4CDD] text-white rounded-full font-bold text-4xl shadow-xl"
-          >
-            💡
-          </motion.button>
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            <AnimatePresence>
-              {ideas.map((emoji, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, scale: 0, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  className="text-3xl"
-                >
-                  {emoji}
-                </motion.span>
-              ))}
-            </AnimatePresence>
-          </div>
+          {/* Dibungkus motion.div terpisah supaya tetap bisa menambahkan
+              rotate playful saat tap (whileTap GameButton sendiri fixed
+              ke y-translate untuk konsistensi semua game). */}
+          <motion.div className="inline-block" whileTap={{ rotate: -8 }}>
+            <GameButton onClick={addIdea} variant="purple" status={buttonStatus} size="bigCircle">
+              💡
+            </GameButton>
+          </motion.div>
+          <GameTile tone="well" className="mt-6 p-4 min-h-[64px]">
+            <div className="flex flex-wrap justify-center gap-2">
+              <AnimatePresence>
+                {ideas.map((emoji, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, scale: 0, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    className="text-3xl"
+                  >
+                    {emoji}
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+              {ideas.length === 0 && <span className="text-gray-400 self-center">Ide-idemu akan muncul di sini</span>}
+            </div>
+          </GameTile>
         </>
       )}
     </div>

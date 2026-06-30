@@ -117,6 +117,9 @@ const SIZE_PRESETS = {
   // Untuk tombol aksi/pill (Main Lagi, Jalankan!, dst)
   pill: 'px-6 py-3 text-base rounded-full',
   pillLg: 'px-8 py-4 text-xl rounded-full',
+  // Untuk tombol bundar besar tap-cepat (mis. lightbulb ide), bukan
+  // kotak — sengaja rounded-full, bukan rounded-2xl seperti tile.
+  bigCircle: 'w-32 h-32 md:w-36 md:h-36 text-4xl md:text-5xl rounded-full',
 };
 
 const GameButton = ({
@@ -124,16 +127,23 @@ const GameButton = ({
   onClick,
   disabled = false,
   variant = 'blue',
-  status = null, // null | 'correct' | 'wrong'
+  status = null, // null | 'correct' | 'wrong' | 'pulse'
   size = 'tile',
   className = '',
   motionProps = {},
 }) => {
-  const palette = status ? { ...VARIANTS[variant], ...STATUS_OVERRIDE[status] } : VARIANTS[variant] || VARIANTS.blue;
+  // 'pulse' tidak ganti warna (beda dari correct/wrong) — dipakai untuk
+  // game tap-cepat di mana SETIAP klik berhasil (mis. brainstorm ide),
+  // jadi tidak masuk akal kalau tombolnya berubah jadi hijau/merah tiap
+  // detik. Pulse cuma menambah glow ring warna variant sendiri + bounce.
+  const palette = status === 'correct' || status === 'wrong'
+    ? { ...VARIANTS[variant], ...STATUS_OVERRIDE[status] }
+    : VARIANTS[variant] || VARIANTS.blue;
   const sizeClass = SIZE_PRESETS[size] || SIZE_PRESETS.tile;
 
+  const pulseGlow = `0 0 0 6px ${palette.mid}55`;
   const restingShadow = `0 5px 0 0 ${palette.edge}, 0 7px 10px rgba(0,0,0,0.18)${
-    status === 'correct' || status === 'wrong' ? `, ${palette.glow}` : ''
+    status === 'correct' || status === 'wrong' ? `, ${palette.glow}` : status === 'pulse' ? `, ${pulseGlow}` : ''
   }`;
   const pressedShadow = `0 1px 0 0 ${palette.edge}, 0 2px 3px rgba(0,0,0,0.12)`;
 
@@ -146,11 +156,11 @@ const GameButton = ({
       animate={
         status === 'wrong'
           ? { x: [0, -6, 6, -4, 4, 0], y: 0, boxShadow: restingShadow }
-          : status === 'correct'
-          ? { scale: [1, 1.08, 1], y: 0, boxShadow: restingShadow }
+          : status === 'correct' || status === 'pulse'
+          ? { scale: [1, 1.1, 1], y: 0, boxShadow: restingShadow }
           : { ...motionProps.animate, y: 0, boxShadow: restingShadow }
       }
-      transition={motionProps.transition || { duration: status ? 0.4 : 0.2 }}
+      transition={motionProps.transition || { duration: status ? 0.3 : 0.2 }}
       whileHover={!disabled ? { y: -2, transition: { duration: 0.15 } } : {}}
       whileTap={!disabled ? { y: 3, boxShadow: pressedShadow, transition: { duration: 0.08 } } : {}}
       style={{
