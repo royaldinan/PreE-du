@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const OddOneOutGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -11,6 +13,8 @@ const OddOneOutGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [lockChoice, setLockChoice] = useState(false);
+  // Status visual per-index item yang diklik: { [index]: 'correct' | 'wrong' }
+  const [tileStatus, setTileStatus] = useState({});
 
   const rounds = [
     { items: ['🍎', '🍌', '🍇', '🚗'], correct: 3, explanation: 'Mobil bukan buah!' },
@@ -23,12 +27,14 @@ const OddOneOutGame = ({ onComplete }) => {
     { items: ['🚲', '🚗', '✈️', '🛋️'], correct: 3, explanation: 'Sofa bukan kendaraan!' }
   ];
 
-  const handleChoice = (index) => {
+  const handleChoice = (index, event) => {
     if (lockChoice) return;
 
     if (index === rounds[currentRound - 1].correct) {
       setLockChoice(true);
+      setTileStatus({ [index]: 'correct' });
       audioManager.playSfx('correct');
+      sparkleAt(event.currentTarget);
       celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
@@ -39,6 +45,7 @@ const OddOneOutGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
+          setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
           const totalStars = newScore >= 6 ? 3 : newScore >= 4 ? 2 : newScore >= 1 ? 1 : 0;
@@ -47,10 +54,14 @@ const OddOneOutGame = ({ onComplete }) => {
         }
       }, 1600);
     } else {
+      setTileStatus({ [index]: 'wrong' });
       audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan mana yang berbeda 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 600);
+      setTimeout(() => {
+        setFeedback('');
+        setTileStatus({});
+      }, 600);
     }
   };
 
@@ -59,6 +70,7 @@ const OddOneOutGame = ({ onComplete }) => {
     setScore(0);
     setGameComplete(false);
     setLockChoice(false);
+    setTileStatus({});
   };
 
   if (gameComplete) {
@@ -97,19 +109,22 @@ const OddOneOutGame = ({ onComplete }) => {
       <p className="body-font text-lg text-[#6C757D] mb-6">Mana yang TIDAK sama dengan yang lain?</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {currentItems.map((item, index) => (
-          <motion.button
+          <GameButton
             key={`${currentRound}-${index}`}
-            onClick={() => handleChoice(index)}
+            onClick={(e) => handleChoice(index, e)}
             disabled={lockChoice}
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.06 }}
-            whileHover={!lockChoice ? { scale: 1.08 } : {}}
-            whileTap={!lockChoice ? { scale: 0.94 } : {}}
-            className="w-20 h-20 md:w-24 md:h-24 bg-[#4D96FF] text-white rounded-2xl text-4xl shadow-lg hover:bg-[#3A7BD5] transition-colors mx-auto disabled:opacity-70"
+            variant="blue"
+            status={tileStatus[index]}
+            size="tile"
+            className="mx-auto"
+            motionProps={{
+              initial: { opacity: 0, scale: 0.7 },
+              animate: { opacity: 1, scale: 1 },
+              transition: { delay: index * 0.06 },
+            }}
           >
             {item}
-          </motion.button>
+          </GameButton>
         ))}
       </div>
     </div>
