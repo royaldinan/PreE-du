@@ -33,7 +33,13 @@ const PatternGame = ({ onComplete }) => {
   const lastShapeSetRef = useRef(null);
 
   const generateRound = (round) => {
-    const patternLength = Math.min(3 + Math.floor(round / 2), 6);
+    // Minimal 5: dengan 3 bentuk unik, perulangan pertama (bentuk[0] lagi)
+    // jatuh di index 3. Kalau patternLength cuma 4, repeat itu justru jadi
+    // posisi jawaban yang disembunyikan -- bukan bagian yang ditampilkan
+    // ke user -- sehingga visiblePattern-nya tetap 3 bentuk unik tanpa
+    // repeat sama sekali dan jawabannya tidak bisa dideduksi. patternLength
+    // 5 memastikan repeat pertama itu sudah ada di visiblePattern.
+    const patternLength = Math.min(5 + Math.floor(round / 2), 8);
 
     // Pilih 3 bentuk berbeda, hindari memakai set bentuk identik dengan ronde
     // sebelumnya supaya pola terasa beda tiap ronde.
