@@ -56,6 +56,11 @@ const MimoDefs = () => (
       <stop offset="0%" stopColor="#FFE899" />
       <stop offset="100%" stopColor="#FFD166" />
     </linearGradient>
+    <radialGradient id="mimo-eyeShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#9FE8F5" />
+      <stop offset="60%" stopColor="#5FC9E0" />
+      <stop offset="100%" stopColor="#3DA8C2" />
+    </radialGradient>
   </defs>
 );
 
@@ -66,13 +71,13 @@ const MimoBody = ({ children }) => (
     {/* soft contact shadow */}
     <ellipse cx="100" cy="193" rx="48" ry="7" fill="#000000" opacity="0.10" />
 
-    {/* tail, curled around right side, behind body */}
+    {/* tail, curled around right side, behind body — starts low/back so it
+        clears the head silhouette instead of poking into it */}
     <path
-      d="M138 178 Q170 186 180 156 Q188 130 170 108 Q158 98 150 104 Q165 112 168 132 Q170 154 152 168 Q146 174 138 178 Z"
+      d="M124 188 Q160 190 172 166 Q184 142 176 118 Q170 100 154 96 Q146 94 142 100 Q156 102 164 118 Q170 134 162 152 Q154 170 132 182 Q128 185 124 188 Z"
       fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
     />
-    <ellipse cx="155" cy="112" rx="9" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <path d="M154 116 Q163 122 166 138" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
+    <path d="M150 100 Q166 108 172 128" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.5" />
 
     {/* back paws peeking */}
     <ellipse cx="66" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
@@ -134,20 +139,20 @@ const FaceIdle = () => (
     <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
     <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
 
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="#3A3F4B" />
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="76" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
+    <ellipse cx="76" cy="94" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="76" cy="94" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="76" cy="98" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
     <circle cx="81" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="71" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+    <circle cx="71" cy="98" r="2.2" fill="#FFFFFF" opacity="0.9" />
 
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="#3A3F4B" />
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="124" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
+    <ellipse cx="124" cy="94" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="124" cy="94" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="124" cy="98" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
     <circle cx="129" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="119" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+    <circle cx="119" cy="98" r="2.2" fill="#FFFFFF" opacity="0.9" />
 
     <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
-    <path d="M100 123 Q100 128 91 129 M100 123 Q100 128 109 129" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M88 120 Q100 130 112 120" stroke="#7A7F8C" strokeWidth="2.2" strokeLinecap="round" fill="none" />
   </>
 );
 
@@ -171,15 +176,15 @@ const FaceSad = () => (
   <>
     {/* no blush when sad */}
     <path d="M62 92 Q76 86 90 94" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-    <ellipse cx="76" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <ellipse cx="76" cy="98" rx="13" ry="13" fill="url(#mimo-eyeShine)" opacity="0.8" />
     <path d="M63 92 Q76 86 89 92 L89 98 Q76 91 63 98 Z" fill="url(#mimo-furHead)" />
-    <ellipse cx="76" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
+    <ellipse cx="76" cy="100" rx="7" ry="8" fill="#1E5266" opacity="0.8" />
     <circle cx="80" cy="98" r="3.8" fill="#FFFFFF" />
 
     <path d="M110 94 Q124 86 138 92" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-    <ellipse cx="124" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <ellipse cx="124" cy="98" rx="13" ry="13" fill="url(#mimo-eyeShine)" opacity="0.8" />
     <path d="M111 92 Q124 86 137 92 L137 98 Q124 91 111 98 Z" fill="url(#mimo-furHead)" />
-    <ellipse cx="124" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
+    <ellipse cx="124" cy="100" rx="7" ry="8" fill="#1E5266" opacity="0.8" />
     <circle cx="128" cy="98" r="3.8" fill="#FFFFFF" />
 
     <path d="M64 80 Q76 84 86 80" fill="none" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
@@ -195,14 +200,14 @@ const FaceThinking = () => (
     <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
     <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
 
-    <ellipse cx="76" cy="94" rx="14" ry="16" fill="#3A3F4B" />
-    <ellipse cx="76" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="80" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
+    <ellipse cx="76" cy="94" rx="14" ry="16" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="76" cy="94" rx="14" ry="16" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="80" cy="92" rx="8" ry="10" fill="#1E5266" opacity="0.85" />
     <circle cx="83" cy="85" r="5" fill="#FFFFFF" />
 
-    <ellipse cx="124" cy="94" rx="14" ry="16" fill="#3A3F4B" />
-    <ellipse cx="124" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="128" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
+    <ellipse cx="124" cy="94" rx="14" ry="16" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="124" cy="94" rx="14" ry="16" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="128" cy="92" rx="8" ry="10" fill="#1E5266" opacity="0.85" />
     <circle cx="131" cy="85" r="5" fill="#FFFFFF" />
 
     {/* one raised brow for a curious/pondering look */}
