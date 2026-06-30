@@ -71,43 +71,46 @@ const MimoBody = ({ children }) => (
     {/* soft contact shadow */}
     <ellipse cx="100" cy="193" rx="48" ry="7" fill="#000000" opacity="0.10" />
 
-    {/* tail, curled around right side, behind body — starts low/back so it
-        clears the head silhouette instead of poking into it */}
+    {/* tail, curled around right side, behind body — start point pushed
+        further right since the body silhouette is now bigger */}
     <path
-      d="M124 188 Q160 190 172 166 Q184 142 176 118 Q170 100 154 96 Q146 94 142 100 Q156 102 164 118 Q170 134 162 152 Q154 170 132 182 Q128 185 124 188 Z"
+      d="M132 190 Q168 190 178 164 Q188 138 178 114 Q172 98 156 96 Q148 95 144 101 Q158 102 166 118 Q172 134 164 152 Q156 170 138 184 Q135 187 132 190 Z"
       fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
     />
-    <path d="M150 100 Q166 108 172 128" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.5" />
+    <path d="M152 100 Q168 108 174 128" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.5" />
 
-    {/* back paws peeking */}
-    <ellipse cx="66" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <ellipse cx="134" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    {/* back paws peeking — pulled further in, sitting almost under the body
+        edge so the lower silhouette curls into one continuous shape */}
+    <ellipse cx="70" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
+    <ellipse cx="130" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
 
-    {/* body */}
-    <ellipse cx="100" cy="148" rx="52" ry="46" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    {/* body — raised closer to the head (shorter neck gap) and slightly
+        bigger so head+body merge into one rounded sitting silhouette */}
+    <ellipse cx="100" cy="142" rx="56" ry="50" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
 
     {/* belly patch */}
-    <ellipse cx="100" cy="160" rx="32" ry="30" fill="url(#mimo-bellyFur)" />
+    <ellipse cx="100" cy="158" rx="33" ry="31" fill="url(#mimo-bellyFur)" />
 
     {/* front paws */}
-    <ellipse cx="75" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <ellipse cx="125" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <path d="M69 187 Q75 191 81 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-    <path d="M119 187 Q125 191 131 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    <ellipse cx="78" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
+    <ellipse cx="122" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
+    <path d="M71 185 Q78 189 85 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    <path d="M115 185 Q122 189 129 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
 
-    {/* left ear (head circle drawn after, overlapping the base, so there's no seam) */}
+    {/* left ear — significantly bigger + rounder tip, closer to head center
+        so it reads as a soft round shape, not a small flap */}
     <path
-      d="M52 64 Q36 22 66 12 Q86 18 82 54 Q67 50 52 64 Z"
+      d="M46 58 Q22 18 60 4 Q92 8 86 50 Q66 46 46 58 Z"
       fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
     />
-    <path d="M58 54 Q50 30 66 22 Q77 28 74 48 Q66 44 58 54 Z" fill="url(#mimo-earInner)" />
+    <path d="M54 48 Q40 22 62 10 Q80 16 76 44 Q64 40 54 48 Z" fill="url(#mimo-earInner)" />
 
     {/* right ear */}
     <path
-      d="M148 64 Q164 22 134 12 Q114 18 118 54 Q133 50 148 64 Z"
+      d="M154 58 Q178 18 140 4 Q108 8 114 50 Q134 46 154 58 Z"
       fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
     />
-    <path d="M142 54 Q150 30 134 22 Q123 28 126 48 Q134 44 142 54 Z" fill="url(#mimo-earInner)" />
+    <path d="M146 48 Q160 22 138 10 Q120 16 124 44 Q136 40 146 48 Z" fill="url(#mimo-earInner)" />
 
     {/* head */}
     <circle cx="100" cy="96" r="60" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" />
@@ -124,11 +127,12 @@ const MimoBody = ({ children }) => (
     <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
     <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
 
-    {/* collar + bell, sitting with a visible neck gap below the chin */}
-    <path d="M66 134 Q100 148 134 134 L131 144 Q100 156 69 144 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.5" />
-    <circle cx="100" cy="149" r="8.5" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="1.5" />
-    <path d="M95.5 149 L104.5 149 M100 146.5 L100 151.5" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
-    <circle cx="100" cy="152.5" r="1.4" fill="#B8842A" />
+    {/* collar + bell — slimmer band that follows the neck curve instead of
+        cutting a hard line across it, so head and body read as one silhouette */}
+    <path d="M70 138 Q100 148 130 138 L128 145 Q100 154 72 145 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.2" opacity="0.92" />
+    <circle cx="100" cy="149" r="8" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="1.5" />
+    <path d="M95.8 149 L104.2 149 M100 146.8 L100 151.2" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
+    <circle cx="100" cy="152.3" r="1.3" fill="#B8842A" />
   </>
 );
 
@@ -136,23 +140,27 @@ const MimoBody = ({ children }) => (
 
 const FaceIdle = () => (
   <>
-    <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
-    <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="58" cy="111" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="142" cy="111" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
 
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
-    <ellipse cx="76" cy="98" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
-    <circle cx="81" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="71" cy="98" r="2.2" fill="#FFFFFF" opacity="0.9" />
+    {/* left eye — slight inward gaze, big soft highlight for a "alive" wet-look glint */}
+    <ellipse cx="75" cy="95" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="75" cy="95" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="77" cy="99" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
+    <ellipse cx="80" cy="87" rx="6.5" ry="7" fill="#FFFFFF" opacity="0.95" />
+    <circle cx="73" cy="100" r="2.4" fill="#FFFFFF" opacity="0.85" />
 
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
-    <ellipse cx="124" cy="98" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
-    <circle cx="129" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="119" cy="98" r="2.2" fill="#FFFFFF" opacity="0.9" />
+    {/* right eye — mirrored gaze point converges slightly toward center, not a flat mirror copy */}
+    <ellipse cx="125" cy="95" rx="15" ry="17" fill="url(#mimo-eyeShine)" />
+    <ellipse cx="125" cy="95" rx="15" ry="17" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+    <ellipse cx="123" cy="99" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
+    <ellipse cx="120" cy="87" rx="6.5" ry="7" fill="#FFFFFF" opacity="0.95" />
+    <circle cx="127" cy="100" r="2.4" fill="#FFFFFF" opacity="0.85" />
 
-    <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
-    <path d="M88 120 Q100 130 112 120" stroke="#7A7F8C" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+    <path d="M93 117 Q100 113 107 117 Q103 123 100 124 Q97 123 93 117 Z" fill="#FF9E92" />
+    {/* mouth — wider, asymmetric lift on the right side so it reads as a genuine
+        small smile rather than a perfectly mirrored static curve */}
+    <path d="M89 122 Q95 130 100 130 Q106 131 113 121" stroke="#7A7F8C" strokeWidth="2.3" strokeLinecap="round" fill="none" />
   </>
 );
 
