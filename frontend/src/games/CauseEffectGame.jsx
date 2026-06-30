@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const CauseEffectGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -11,6 +14,8 @@ const CauseEffectGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [lockChoice, setLockChoice] = useState(false);
+  // Status visual per-index opsi efek yang diklik
+  const [tileStatus, setTileStatus] = useState({});
 
   const rounds = [
     { cause: 'Tidak minum air seharian', effects: ['Haus dan lemas', 'Menjadi lebih tinggi', 'Bisa terbang'], correct: 0 },
@@ -23,12 +28,14 @@ const CauseEffectGame = ({ onComplete }) => {
     { cause: 'Menyiram tanaman setiap hari', effects: ['Tanaman layu', 'Tanaman tumbuh subur', 'Tanaman hilang'], correct: 1 }
   ];
 
-  const handleChoice = (index) => {
+  const handleChoice = (index, event) => {
     if (lockChoice) return;
 
     if (index === rounds[currentRound - 1].correct) {
       setLockChoice(true);
+      setTileStatus({ [index]: 'correct' });
       audioManager.playSfx('correct');
+      sparkleAt(event.currentTarget);
       celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
@@ -39,6 +46,7 @@ const CauseEffectGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
+          setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
           const totalStars = newScore >= 6 ? 3 : newScore >= 4 ? 2 : newScore >= 1 ? 1 : 0;
@@ -47,10 +55,14 @@ const CauseEffectGame = ({ onComplete }) => {
         }
       }, 1300);
     } else {
+      setTileStatus({ [index]: 'wrong' });
       audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan apa yang akan terjadi 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 600);
+      setTimeout(() => {
+        setFeedback('');
+        setTileStatus({});
+      }, 600);
     }
   };
 
@@ -59,6 +71,7 @@ const CauseEffectGame = ({ onComplete }) => {
     setScore(0);
     setGameComplete(false);
     setLockChoice(false);
+    setTileStatus({});
   };
 
   if (gameComplete) {
@@ -95,29 +108,31 @@ const CauseEffectGame = ({ onComplete }) => {
         )}
       </AnimatePresence>
       <p className="body-font text-lg text-[#6C757D] mb-4">Apa AKIBAT dari ini?</p>
-      <motion.div
-        key={currentRound}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-[#FEFAF6] rounded-2xl p-6 mb-6 shadow-lg"
+      <GameTile
+        tone="highlight"
+        motionKey={currentRound}
+        animateProps={{ initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 } }}
+        className="p-6 mb-6"
       >
         <p className="heading-font text-xl text-[#2B2D42]">{current.cause}</p>
-      </motion.div>
+      </GameTile>
       <div className="space-y-3">
         {current.effects.map((effect, index) => (
-          <motion.button
+          <GameButton
             key={`${currentRound}-${index}`}
-            onClick={() => handleChoice(index)}
+            onClick={(e) => handleChoice(index, e)}
             disabled={lockChoice}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-            whileHover={!lockChoice ? { scale: 1.02 } : {}}
-            whileTap={!lockChoice ? { scale: 0.98 } : {}}
-            className="w-full bg-white hover:bg-[#4D96FF] hover:text-white text-[#2B2D42] px-6 py-4 rounded-xl font-bold text-lg shadow-md transition-colors disabled:opacity-70"
+            variant="white"
+            status={tileStatus[index]}
+            size="wide"
+            motionProps={{
+              initial: { opacity: 0, x: -10 },
+              animate: { opacity: 1, x: 0 },
+              transition: { delay: index * 0.08 },
+            }}
           >
             {effect}
-          </motion.button>
+          </GameButton>
         ))}
       </div>
     </div>
