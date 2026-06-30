@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
 
@@ -226,8 +228,8 @@ const AlgorithmGame = ({ onComplete }) => {
         Buat instruksi untuk mencapai target! ⭐
       </p>
 
-      <div className="bg-[#FEFAF6] rounded-2xl p-4 mb-6 inline-block">
-        <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}>
+      <GameTile tone="well" className="p-4 mb-6 inline-block">
+        <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}>
           {Array.from({ length: gridSize * gridSize }).map((_, i) => {
             const x = i % gridSize;
             const y = Math.floor(i / gridSize);
@@ -235,32 +237,45 @@ const AlgorithmGame = ({ onComplete }) => {
             const isTarget = targetPos.x === x && targetPos.y === y;
             const isObstacle = obstacles.some(o => o.x === x && o.y === y);
 
+            const cellStyle = isPlayer
+              ? { background: 'linear-gradient(155deg, #6FB1FF 0%, #4D96FF 60%, #4D96FF 100%)', boxShadow: '0 3px 0 0 #2D6FD4, 0 5px 8px rgba(0,0,0,0.15)' }
+              : isTarget
+              ? { background: 'linear-gradient(155deg, #FFE08A 0%, #FFD166 60%, #FFD166 100%)', boxShadow: '0 3px 0 0 #E8AE3D, 0 5px 8px rgba(0,0,0,0.15)' }
+              : isObstacle
+              ? { background: 'linear-gradient(155deg, #FF9B8A 0%, #F87060 60%, #F87060 100%)', boxShadow: '0 3px 0 0 #D4503F, 0 5px 8px rgba(0,0,0,0.15)' }
+              : { background: 'linear-gradient(165deg, #FFFFFF 0%, #FBF7F0 100%)', boxShadow: 'inset 0 1px 3px rgba(43,45,66,0.06)', border: '1px solid rgba(43,45,66,0.06)' };
+
             return (
               <motion.div
                 key={i}
                 animate={isPlayer ? { scale: [1, 1.15, 1] } : {}}
                 transition={{ duration: 0.3 }}
-                className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-xl ${
-                  isPlayer ? 'bg-[#4D96FF]' : isTarget ? 'bg-[#FFD166]' : isObstacle ? 'bg-red-400' : 'bg-white'
-                }`}
+                style={cellStyle}
+                className="w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-xl relative overflow-hidden"
               >
-                {isPlayer ? '🤖' : isTarget ? '⭐' : isObstacle ? '🚫' : ''}
+                {(isPlayer || isTarget || isObstacle) && (
+                  <span
+                    className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50"
+                    style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)' }}
+                  />
+                )}
+                <span className="relative z-10">{isPlayer ? '🤖' : isTarget ? '⭐' : isObstacle ? '🚫' : ''}</span>
               </motion.div>
             );
           })}
         </div>
-      </div>
+      </GameTile>
 
       <div className="flex justify-center gap-2 mb-4">
-        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('up')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬆️</motion.button>
+        <GameButton onClick={() => addInstruction('up')} disabled={isRunning} variant="blue" size="tileSm">⬆️</GameButton>
       </div>
       <div className="flex justify-center gap-2 mb-4">
-        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('left')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬅️</motion.button>
-        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('down')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">⬇️</motion.button>
-        <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} onClick={() => addInstruction('right')} disabled={isRunning} className="w-14 h-14 bg-[#4D96FF] text-white rounded-xl text-2xl shadow-lg hover:bg-[#3A7BD5] disabled:opacity-50">➡️</motion.button>
+        <GameButton onClick={() => addInstruction('left')} disabled={isRunning} variant="blue" size="tileSm">⬅️</GameButton>
+        <GameButton onClick={() => addInstruction('down')} disabled={isRunning} variant="blue" size="tileSm">⬇️</GameButton>
+        <GameButton onClick={() => addInstruction('right')} disabled={isRunning} variant="blue" size="tileSm">➡️</GameButton>
       </div>
 
-      <div className="bg-white rounded-xl p-4 mb-4 min-h-[50px]">
+      <GameTile tone="well" className="p-4 mb-4 min-h-[50px]">
         <p className="body-font text-sm text-[#6C757D] mb-2">Instruksimu:</p>
         <div className="flex flex-wrap justify-center gap-2">
           <AnimatePresence>
@@ -270,23 +285,31 @@ const AlgorithmGame = ({ onComplete }) => {
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
-                className="bg-[#6BCB77] text-white px-3 py-1 rounded-lg"
+                className="text-white px-3 py-1 rounded-lg font-bold relative overflow-hidden inline-block"
+                style={{
+                  background: 'linear-gradient(155deg, #8EDD96 0%, #6BCB77 60%, #6BCB77 100%)',
+                  boxShadow: '0 2px 0 0 #4AA957, 0 3px 6px rgba(0,0,0,0.12)',
+                }}
               >
-                {dir === 'up' ? '⬆️' : dir === 'down' ? '⬇️' : dir === 'left' ? '⬅️' : '➡️'}
+                <span
+                  className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50"
+                  style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)' }}
+                />
+                <span className="relative z-10">{dir === 'up' ? '⬆️' : dir === 'down' ? '⬇️' : dir === 'left' ? '⬅️' : '➡️'}</span>
               </motion.span>
             ))}
           </AnimatePresence>
           {instructions.length === 0 && <span className="text-gray-400">Klik tombol panah untuk menambah instruksi</span>}
         </div>
-      </div>
+      </GameTile>
 
       <div className="flex justify-center gap-4">
-        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }} onClick={clearInstructions} disabled={isRunning} className="bouncy-button bg-gray-400 text-white px-6 py-3 rounded-full font-bold disabled:opacity-50">
+        <GameButton onClick={clearInstructions} disabled={isRunning} variant="done" size="pill">
           Hapus
-        </motion.button>
-        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }} onClick={runInstructions} disabled={isRunning || instructions.length === 0} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-6 py-3 rounded-full font-bold disabled:opacity-50">
+        </GameButton>
+        <GameButton onClick={runInstructions} disabled={isRunning || instructions.length === 0} variant="yellow" size="pillLg">
           Jalankan! 🚀
-        </motion.button>
+        </GameButton>
       </div>
     </div>
   );

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 // Shuffle non-mutating (Fisher-Yates di atas salinan array)
 const shuffle = (arr) => {
@@ -26,6 +29,7 @@ const PatternGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [lockChoice, setLockChoice] = useState(false);
+  const [tileStatus, setTileStatus] = useState({});
   const lastShapeSetRef = useRef(null);
 
   const generateRound = (round) => {
@@ -69,16 +73,19 @@ const PatternGame = ({ onComplete }) => {
       setFeedback('');
       setMascotMood('idle');
       setLockChoice(false);
+      setTileStatus({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentRound, gameComplete]);
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option, event) => {
     if (lockChoice) return;
 
     if (option === correctAnswer) {
       setLockChoice(true);
       audioManager.playSfx('correct');
+      sparkleAt(event.currentTarget);
+      setTileStatus({ [option]: 'correct' });
       celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
@@ -97,9 +104,13 @@ const PatternGame = ({ onComplete }) => {
       }, 900);
     } else {
       audioManager.playSfx('wrong');
+      setTileStatus({ [option]: 'wrong' });
       setFeedback('Coba lagi! 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 500);
+      setTimeout(() => {
+        setFeedback('');
+        setTileStatus({});
+      }, 500);
     }
   };
 
@@ -165,7 +176,7 @@ const PatternGame = ({ onComplete }) => {
         Apa yang selanjutnya? Pilih bentuk yang tepat!
       </p>
 
-      <div className="bg-[#FEFAF6] rounded-2xl p-6 mb-8">
+      <GameTile tone="well" className="p-6 mb-8">
         <div className="flex flex-wrap justify-center gap-3 text-4xl md:text-5xl">
           {displayPattern.map((shape, index) => (
             <motion.div
@@ -173,28 +184,35 @@ const PatternGame = ({ onComplete }) => {
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.08 }}
-              className={`w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-xl ${
-                shape === '❓' ? 'bg-[#FFD166]' : 'bg-white shadow-md'
-              }`}
+              style={
+                shape === '❓'
+                  ? { background: 'linear-gradient(165deg, #FFF8E1 0%, #FFEFC2 100%)', border: '1.5px solid rgba(255, 209, 102, 0.6)', boxShadow: '0 3px 0 0 rgba(232,174,61,0.4), 0 6px 14px rgba(43,45,66,0.08)' }
+                  : { background: 'linear-gradient(165deg, #FFFFFF 0%, #FBF7F0 100%)', border: '1.5px solid rgba(43,45,66,0.08)', boxShadow: '0 2px 0 0 rgba(43,45,66,0.06), 0 4px 10px rgba(43,45,66,0.06)' }
+              }
+              className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-xl relative overflow-hidden"
             >
-              {shape}
+              <span
+                className="pointer-events-none absolute inset-x-0 top-0 h-1/3 opacity-60"
+                style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%)' }}
+              />
+              <span className="relative z-10">{shape}</span>
             </motion.div>
           ))}
         </div>
-      </div>
+      </GameTile>
 
       <div className="flex flex-wrap justify-center gap-4">
         {options.map((option) => (
-          <motion.button
+          <GameButton
             key={option}
-            onClick={() => handleOptionClick(option)}
+            onClick={(e) => handleOptionClick(option, e)}
             disabled={lockChoice}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-20 h-20 md:w-24 md:h-24 bg-[#4D96FF] text-white rounded-2xl text-4xl shadow-lg hover:bg-[#3A7BD5] transition-colors disabled:opacity-70"
+            variant="blue"
+            status={tileStatus[option]}
+            size="tileLg"
           >
             {option}
-          </motion.button>
+          </GameButton>
         ))}
       </div>
     </div>
