@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mascot from '../components/Mascot';
+import GameButton from '../components/GameButton';
+import GameTile from '../components/GameTile';
 import { audioManager } from '../utils/audioManager';
 import { celebrateCorrectAnswer } from '../utils/confetti';
+import { sparkleAt } from '../utils/sparkle';
 
 const FactOpinionGame = ({ onComplete }) => {
   const [currentRound, setCurrentRound] = useState(1);
@@ -11,6 +14,8 @@ const FactOpinionGame = ({ onComplete }) => {
   const [feedback, setFeedback] = useState('');
   const [mascotMood, setMascotMood] = useState('idle');
   const [lockChoice, setLockChoice] = useState(false);
+  // Status visual per-pilihan ('fact' | 'opinion') yang diklik
+  const [tileStatus, setTileStatus] = useState({});
 
   const rounds = [
     { sentence: 'Kucing adalah hewan', isFact: true, explanation: 'Ini fakta karena bisa dibuktikan!' },
@@ -25,14 +30,16 @@ const FactOpinionGame = ({ onComplete }) => {
     { sentence: 'Warna biru warna paling cantik', isFact: false, explanation: 'Ini opini karena warna favorit beda-beda!' }
   ];
 
-  const handleChoice = (choice) => {
+  const handleChoice = (choice, event) => {
     if (lockChoice) return;
     const current = rounds[currentRound - 1];
     const isCorrect = (choice === 'fact' && current.isFact) || (choice === 'opinion' && !current.isFact);
 
     if (isCorrect) {
       setLockChoice(true);
+      setTileStatus({ [choice]: 'correct' });
       audioManager.playSfx('correct');
+      sparkleAt(event.currentTarget);
       celebrateCorrectAnswer();
       const newScore = score + 1;
       setScore(newScore);
@@ -43,6 +50,7 @@ const FactOpinionGame = ({ onComplete }) => {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
+          setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
           const totalStars = newScore >= 8 ? 3 : newScore >= 5 ? 2 : newScore >= 1 ? 1 : 0;
@@ -51,10 +59,14 @@ const FactOpinionGame = ({ onComplete }) => {
         }
       }, 1600);
     } else {
+      setTileStatus({ [choice]: 'wrong' });
       audioManager.playSfx('wrong');
       setFeedback('Coba lagi! Pikirkan baik-baik 💪');
       setMascotMood('sad');
-      setTimeout(() => setFeedback(''), 600);
+      setTimeout(() => {
+        setFeedback('');
+        setTileStatus({});
+      }, 600);
     }
   };
 
@@ -63,6 +75,7 @@ const FactOpinionGame = ({ onComplete }) => {
     setScore(0);
     setGameComplete(false);
     setLockChoice(false);
+    setTileStatus({});
   };
 
   if (gameComplete) {
@@ -99,17 +112,21 @@ const FactOpinionGame = ({ onComplete }) => {
         )}
       </AnimatePresence>
       <p className="body-font text-lg text-[#6C757D] mb-4">Apakah ini FAKTA atau OPINI?</p>
-      <motion.div
-        key={currentRound}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-2xl p-6 mb-6 shadow-lg"
+      <GameTile
+        tone="highlight"
+        motionKey={currentRound}
+        animateProps={{ initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 } }}
+        className="p-6 mb-6"
       >
         <p className="heading-font text-xl text-[#2B2D42]">{current.sentence}</p>
-      </motion.div>
+      </GameTile>
       <div className="flex justify-center gap-4">
-        <motion.button whileHover={!lockChoice ? { scale: 1.05 } : {}} whileTap={!lockChoice ? { scale: 0.95 } : {}} onClick={() => handleChoice('fact')} disabled={lockChoice} className="bouncy-button bg-[#6BCB77] text-white px-8 py-4 rounded-full font-bold text-lg disabled:opacity-70">✅ FAKTA</motion.button>
-        <motion.button whileHover={!lockChoice ? { scale: 1.05 } : {}} whileTap={!lockChoice ? { scale: 0.95 } : {}} onClick={() => handleChoice('opinion')} disabled={lockChoice} className="bouncy-button bg-[#FFD166] text-[#2B2D42] px-8 py-4 rounded-full font-bold text-lg disabled:opacity-70">💭 OPINI</motion.button>
+        <GameButton onClick={(e) => handleChoice('fact', e)} disabled={lockChoice} variant="green" status={tileStatus.fact} size="pillLg">
+          ✅ FAKTA
+        </GameButton>
+        <GameButton onClick={(e) => handleChoice('opinion', e)} disabled={lockChoice} variant="yellow" status={tileStatus.opinion} size="pillLg">
+          💭 OPINI
+        </GameButton>
       </div>
     </div>
   );

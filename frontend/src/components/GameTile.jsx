@@ -48,11 +48,18 @@ const GameTile = ({
   className = '',
   as: Component = motion.div,
   animateProps = {},
+  // React `key` tidak boleh dibaca dari props (selalu undefined walau di-
+  // spread), dan smuggling key lewat objek `animateProps` itu rapuh/tidak
+  // jelas. motionKey adalah cara eksplisit untuk meneruskan key ke elemen
+  // motion di dalam sini, dipakai saat GameTile perlu re-mount/re-animate
+  // tiap ganti ronde (mis. kartu soal/cause/scenario).
+  motionKey,
 }) => {
   const palette = TONE[tone] || TONE.paper;
 
   return (
     <Component
+      key={motionKey}
       {...animateProps}
       style={{
         background: palette.bg,
