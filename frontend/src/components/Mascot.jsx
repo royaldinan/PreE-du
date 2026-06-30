@@ -2,14 +2,232 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { audioManager } from '../utils/audioManager';
 
+// ============================================================================
+// Mimo — the PreE-du mascot. A chibi gray-white kitten with a bell collar.
+//
+// Replaces the old flat-color, hand-drawn-looking SVG (single fill per shape,
+// no gradient, no shine, realistic body proportions) with a proper chibi
+// character: oversized head, big gradient-shaded eyes with a highlight glint,
+// soft fur gradients, and a tail/paws that actually read as a sitting cat.
+// Visual language (155deg gradients, offset depth, soft rim highlight) is
+// shared with GameButton.jsx / GameTile.jsx so Mimo sits naturally next to
+// the rest of the tactile gameplay system rather than looking imported.
+//
+// Prop API is unchanged from the previous component (mood / message / size)
+// so none of the 13 call sites across games/pages need to change.
+// ============================================================================
+
 const SIZE_MAP = {
   small: 90,
   medium: 140,
   large: 200,
 };
 
+// Shared gradient/def block — identical across all four moods, defined once.
+const MimoDefs = () => (
+  <defs>
+    <linearGradient id="mimo-furBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#F4F5F7" />
+      <stop offset="55%" stopColor="#E2E5EA" />
+      <stop offset="100%" stopColor="#CDD2DA" />
+    </linearGradient>
+    <linearGradient id="mimo-furHead" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FAFBFC" />
+      <stop offset="60%" stopColor="#ECEEF1" />
+      <stop offset="100%" stopColor="#D9DCE2" />
+    </linearGradient>
+    <linearGradient id="mimo-earInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFE3D6" />
+      <stop offset="100%" stopColor="#FFCBB3" />
+    </linearGradient>
+    <linearGradient id="mimo-bellyFur" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFFFFF" />
+      <stop offset="100%" stopColor="#F7F4EF" />
+    </linearGradient>
+    <radialGradient id="mimo-cheekBlush" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#FFB3A7" stopOpacity="0.65" />
+      <stop offset="100%" stopColor="#FFB3A7" stopOpacity="0" />
+    </radialGradient>
+    <linearGradient id="mimo-collarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFB199" />
+      <stop offset="100%" stopColor="#FF8C42" />
+    </linearGradient>
+    <linearGradient id="mimo-bellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFE899" />
+      <stop offset="100%" stopColor="#FFD166" />
+    </linearGradient>
+  </defs>
+);
+
+// Body + ears + collar — identical across all four moods. Only the face
+// (eyes/brows/nose/mouth) and cheek blush differ per mood, passed as children.
+const MimoBody = ({ children }) => (
+  <>
+    {/* soft contact shadow */}
+    <ellipse cx="100" cy="193" rx="48" ry="7" fill="#000000" opacity="0.10" />
+
+    {/* tail, curled around right side, behind body */}
+    <path
+      d="M138 178 Q170 186 180 156 Q188 130 170 108 Q158 98 150 104 Q165 112 168 132 Q170 154 152 168 Q146 174 138 178 Z"
+      fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
+    />
+    <ellipse cx="155" cy="112" rx="9" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    <path d="M154 116 Q163 122 166 138" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
+
+    {/* back paws peeking */}
+    <ellipse cx="66" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    <ellipse cx="134" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+
+    {/* body */}
+    <ellipse cx="100" cy="148" rx="52" ry="46" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+
+    {/* belly patch */}
+    <ellipse cx="100" cy="160" rx="32" ry="30" fill="url(#mimo-bellyFur)" />
+
+    {/* front paws */}
+    <ellipse cx="75" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
+    <ellipse cx="125" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
+    <path d="M69 187 Q75 191 81 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    <path d="M119 187 Q125 191 131 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+
+    {/* left ear (head circle drawn after, overlapping the base, so there's no seam) */}
+    <path
+      d="M52 64 Q36 22 66 12 Q86 18 82 54 Q67 50 52 64 Z"
+      fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
+    />
+    <path d="M58 54 Q50 30 66 22 Q77 28 74 48 Q66 44 58 54 Z" fill="url(#mimo-earInner)" />
+
+    {/* right ear */}
+    <path
+      d="M148 64 Q164 22 134 12 Q114 18 118 54 Q133 50 148 64 Z"
+      fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
+    />
+    <path d="M142 54 Q150 30 134 22 Q123 28 126 48 Q134 44 142 54 Z" fill="url(#mimo-earInner)" />
+
+    {/* head */}
+    <circle cx="100" cy="96" r="60" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" />
+
+    {/* tabby brow-stripe marking, subtle, on every mood */}
+    <path d="M84 48 Q89 39 94 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
+    <path d="M106 48 Q111 39 116 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
+    <path d="M97 39 L100 54 L103 39" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.6" />
+
+    {/* per-mood face content (blush, eyes, brows, nose, mouth, extras) */}
+    {children}
+
+    {/* whiskers */}
+    <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
+
+    {/* collar + bell, sitting with a visible neck gap below the chin */}
+    <path d="M66 134 Q100 148 134 134 L131 144 Q100 156 69 144 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.5" />
+    <circle cx="100" cy="149" r="8.5" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="1.5" />
+    <path d="M95.5 149 L104.5 149 M100 146.5 L100 151.5" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
+    <circle cx="100" cy="152.5" r="1.4" fill="#B8842A" />
+  </>
+);
+
+// ---- Per-mood face content ----
+
+const FaceIdle = () => (
+  <>
+    <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+
+    <ellipse cx="76" cy="94" rx="15" ry="17" fill="#3A3F4B" />
+    <ellipse cx="76" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
+    <ellipse cx="76" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
+    <circle cx="81" cy="86" r="5.5" fill="#FFFFFF" />
+    <circle cx="71" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+
+    <ellipse cx="124" cy="94" rx="15" ry="17" fill="#3A3F4B" />
+    <ellipse cx="124" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
+    <ellipse cx="124" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
+    <circle cx="129" cy="86" r="5.5" fill="#FFFFFF" />
+    <circle cx="119" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+
+    <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
+    <path d="M100 123 Q100 128 91 129 M100 123 Q100 128 109 129" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" fill="none" />
+  </>
+);
+
+const FaceHappy = () => (
+  <>
+    <ellipse cx="58" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="142" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
+
+    <path d="M62 94 Q76 78 90 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
+    <path d="M110 94 Q124 78 138 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
+
+    <path d="M93 110 Q100 106 107 110 Q103 116 100 117 Q97 116 93 110 Z" fill="#FF9E92" />
+
+    <path d="M84 116 Q100 134 116 116 Q108 126 100 126 Q92 126 84 116 Z" fill="#C76B5D" />
+    <path d="M84 116 Q100 134 116 116" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
+    <ellipse cx="100" cy="120" rx="6" ry="3.5" fill="#FF8A7D" />
+  </>
+);
+
+const FaceSad = () => (
+  <>
+    {/* no blush when sad */}
+    <path d="M62 92 Q76 86 90 94" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
+    <ellipse cx="76" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <path d="M63 92 Q76 86 89 92 L89 98 Q76 91 63 98 Z" fill="url(#mimo-furHead)" />
+    <ellipse cx="76" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
+    <circle cx="80" cy="98" r="3.8" fill="#FFFFFF" />
+
+    <path d="M110 94 Q124 86 138 92" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
+    <ellipse cx="124" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <path d="M111 92 Q124 86 137 92 L137 98 Q124 91 111 98 Z" fill="url(#mimo-furHead)" />
+    <ellipse cx="124" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
+    <circle cx="128" cy="98" r="3.8" fill="#FFFFFF" />
+
+    <path d="M64 80 Q76 84 86 80" fill="none" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+    <path d="M114 80 Q124 84 136 80" fill="none" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+
+    <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
+    <path d="M88 128 Q100 119 112 128" stroke="#7A7F8C" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+  </>
+);
+
+const FaceThinking = () => (
+  <>
+    <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
+    <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
+
+    <ellipse cx="76" cy="94" rx="14" ry="16" fill="#3A3F4B" />
+    <ellipse cx="76" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
+    <ellipse cx="80" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
+    <circle cx="83" cy="85" r="5" fill="#FFFFFF" />
+
+    <ellipse cx="124" cy="94" rx="14" ry="16" fill="#3A3F4B" />
+    <ellipse cx="124" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
+    <ellipse cx="128" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
+    <circle cx="131" cy="85" r="5" fill="#FFFFFF" />
+
+    {/* one raised brow for a curious/pondering look */}
+    <path d="M108 76 Q124 68 138 75" fill="none" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
+
+    <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
+    <ellipse cx="100" cy="125" rx="4.5" ry="3.5" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
+
+    {/* thought-dot trail, floating in open space above the head */}
+    <circle cx="148" cy="28" r="3.5" fill="#C9CDD4" opacity="0.8" />
+    <circle cx="158" cy="18" r="2.5" fill="#C9CDD4" opacity="0.6" />
+    <circle cx="166" cy="9" r="1.7" fill="#C9CDD4" opacity="0.45" />
+  </>
+);
+
+const FACES = {
+  idle: FaceIdle,
+  happy: FaceHappy,
+  sad: FaceSad,
+  thinking: FaceThinking,
+};
+
 const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
   const pixelSize = SIZE_MAP[size] || SIZE_MAP.medium;
+  const Face = FACES[mood] || FACES.idle;
 
   const variants = {
     idle: { y: [0, -10, 0], rotate: [0, 1.5, 0, -1.5, 0], transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } },
@@ -30,81 +248,22 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
         onClick={handleClick}
         whileHover={{ scale: 1.06, rotate: 4 }}
         whileTap={{ scale: 0.94 }}
-        className="cursor-pointer drop-shadow-xl"
+        className="cursor-pointer"
         style={{ filter: 'drop-shadow(0px 10px 14px rgba(0,0,0,0.18))' }}
       >
-        <svg width={pixelSize} height={pixelSize} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Ekor */}
-          <path d="M160 140 Q190 120 170 90 Q150 110 160 140" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3"/>
-
-          {/* Badan */}
-          <ellipse cx="100" cy="120" rx="60" ry="50" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3"/>
-
-          {/* Perut Putih */}
-          <ellipse cx="100" cy="130" rx="35" ry="30" fill="#FFF0E0" />
-
-          {/* Kepala */}
-          <circle cx="100" cy="80" r="50" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3"/>
-
-          {/* Telinga Kiri */}
-          <path d="M60 50 L50 20 L80 45 Z" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3" strokeLinejoin="round"/>
-          <path d="M55 45 L60 30 L70 45 Z" fill="#FFCCCC" />
-
-          {/* Telinga Kanan */}
-          <path d="M140 50 L150 20 L120 45 Z" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3" strokeLinejoin="round"/>
-          <path d="M145 45 L140 30 L130 45 Z" fill="#FFCCCC" />
-
-          {mood === 'sad' ? (
-            <>
-              {/* Mata sedih (melengkung ke bawah) */}
-              <path d="M78 78 Q85 68 92 78" fill="none" stroke="#333" strokeWidth="3" strokeLinecap="round"/>
-              <path d="M108 78 Q115 68 122 78" fill="none" stroke="#333" strokeWidth="3" strokeLinecap="round"/>
-            </>
-          ) : (
-            <>
-              {/* Mata Kiri */}
-              <ellipse cx="85" cy="75" rx="8" ry="10" fill="white" stroke="#333" strokeWidth="2"/>
-              <circle cx="87" cy="75" r="4" fill="black"/>
-              <circle cx="88" cy="73" r="1.5" fill="white"/>
-
-              {/* Mata Kanan */}
-              <ellipse cx="115" cy="75" rx="8" ry="10" fill="white" stroke="#333" strokeWidth="2"/>
-              <circle cx="117" cy="75" r="4" fill="black"/>
-              <circle cx="118" cy="73" r="1.5" fill="white"/>
-            </>
-          )}
-
-          {/* Hidung */}
-          <path d="M95 88 L105 88 L100 94 Z" fill="#FF6B6B" stroke="#333" strokeWidth="1"/>
-
-          {/* Mulut: melengkung sesuai mood */}
-          {mood === 'sad' ? (
-            <path d="M90 102 Q100 95 110 102" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-          ) : mood === 'happy' ? (
-            <path d="M85 98 Q100 112 115 98" fill="none" stroke="#333" strokeWidth="2.5" strokeLinecap="round"/>
-          ) : (
-            <path d="M90 98 Q100 105 110 98" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-          )}
-
-          {/* Kumis */}
-          <path d="M70 90 Q50 90 40 85 M70 95 Q50 95 40 100" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-          <path d="M130 90 Q150 90 160 85 M130 95 Q150 95 160 100" stroke="#333" strokeWidth="2" strokeLinecap="round"/>
-
-          {/* Pipi merona saat senang */}
-          {mood === 'happy' && (
-            <>
-              <ellipse cx="72" cy="88" rx="8" ry="5" fill="#FF9F9F" opacity="0.6"/>
-              <ellipse cx="128" cy="88" rx="8" ry="5" fill="#FF9F9F" opacity="0.6"/>
-            </>
-          )}
-
-          {/* Kaki Depan */}
-          <ellipse cx="80" cy="160" rx="15" ry="10" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3"/>
-          <ellipse cx="120" cy="160" rx="15" ry="10" fill="#FF9F43" stroke="#EE5A24" strokeWidth="3"/>
-
-          {/* Kaki Belakang */}
-          <ellipse cx="70" cy="150" rx="12" ry="8" fill="#EE5A24" opacity="0.8"/>
-          <ellipse cx="130" cy="150" rx="12" ry="8" fill="#EE5A24" opacity="0.8"/>
+        <svg
+          width={pixelSize}
+          height={pixelSize * (212 / 200)}
+          viewBox="0 0 200 212"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label={`Mimo si maskot, sedang ${mood === 'idle' ? 'santai' : mood === 'happy' ? 'senang' : mood === 'sad' ? 'sedih' : 'berpikir'}`}
+        >
+          <MimoDefs />
+          <MimoBody>
+            <Face />
+          </MimoBody>
         </svg>
 
         {/* Bubble Chat */}
@@ -124,4 +283,3 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
 };
 
 export default Mascot;
-
