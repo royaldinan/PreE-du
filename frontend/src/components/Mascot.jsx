@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { audioManager } from '../utils/audioManager';
 
 // ============================================================================
-// Mimo — the PreE-du mascot. Super Chibi, Mochi-like, and extra cute for kids!
+// Mimo — the PreE-du mascot. Ultra-Chibi, Mochi-like, and extra cute for kids!
+// Designed to be "huggable" with soft pastel colors, toe beans, and squishy animations.
 // ============================================================================
 
 const SIZE_MAP = {
@@ -52,11 +53,11 @@ const MimoDefs = () => (
   </defs>
 );
 
-// Body + Ears + Tail + Paws
+// Body + Ears + Tail + Paws (Mochi Style)
 const MimoBody = ({ children }) => (
   <>
     {/* Soft Contact Shadow */}
-    <ellipse cx="100" cy="198" rx="55" ry="8" fill="#000000" opacity="0.08" />
+    <ellipse cx="100" cy="205" rx="55" ry="8" fill="#000000" opacity="0.08" />
 
     {/* Fluffy Cloud Tail */}
     <g>
@@ -64,7 +65,7 @@ const MimoBody = ({ children }) => (
         d="M 135 165 C 180 180, 210 130, 180 90 C 160 60, 130 80, 150 110 C 165 130, 155 155, 135 165 Z"
         fill="url(#mimo-furBody)"
         stroke="#D1D5DB"
-        strokeWidth="2"
+        strokeWidth="2.5"
         strokeLinejoin="round"
       />
       <path d="M 160 100 Q 170 110 165 120" stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" fill="none" />
@@ -72,8 +73,8 @@ const MimoBody = ({ children }) => (
     </g>
 
     {/* Back Paws (Small, peeking) */}
-    <ellipse cx="65" cy="185" rx="15" ry="10" fill="url(#mimo-furBody)" stroke="#D1D5DB" strokeWidth="2" />
-    <ellipse cx="135" cy="185" rx="15" ry="10" fill="url(#mimo-furBody)" stroke="#D1D5DB" strokeWidth="2" />
+    <ellipse cx="65" cy="188" rx="15" ry="10" fill="url(#mimo-furBody)" stroke="#D1D5DB" strokeWidth="2" />
+    <ellipse cx="135" cy="188" rx="15" ry="10" fill="url(#mimo-furBody)" stroke="#D1D5DB" strokeWidth="2" />
 
     {/* Small Chibi Body (Bean shape) */}
     <ellipse cx="100" cy="165" rx="45" ry="35" fill="url(#mimo-furBody)" stroke="#D1D5DB" strokeWidth="2.5" />
@@ -83,18 +84,18 @@ const MimoBody = ({ children }) => (
 
     {/* Front Mochi Paws with Toe Beans! */}
     <g>
-      <ellipse cx="70" cy="190" rx="16" ry="12" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="2" />
-      <ellipse cx="70" cy="186" rx="4.5" ry="3.5" fill="#FFB8C9" />
-      <circle cx="63" cy="192" r="2" fill="#FFB8C9" />
-      <circle cx="70" cy="194" r="2.5" fill="#FFB8C9" />
-      <circle cx="77" cy="192" r="2" fill="#FFB8C9" />
+      <ellipse cx="70" cy="192" rx="16" ry="12" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="2" />
+      <ellipse cx="70" cy="188" rx="4.5" ry="3.5" fill="#FFB8C9" />
+      <circle cx="63" cy="194" r="2" fill="#FFB8C9" />
+      <circle cx="70" cy="196" r="2.5" fill="#FFB8C9" />
+      <circle cx="77" cy="194" r="2" fill="#FFB8C9" />
     </g>
     <g>
-      <ellipse cx="130" cy="190" rx="16" ry="12" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="2" />
-      <ellipse cx="130" cy="186" rx="4.5" ry="3.5" fill="#FFB8C9" />
-      <circle cx="123" cy="192" r="2" fill="#FFB8C9" />
-      <circle cx="130" cy="194" r="2.5" fill="#FFB8C9" />
-      <circle cx="137" cy="192" r="2" fill="#FFB8C9" />
+      <ellipse cx="130" cy="192" rx="16" ry="12" fill="#FFFFFF" stroke="#D1D5DB" strokeWidth="2" />
+      <ellipse cx="130" cy="188" rx="4.5" ry="3.5" fill="#FFB8C9" />
+      <circle cx="123" cy="194" r="2" fill="#FFB8C9" />
+      <circle cx="130" cy="196" r="2.5" fill="#FFB8C9" />
+      <circle cx="137" cy="194" r="2" fill="#FFB8C9" />
     </g>
 
     {/* Rounder Soft Ears */}
@@ -107,7 +108,7 @@ const MimoBody = ({ children }) => (
       <path d="M 150 55 Q 175 25 138 32 Q 125 38 122 50 Z" fill="url(#mimo-earInner)" />
     </g>
 
-    {/* Big Chibi Head */}
+    {/* Big Chibi Head (18% larger) */}
     <circle cx="100" cy="95" r="72" fill="url(#mimo-furHead)" stroke="#D1D5DB" strokeWidth="2.5" />
 
     {/* Cute Hair Tuft */}
@@ -117,20 +118,29 @@ const MimoBody = ({ children }) => (
     {children}
 
     {/* Collar */}
-    <path d="M 55 142 Q 100 160 145 142 L 142 150 Q 100 168 58 150 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1" opacity="0.95" />
+    <path d="M 55 145 Q 100 165 145 145 L 142 153 Q 100 173 58 153 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1" opacity="0.95" />
     
-    {/* Swinging Bell */}
-    <motion.g
-      animate={{ rotate: [-12, 12, -12] }}
-      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      style={{ originX: "100px", originY: "152px" }}
-    >
-      <circle cx="100" cy="162" r="10" fill="url(#mimo-bellGrad)" stroke="#D4AF37" strokeWidth="1.5" />
-      <path d="M 93 162 L 107 162" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M 100 162 L 100 168" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="100" cy="168" r="2" fill="#B8842A" />
-      <circle cx="97" cy="158" r="2.5" fill="#FFFFFF" opacity="0.6" />
-    </motion.g>
+    {/* Swinging Bell (Native SVG Animation for smooth pendulum effect) */}
+    <g transform="translate(100, 152)">
+      <animateTransform 
+        attributeName="transform" 
+        type="rotate" 
+        values="-15; 15; -15" 
+        keyTimes="0; 0.5; 1"
+        calcMode="spline"
+        keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"
+        dur="2s" 
+        repeatCount="indefinite" 
+        additive="sum"
+      />
+      <g transform="translate(-100, -152)">
+        <circle cx="100" cy="162" r="10" fill="url(#mimo-bellGrad)" stroke="#D4AF37" strokeWidth="1.5" />
+        <path d="M 93 162 L 107 162" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M 100 162 L 100 168" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="100" cy="168" r="2" fill="#B8842A" />
+        <circle cx="97" cy="158" r="2.5" fill="#FFFFFF" opacity="0.6" />
+      </g>
+    </g>
   </>
 );
 
@@ -140,26 +150,28 @@ const FaceIdle = () => (
     <ellipse cx="35" cy="115" rx="18" ry="12" fill="url(#mimo-cheekBlush)" />
     <ellipse cx="165" cy="115" rx="18" ry="12" fill="url(#mimo-cheekBlush)" />
 
-    {/* Left Eye with Blink */}
-    <g transform-origin="65 100">
-      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="4s" repeatCount="indefinite" />
-      <ellipse cx="65" cy="100" rx="20" ry="23" fill="url(#mimo-eyeShine)" />
-      <ellipse cx="68" cy="105" rx="12" ry="14" fill="#1E5266" />
-      {/* 3 Highlights */}
-      <circle cx="58" cy="88" r="7" fill="#FFFFFF" />
-      <circle cx="74" cy="112" r="4" fill="#FFFFFF" />
-      <circle cx="64" cy="98" r="2" fill="#FFFFFF" />
+    {/* Left Eye with Blink (35% larger + 3 Highlights) */}
+    <g transform="translate(65, 100)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.05; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="4s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-65, -100)">
+        <ellipse cx="65" cy="100" rx="20" ry="24" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="68" cy="105" rx="12" ry="14" fill="#1E5266" />
+        <circle cx="58" cy="88" r="7" fill="#FFFFFF" />
+        <circle cx="74" cy="112" r="4" fill="#FFFFFF" />
+        <circle cx="64" cy="98" r="2" fill="#FFFFFF" />
+      </g>
     </g>
 
     {/* Right Eye with Blink */}
-    <g transform-origin="135 100">
-      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="4s" repeatCount="indefinite" />
-      <ellipse cx="135" cy="100" rx="20" ry="23" fill="url(#mimo-eyeShine)" />
-      <ellipse cx="132" cy="105" rx="12" ry="14" fill="#1E5266" />
-      {/* 3 Highlights */}
-      <circle cx="128" cy="88" r="7" fill="#FFFFFF" />
-      <circle cx="144" cy="112" r="4" fill="#FFFFFF" />
-      <circle cx="134" cy="98" r="2" fill="#FFFFFF" />
+    <g transform="translate(135, 100)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.05; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="4s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-135, -100)">
+        <ellipse cx="135" cy="100" rx="20" ry="24" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="132" cy="105" rx="12" ry="14" fill="#1E5266" />
+        <circle cx="128" cy="88" r="7" fill="#FFFFFF" />
+        <circle cx="144" cy="112" r="4" fill="#FFFFFF" />
+        <circle cx="134" cy="98" r="2" fill="#FFFFFF" />
+      </g>
     </g>
 
     <ellipse cx="100" cy="118" rx="5" ry="3.5" fill="#FF9E92" />
@@ -197,25 +209,24 @@ const FaceSad = () => (
     <path d="M 45 80 Q 60 70 75 75" stroke="#B8BEC8" strokeWidth="3" strokeLinecap="round" fill="none" />
     <path d="M 155 80 Q 140 70 125 75" stroke="#B8BEC8" strokeWidth="3" strokeLinecap="round" fill="none" />
 
-    <g transform-origin="65 105">
+    <g transform="translate(65, 105)">
       <ellipse cx="65" cy="105" rx="18" ry="22" fill="url(#mimo-eyeShine)" />
       <ellipse cx="65" cy="112" rx="12" ry="14" fill="#1E5266" />
       <circle cx="60" cy="95" r="8" fill="#FFFFFF" />
       <circle cx="72" cy="115" r="4" fill="#FFFFFF" />
     </g>
-    <g transform-origin="135 105">
+    <g transform="translate(135, 105)">
       <ellipse cx="135" cy="105" rx="18" ry="22" fill="url(#mimo-eyeShine)" />
       <ellipse cx="135" cy="112" rx="12" ry="14" fill="#1E5266" />
       <circle cx="130" cy="95" r="8" fill="#FFFFFF" />
       <circle cx="142" cy="115" r="4" fill="#FFFFFF" />
     </g>
 
-    <motion.path
-      d="M 40 125 Q 35 135 40 140 Q 45 135 40 125 Z"
-      fill="#9FE8F5"
-      animate={{ y: [0, 10, 0], opacity: [1, 0, 1] }}
-      transition={{ duration: 2, repeat: Infinity, ease: "easeIn" }}
-    />
+    {/* Falling Tear Animation */}
+    <path d="M 40 125 Q 35 135 40 140 Q 45 135 40 125 Z" fill="#9FE8F5">
+      <animate attributeName="opacity" values="0; 1; 0" dur="2s" repeatCount="indefinite" />
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 15; 0 20" dur="2s" repeatCount="indefinite" />
+    </path>
 
     <ellipse cx="100" cy="120" rx="4.5" ry="3" fill="#FF9E92" />
     <path d="M 90 132 Q 100 124 110 132" stroke="#7A7F8C" strokeWidth="2.5" strokeLinecap="round" fill="none" />
@@ -230,27 +241,38 @@ const FaceThinking = () => (
     <path d="M 45 75 Q 60 65 75 75" stroke="#B8BEC8" strokeWidth="3" strokeLinecap="round" fill="none" />
     <path d="M 125 85 Q 140 85 155 80" stroke="#B8BEC8" strokeWidth="3" strokeLinecap="round" fill="none" />
 
-    <g transform-origin="65 100">
-      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="5s" repeatCount="indefinite" />
-      <ellipse cx="65" cy="100" rx="20" ry="23" fill="url(#mimo-eyeShine)" />
-      <ellipse cx="72" cy="95" rx="12" ry="14" fill="#1E5266" />
-      <circle cx="68" cy="88" r="6" fill="#FFFFFF" />
-      <circle cx="78" cy="100" r="3" fill="#FFFFFF" />
+    <g transform="translate(65, 100)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.05; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="5s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-65, -100)">
+        <ellipse cx="65" cy="100" rx="20" ry="24" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="72" cy="95" rx="12" ry="14" fill="#1E5266" />
+        <circle cx="68" cy="88" r="6" fill="#FFFFFF" />
+        <circle cx="78" cy="100" r="3" fill="#FFFFFF" />
+      </g>
     </g>
-    <g transform-origin="135 100">
-      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="5s" repeatCount="indefinite" />
-      <ellipse cx="135" cy="100" rx="20" ry="23" fill="url(#mimo-eyeShine)" />
-      <ellipse cx="142" cy="95" rx="12" ry="14" fill="#1E5266" />
-      <circle cx="138" cy="88" r="6" fill="#FFFFFF" />
-      <circle cx="148" cy="100" r="3" fill="#FFFFFF" />
+    <g transform="translate(135, 100)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.05; 1 1; 1 1" keyTimes="0; 0.02; 0.04; 1" dur="5s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-135, -100)">
+        <ellipse cx="135" cy="100" rx="20" ry="24" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="142" cy="95" rx="12" ry="14" fill="#1E5266" />
+        <circle cx="138" cy="88" r="6" fill="#FFFFFF" />
+        <circle cx="148" cy="100" r="3" fill="#FFFFFF" />
+      </g>
     </g>
 
     <ellipse cx="100" cy="118" rx="5" ry="3.5" fill="#FF9E92" />
     <circle cx="105" cy="128" r="4" fill="none" stroke="#7A7F8C" strokeWidth="2.5" />
 
-    <motion.circle cx="160" cy="50" r="5" fill="#D1D5DB" animate={{ y: [0, -5, 0], scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }} />
-    <motion.circle cx="175" cy="35" r="3.5" fill="#D1D5DB" animate={{ y: [0, -5, 0], scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.2 }} />
-    <motion.circle cx="185" cy="20" r="2" fill="#D1D5DB" animate={{ y: [0, -5, 0], scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.4 }} />
+    {/* Floating Thought Bubbles */}
+    <circle cx="160" cy="50" r="5" fill="#D1D5DB">
+      <animate attributeName="cy" values="50; 45; 50" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="175" cy="35" r="3.5" fill="#D1D5DB">
+      <animate attributeName="cy" values="35; 30; 35" dur="2s" begin="0.3s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="185" cy="20" r="2" fill="#D1D5DB">
+      <animate attributeName="cy" values="20; 15; 20" dur="2s" begin="0.6s" repeatCount="indefinite" />
+    </circle>
   </>
 );
 
@@ -265,6 +287,7 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
   const pixelSize = SIZE_MAP[size] || SIZE_MAP.medium;
   const Face = FACES[mood] || FACES.idle;
   
+  // Squishy Bounce Variants (Mochi / Jelly Effect)
   const variants = {
     idle: {
       y: [0, -12, 0],
@@ -309,8 +332,8 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
       >
         <svg
           width={pixelSize}
-          height={pixelSize * (212 / 200)}
-          viewBox="0 0 200 212"
+          height={pixelSize * (220 / 200)}
+          viewBox="0 0 200 220"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
@@ -322,12 +345,12 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
           </MimoBody>
         </svg>
 
-        {/* Bubble Chat */}
+        {/* Bubble Chat (Candy Pastel Theme) */}
         {message && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-5 py-2.5 rounded-2xl shadow-xl border-2 border-pink-200 whitespace-nowrap z-20"
+            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-5 py-2.5 rounded-3xl shadow-xl border-2 border-pink-200 whitespace-nowrap z-20"
           >
             <p className="text-sm font-bold text-gray-700">{message}</p>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-b-2 border-r-2 border-pink-200 rotate-45"></div>
