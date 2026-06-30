@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { audioManager } from '../utils/audioManager';
 
 // ============================================================================
-// Mimo — the PreE-du mascot. 
-// Graduation Edition with President University inspired colors!
-// Navy Blue mortarboard with Gold tassel that sways with movement.
+// Mimo — the PreE-du mascot. Cool & Energetic Edition for Boys!
+// President University colors with sporty vibes and fun animations.
+// Less kawaii, more adventurous!
 // ============================================================================
 
 const SIZE_MAP = {
@@ -35,9 +35,11 @@ const MimoDefs = () => (
       <stop offset="0%" stopColor="#FFFFFF" />
       <stop offset="100%" stopColor="#F7F4EF" />
     </linearGradient>
+    
+    {/* Sporty Cheek Blush - Orange instead of Pink! */}
     <radialGradient id="mimo-cheekBlush" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stopColor="#FFB3A7" stopOpacity="0.65" />
-      <stop offset="100%" stopColor="#FFB3A7" stopOpacity="0" />
+      <stop offset="0%" stopColor="#FFA500" stopOpacity="0.7" />
+      <stop offset="100%" stopColor="#FFA500" stopOpacity="0" />
     </radialGradient>
     
     {/* President University Colors */}
@@ -51,10 +53,10 @@ const MimoDefs = () => (
       <stop offset="100%" stopColor="#F6AD55" />
     </linearGradient>
     
-    {/* Original Collar & Bell */}
+    {/* Sporty Collar with Racing Stripes */}
     <linearGradient id="mimo-collarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#FFB199" />
-      <stop offset="100%" stopColor="#FF8C42" />
+      <stop offset="0%" stopColor="#FF8C42" />
+      <stop offset="100%" stopColor="#FF6B35" />
     </linearGradient>
     <linearGradient id="mimo-bellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#FFE899" />
@@ -90,22 +92,22 @@ const MimoBody = ({ children }) => (
     {/* Belly patch */}
     <ellipse cx="100" cy="158" rx="33" ry="31" fill="url(#mimo-bellyFur)" />
 
-    {/* Front paws with MOCHI TOE BEANS! 🐾 */}
+    {/* Front paws with NEUTRAL TOE BEANS (Grey instead of Pink!) 🐾 */}
     <g>
       <ellipse cx="78" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
       <path d="M71 185 Q78 189 85 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      <ellipse cx="78" cy="184" rx="5" ry="3.5" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="72" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="78" cy="177" r="2" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="84" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
+      <ellipse cx="78" cy="184" rx="5" ry="3.5" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="72" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="78" cy="177" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="84" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
     </g>
     <g>
       <ellipse cx="122" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
       <path d="M115 185 Q122 189 129 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      <ellipse cx="122" cy="184" rx="5" ry="3.5" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="116" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="122" cy="177" r="2" fill="#FFB3C6" opacity="0.85" />
-      <circle cx="128" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
+      <ellipse cx="122" cy="184" rx="5" ry="3.5" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="116" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="122" cy="177" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="128" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
     </g>
 
     {/* Left ear */}
@@ -127,12 +129,13 @@ const MimoBody = ({ children }) => (
     {/* Per-mood face content */}
     {children}
 
-    {/* Whiskers */}
-    <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
-    <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
+    {/* Whiskers - Thicker and more confident */}
+    <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#B8BEC8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#B8BEC8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
 
-    {/* Collar */}
-    <path d="M70 138 Q100 148 130 138 L128 145 Q100 154 72 145 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.2" opacity="0.92" />
+    {/* Sporty Collar with Racing Stripes */}
+    <path d="M70 138 Q100 148 130 138 L128 145 Q100 154 72 145 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.5" opacity="0.95" />
+    <path d="M75 141 Q100 150 125 141" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
     
     {/* Swinging Bell */}
     <g transform="translate(100, 142)">
@@ -142,65 +145,73 @@ const MimoBody = ({ children }) => (
         dur="2s" repeatCount="indefinite" additive="sum" 
       />
       <g transform="translate(-100, -142)">
-        <circle cx="100" cy="149" r="9" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="1.5" />
-        <path d="M95 149 L105 149 M100 146 L100 152" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
-        <circle cx="100" cy="153" r="1.5" fill="#B8842A" />
-        <circle cx="97" cy="146" r="2" fill="#FFFFFF" opacity="0.6" />
+        <circle cx="100" cy="149" r="10" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="2" />
+        <path d="M94 149 L106 149 M100 145 L100 153" stroke="#E8AE3D" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="100" cy="154" r="2" fill="#B8842A" />
+        <circle cx="96" cy="145" r="2.5" fill="#FFFFFF" opacity="0.7" />
       </g>
     </g>
 
-    {/* 🎓 GRADUATION CAP (Mortarboard) - President University Colors */}
+    {/* 🎓 GRADUATION CAP (Mortarboard) - President University Colors - COOL EDITION */}
     <g transform="translate(100, 38)">
       {/* Cap base (skull cap) */}
-      <ellipse cx="0" cy="8" rx="38" ry="14" fill="url(#president-navy)" stroke="#1A365D" strokeWidth="1.5" />
+      <ellipse cx="0" cy="8" rx="40" ry="15" fill="url(#president-navy)" stroke="#1A365D" strokeWidth="2" />
       
       {/* Mortarboard (square top) */}
       <path 
-        d="M -42 -2 L 42 -2 L 38 12 L -38 12 Z" 
+        d="M -44 -2 L 44 -2 L 40 14 L -40 14 Z" 
         fill="url(#president-navy)" 
         stroke="#1A365D" 
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinejoin="round"
       />
       
-      {/* Gold trim on top board */}
+      {/* BOLD Gold stripe on top board */}
       <path 
-        d="M -38 2 L 38 2" 
+        d="M -40 3 L 40 3" 
         stroke="url(#president-gold)" 
-        strokeWidth="2.5" 
+        strokeWidth="4" 
         strokeLinecap="round"
       />
       
-      {/* Button on top (holds tassel) */}
-      <circle cx="0" cy="2" r="4" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1" />
-      <circle cx="-1" cy="1" r="1.5" fill="#FFFFFF" opacity="0.5" />
+      {/* ⭐ STAR EMBLEM in center */}
+      <path 
+        d="M 0 -2 L 2 4 L 8 4 L 3 7 L 5 13 L 0 9 L -5 13 L -3 7 L -8 4 L -2 4 Z" 
+        fill="url(#president-gold)" 
+        stroke="#D69E2E" 
+        strokeWidth="1"
+      />
       
-      {/* 🎓 Animated Tassel (Rumbai) */}
+      {/* Button on top (holds tassel) */}
+      <circle cx="0" cy="2" r="5" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1.5" />
+      <circle cx="-1" cy="1" r="2" fill="#FFFFFF" opacity="0.5" />
+      
+      {/* 🎓 Animated Tassel (Rumbai) - Longer and more dramatic */}
       <g transform="translate(0, 2)">
         <animateTransform 
           attributeName="transform" 
           type="rotate" 
-          values="-8; 8; -8" 
+          values="-10; 10; -10" 
           keyTimes="0; 0.5; 1"
           calcMode="spline"
           keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"
-          dur="3s" 
+          dur="2.5s" 
           repeatCount="indefinite"
         />
         <g transform="translate(0, -2)">
           {/* Tassel cord */}
-          <path d="M 0 2 Q 15 20 12 32" stroke="url(#president-gold)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <path d="M 0 2 Q 18 25 15 40" stroke="url(#president-gold)" strokeWidth="3" fill="none" strokeLinecap="round" />
           
           {/* Tassel fringe (berumbai) */}
-          <path d="M 12 32 L 8 42 M 12 32 L 10 42 M 12 32 L 12 42 M 12 32 L 14 42 M 12 32 L 16 42" 
+          <path d="M 15 40 L 10 52 M 15 40 L 12 52 M 15 40 L 15 52 M 15 40 L 18 52 M 15 40 L 20 52" 
                 stroke="url(#president-gold)" 
-                strokeWidth="1.8" 
+                strokeWidth="2" 
                 strokeLinecap="round" 
                 fill="none" 
           />
           
           {/* Tassel knot */}
-          <circle cx="12" cy="32" r="3" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="0.8" />
+          <circle cx="15" cy="40" r="4" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1" />
         </g>
       </g>
     </g>
@@ -249,14 +260,33 @@ const FaceHappy = () => (
     <ellipse cx="58" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
     <ellipse cx="142" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
 
+    {/* Big confident smile */}
     <path d="M62 94 Q76 78 90 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
     <path d="M110 94 Q124 78 138 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
 
     <path d="M93 110 Q100 106 107 110 Q103 116 100 117 Q97 116 93 110 Z" fill="#FF9E92" />
 
-    <path d="M84 116 Q100 134 116 116 Q108 126 100 126 Q92 126 84 116 Z" fill="#C76B5D" />
-    <path d="M84 116 Q100 134 116 116" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
-    <ellipse cx="100" cy="120" rx="6" ry="3.5" fill="#FF8A7D" />
+    {/* Wide open mouth - more energetic */}
+    <path d="M80 116 Q100 140 120 116 Q110 130 100 130 Q90 130 80 116 Z" fill="#C76B5D" />
+    <path d="M80 116 Q100 140 120 116" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
+    <ellipse cx="100" cy="122" rx="7" ry="4" fill="#FF8A7D" />
+
+    {/* ⚡ LIGHTNING BOLTS around head - Cool effect! */}
+    <g opacity="0.8">
+      <animateTransform attributeName="transform" type="scale" values="1; 1.2; 1" dur="0.8s" repeatCount="indefinite" />
+      <path d="M 40 60 L 45 55 L 43 65 L 48 62" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M 160 60 L 155 55 L 157 65 L 152 62" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    </g>
+
+    {/* 😎 SUNGLASSES (appears in happy mood!) */}
+    <g>
+      <ellipse cx="75" cy="95" rx="20" ry="15" fill="#1A202C" stroke="#2D3748" strokeWidth="2" />
+      <ellipse cx="125" cy="95" rx="20" ry="15" fill="#1A202C" stroke="#2D3748" strokeWidth="2" />
+      <path d="M 95 95 L 105 95" stroke="#2D3748" strokeWidth="3" strokeLinecap="round" />
+      {/* Shine on sunglasses */}
+      <path d="M 65 88 L 70 88" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+      <path d="M 115 88 L 120 88" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+    </g>
   </>
 );
 
@@ -320,7 +350,7 @@ const FaceThinking = () => (
     <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
     <ellipse cx="100" cy="125" rx="4.5" ry="3.5" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
 
-    {/* Animated Thought Bubbles */}
+    {/* ⚙️ GEAR in Thought Bubbles - More techy for boys! */}
     <circle cx="148" cy="28" r="3.5" fill="#C9CDD4" opacity="0.8">
       <animate attributeName="cy" values="28; 24; 28" dur="2s" repeatCount="indefinite" />
     </circle>
@@ -330,6 +360,13 @@ const FaceThinking = () => (
     <circle cx="166" cy="9" r="1.7" fill="#C9CDD4" opacity="0.45">
       <animate attributeName="cy" values="9; 5; 9" dur="2s" begin="0.6s" repeatCount="indefinite" />
     </circle>
+    
+    {/* Lightbulb moment */}
+    <g transform="translate(170, 5)">
+      <animate attributeName="opacity" values="0.6; 1; 0.6" dur="1.5s" repeatCount="indefinite" />
+      <circle cx="0" cy="0" r="4" fill="#FFD700" />
+      <path d="M 0 -4 L 0 -6 M -3 -3 L -4 -4 M 3 -3 L 4 -4" stroke="#FFD700" strokeWidth="1" strokeLinecap="round" />
+    </g>
   </>
 );
 
@@ -353,10 +390,10 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
       transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } 
     },
     happy: { 
-      scale: [1, 1.1, 1], 
-      y: [0, -18, 0], 
-      rotate: [0, -6, 6, 0], 
-      transition: { duration: 0.6, repeat: Infinity, ease: 'easeInOut' } 
+      scale: [1, 1.15, 1], 
+      y: [0, -25, 0], // Higher bounce!
+      rotate: [0, -8, 8, 0], 
+      transition: { duration: 0.5, repeat: Infinity, ease: 'easeInOut' } 
     },
     sad: { 
       y: [0, 4, 0], 
@@ -380,10 +417,10 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
       <motion.div
         animate={variants[mood] || variants.idle}
         onClick={handleClick}
-        whileHover={{ scale: 1.06, rotate: 4 }}
-        whileTap={{ scale: 0.94 }}
+        whileHover={{ scale: 1.08, rotate: 6 }}
+        whileTap={{ scale: 0.92 }}
         className="cursor-pointer"
-        style={{ filter: 'drop-shadow(0px 10px 14px rgba(0,0,0,0.18))', transformOrigin: 'bottom center' }}
+        style={{ filter: 'drop-shadow(0px 12px 16px rgba(0,0,0,0.2))', transformOrigin: 'bottom center' }}
       >
         <svg
           width={pixelSize}
@@ -400,15 +437,15 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
           </MimoBody>
         </svg>
 
-        {/* Bubble Chat */}
+        {/* Bubble Chat - Orange border for sporty look */}
         {message && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow-xl border-2 border-blue-300 whitespace-nowrap z-20"
+            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow-xl border-3 border-orange-500 whitespace-nowrap z-20"
           >
             <p className="text-sm font-bold text-gray-700">{message}</p>
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-b-2 border-r-2 border-blue-300 rotate-45"></div>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-b-3 border-r-3 border-orange-500 rotate-45"></div>
           </motion.div>
         )}
       </motion.div>
