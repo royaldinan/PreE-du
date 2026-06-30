@@ -4,9 +4,8 @@ import { audioManager } from '../utils/audioManager';
 
 // ============================================================================
 // Mimo — the PreE-du mascot. 
-// MERGED: Perfect anatomical proportions from Reference + Ultra-Cute Kawaii features.
-// No more "sick/hydrocephalic" head, no more "stubby" body. Just a healthy, 
-// huggable, mochi-like chibi cat with toe beans and lively animations!
+// Graduation Edition with President University inspired colors!
+// Navy Blue mortarboard with Gold tassel that sways with movement.
 // ============================================================================
 
 const SIZE_MAP = {
@@ -15,9 +14,9 @@ const SIZE_MAP = {
   large: 200,
 };
 
-// Shared gradient/def block — preserved exactly from your reference for visual consistency.
 const MimoDefs = () => (
   <defs>
+    {/* Fur Gradients - Preserved from Reference */}
     <linearGradient id="mimo-furBody" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#F4F5F7" />
       <stop offset="55%" stopColor="#E2E5EA" />
@@ -40,6 +39,19 @@ const MimoDefs = () => (
       <stop offset="0%" stopColor="#FFB3A7" stopOpacity="0.65" />
       <stop offset="100%" stopColor="#FFB3A7" stopOpacity="0" />
     </radialGradient>
+    
+    {/* President University Colors */}
+    <linearGradient id="president-navy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#2C5282" />
+      <stop offset="100%" stopColor="#1E3A8A" />
+    </linearGradient>
+    <linearGradient id="president-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFE066" />
+      <stop offset="50%" stopColor="#FFD700" />
+      <stop offset="100%" stopColor="#F6AD55" />
+    </linearGradient>
+    
+    {/* Original Collar & Bell */}
     <linearGradient id="mimo-collarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#FFB199" />
       <stop offset="100%" stopColor="#FF8C42" />
@@ -61,7 +73,7 @@ const MimoBody = ({ children }) => (
     {/* Soft contact shadow */}
     <ellipse cx="100" cy="193" rx="48" ry="7" fill="#000000" opacity="0.10" />
 
-    {/* Tail, curled around right side (Preserved from Reference) */}
+    {/* Tail, curled around right side */}
     <path
       d="M132 190 Q168 190 178 164 Q188 138 178 114 Q172 98 156 96 Q148 95 144 101 Q158 102 166 118 Q172 134 164 152 Q156 170 138 184 Q135 187 132 190 Z"
       fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
@@ -72,7 +84,7 @@ const MimoBody = ({ children }) => (
     <ellipse cx="70" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
     <ellipse cx="130" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
 
-    {/* Body — Full, round, and healthy! (rx=55, ry=48) */}
+    {/* Body — Full, round, and healthy! */}
     <ellipse cx="100" cy="145" rx="55" ry="48" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
 
     {/* Belly patch */}
@@ -82,7 +94,6 @@ const MimoBody = ({ children }) => (
     <g>
       <ellipse cx="78" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
       <path d="M71 185 Q78 189 85 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Toe Beans Added */}
       <ellipse cx="78" cy="184" rx="5" ry="3.5" fill="#FFB3C6" opacity="0.85" />
       <circle cx="72" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
       <circle cx="78" cy="177" r="2" fill="#FFB3C6" opacity="0.85" />
@@ -91,14 +102,13 @@ const MimoBody = ({ children }) => (
     <g>
       <ellipse cx="122" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
       <path d="M115 185 Q122 189 129 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Toe Beans Added */}
       <ellipse cx="122" cy="184" rx="5" ry="3.5" fill="#FFB3C6" opacity="0.85" />
       <circle cx="116" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
       <circle cx="122" cy="177" r="2" fill="#FFB3C6" opacity="0.85" />
       <circle cx="128" cy="179" r="2" fill="#FFB3C6" opacity="0.85" />
     </g>
 
-    {/* Left ear — Big, round, and soft */}
+    {/* Left ear */}
     <path d="M46 58 Q22 18 60 4 Q92 8 86 50 Q66 46 46 58 Z" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round" />
     <path d="M54 48 Q40 22 62 10 Q80 16 76 44 Q64 40 54 48 Z" fill="url(#mimo-earInner)" />
 
@@ -106,10 +116,10 @@ const MimoBody = ({ children }) => (
     <path d="M154 58 Q178 18 140 4 Q108 8 114 50 Q134 46 154 58 Z" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round" />
     <path d="M146 48 Q160 22 138 10 Q120 16 124 44 Q136 40 146 48 Z" fill="url(#mimo-earInner)" />
 
-    {/* Head — Healthy proportion (r=62), not hydrocephalic! */}
+    {/* Head */}
     <circle cx="100" cy="96" r="62" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" />
 
-    {/* Tabby brow-stripe marking (Preserved from Reference) */}
+    {/* Tabby brow-stripe marking */}
     <path d="M84 48 Q89 39 94 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
     <path d="M106 48 Q111 39 116 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
     <path d="M97 39 L100 54 L103 39" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.6" />
@@ -124,7 +134,7 @@ const MimoBody = ({ children }) => (
     {/* Collar */}
     <path d="M70 138 Q100 148 130 138 L128 145 Q100 154 72 145 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.2" opacity="0.92" />
     
-    {/* Swinging Bell (Animated!) */}
+    {/* Swinging Bell */}
     <g transform="translate(100, 142)">
       <animateTransform 
         attributeName="transform" type="rotate" values="-12; 12; -12" 
@@ -136,6 +146,62 @@ const MimoBody = ({ children }) => (
         <path d="M95 149 L105 149 M100 146 L100 152" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
         <circle cx="100" cy="153" r="1.5" fill="#B8842A" />
         <circle cx="97" cy="146" r="2" fill="#FFFFFF" opacity="0.6" />
+      </g>
+    </g>
+
+    {/* 🎓 GRADUATION CAP (Mortarboard) - President University Colors */}
+    <g transform="translate(100, 38)">
+      {/* Cap base (skull cap) */}
+      <ellipse cx="0" cy="8" rx="38" ry="14" fill="url(#president-navy)" stroke="#1A365D" strokeWidth="1.5" />
+      
+      {/* Mortarboard (square top) */}
+      <path 
+        d="M -42 -2 L 42 -2 L 38 12 L -38 12 Z" 
+        fill="url(#president-navy)" 
+        stroke="#1A365D" 
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      
+      {/* Gold trim on top board */}
+      <path 
+        d="M -38 2 L 38 2" 
+        stroke="url(#president-gold)" 
+        strokeWidth="2.5" 
+        strokeLinecap="round"
+      />
+      
+      {/* Button on top (holds tassel) */}
+      <circle cx="0" cy="2" r="4" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1" />
+      <circle cx="-1" cy="1" r="1.5" fill="#FFFFFF" opacity="0.5" />
+      
+      {/* 🎓 Animated Tassel (Rumbai) */}
+      <g transform="translate(0, 2)">
+        <animateTransform 
+          attributeName="transform" 
+          type="rotate" 
+          values="-8; 8; -8" 
+          keyTimes="0; 0.5; 1"
+          calcMode="spline"
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"
+          dur="3s" 
+          repeatCount="indefinite"
+        />
+        <g transform="translate(0, -2)">
+          {/* Tassel cord */}
+          <path d="M 0 2 Q 15 20 12 32" stroke="url(#president-gold)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          
+          {/* Tassel fringe (berumbai) */}
+          <path d="M 12 32 L 8 42 M 12 32 L 10 42 M 12 32 L 12 42 M 12 32 L 14 42 M 12 32 L 16 42" 
+                stroke="url(#president-gold)" 
+                strokeWidth="1.8" 
+                strokeLinecap="round" 
+                fill="none" 
+          />
+          
+          {/* Tassel knot */}
+          <circle cx="12" cy="32" r="3" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="0.8" />
+        </g>
       </g>
     </g>
   </>
@@ -196,7 +262,6 @@ const FaceHappy = () => (
 
 const FaceSad = () => (
   <>
-    {/* Preserved brilliant SVG clipping trick from reference for half-closed sad eyes */}
     <path d="M62 92 Q76 86 90 94" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
     <ellipse cx="76" cy="98" rx="15" ry="15" fill="url(#mimo-eyeShine)" opacity="0.8" />
     <path d="M63 92 Q76 86 89 92 L89 98 Q76 91 63 98 Z" fill="url(#mimo-furHead)" />
@@ -250,7 +315,6 @@ const FaceThinking = () => (
       </g>
     </g>
 
-    {/* One raised brow for a curious/pondering look (Preserved) */}
     <path d="M108 76 Q124 68 138 75" fill="none" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
 
     <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
@@ -280,7 +344,6 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
   const pixelSize = SIZE_MAP[size] || SIZE_MAP.medium;
   const Face = FACES[mood] || FACES.idle;
   
-  // Squishy Bounce Variants (Tuned for the larger, healthier body)
   const variants = {
     idle: { 
       y: [0, -8, 0], 
@@ -324,12 +387,12 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
       >
         <svg
           width={pixelSize}
-          height={pixelSize * (212 / 200)}
-          viewBox="0 0 200 212"
+          height={pixelSize * (220 / 200)}
+          viewBox="0 0 200 220"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          aria-label={`Mimo si maskot, sedang ${mood === 'idle' ? 'santai' : mood === 'happy' ? 'senang' : mood === 'sad' ? 'sedih' : 'berpikir'}`}
+          aria-label={`Mimo si maskot lulusan, sedang ${mood === 'idle' ? 'santai' : mood === 'happy' ? 'senang' : mood === 'sad' ? 'sedih' : 'berpikir'}`}
         >
           <MimoDefs />
           <MimoBody>
