@@ -25,7 +25,7 @@ const GameStage = ({ topicIcon, topicTitle, trackColor, children }) => {
     >
       {/* Header panel berwarna */}
       <div
-        className="px-6 py-4 flex items-center gap-3"
+        className="px-6 py-4 flex items-center gap-3 responsive-stage-header-pad"
         style={{ background: `linear-gradient(135deg, ${trackColor}dd 0%, ${trackColor}bb 100%)` }}
       >
         <span className="text-3xl">{topicIcon}</span>
@@ -42,7 +42,7 @@ const GameStage = ({ topicIcon, topicTitle, trackColor, children }) => {
       </div>
 
       {/* Area konten game dengan bg lebih warm */}
-      <div className="relative bg-[#FEFAF6] p-6">
+      <div className="relative bg-[#FEFAF6] p-6 responsive-stage-body-pad">
         {/* Dekorasi sudut */}
         {CORNER_DECORATIONS.map((d, i) => (
           <span

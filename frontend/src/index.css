@@ -31,6 +31,72 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background: linear-gradient(180deg, #FEFAF6 0%, #F8F4F0 100%);
     min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* ============================================================
+   RESPONSIVE SAFETY NET — berlaku di semua device (HP/tablet/laptop),
+   portrait maupun landscape.
+   ============================================================
+   1. `overflow-x: hidden` di html/body/#root adalah jaring pengaman
+      terakhir: apa pun elemen dekoratif/absolute yang meleset lebih
+      lebar dari viewport tidak akan pernah memicu scrollbar horizontal
+      atau membuat konten "kepotong" di tepi layar manapun.
+   2. `text-size-adjust: 100%` mencegah Safari iOS otomatis memperbesar
+      ukuran font saat HP diputar ke landscape (perilaku default iOS ini
+      salah satu penyebab paling umum tampilan "berantakan/kepotong"
+      setelah rotasi layar).
+   3. `width: 100%` di html/body memastikan tidak ada elemen yang diam-diam
+      melebihi lebar viewport asli (box-sizing: border-box sendiri sudah
+      otomatis diterapkan Tailwind Preflight ke semua elemen).
+   ============================================================ */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body,
+#root {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Media/SVG apa pun tidak pernah dipaksa lebih lebar dari kontainernya. */
+img, svg, video, canvas {
+    max-width: 100%;
+}
+
+/* ============================================================
+   MODE LANDSCAPE HP (layar pendek, mis. HP diputar miring) —
+   memadatkan padding vertikal yang paling boros di header
+   halaman/panggung game, supaya tombol & konten utama game lebih
+   banyak yang langsung kelihatan tanpa perlu scroll panjang dulu.
+   Dipicu HANYA saat tinggi viewport pendek (<=500px) DAN orientasi
+   landscape, jadi tidak memengaruhi laptop/tablet/HP portrait sama
+   sekali — di situ padding asli (lebih lega) tetap dipakai.
+   ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+    .responsive-page-pad {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    .responsive-banner-pad {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .responsive-stage-header-pad {
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+    }
+    .responsive-stage-body-pad {
+        padding: 0.875rem !important;
+    }
+    .mascot-figure {
+        width: 64px !important;
+        height: auto !important;
+    }
 }
 
 code {

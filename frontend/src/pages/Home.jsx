@@ -50,7 +50,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen py-8 px-4 md:px-8 overflow-hidden" data-testid="home-page">
+    <div className="min-h-screen py-8 px-4 md:px-8 overflow-hidden responsive-page-pad" data-testid="home-page">
       {/* Header with Mascot */}
       <div className="max-w-7xl mx-auto mb-12 relative">
         {/* Ornamen dekoratif — awan, bintang, balon mengambang di sekitar

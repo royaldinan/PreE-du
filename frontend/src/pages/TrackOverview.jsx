@@ -81,12 +81,23 @@ const NodeBadge = ({ index, topic, topicProgress, trackColor, onClick }) => {
         </g>
       )}
 
-      {/* Label teks di sisi node (kiri/kanan bergantian sesuai posisi) */}
+      {/* Label teks di sisi node (kiri/kanan bergantian sesuai posisi).
+          height dinaikkan dari 88 -> 130 (dan overflow dibiarkan visible di
+          div dalamnya): sebelumnya untuk judul topik terpanjang ("💡 Ide
+          Sebanyak Mungkin!" yang wrap ke 2 baris + deskripsi 2 baris) tinggi
+          konten sudah nyaris/melebihi 88, dan `foreignObject` di semua
+          browser secara default memotong (clip) apa pun yang melebihi
+          height-nya -- persis penyebab teks "kepotong" walau device/ukuran
+          layar apa pun, karena seluruh SVG ini di-scale secara proporsional
+          (bukan per-elemen), jadi box yang mepet di 1 ukuran akan tetap
+          mepet di ukuran manapun. 130 memberi buffer aman (+-40px) tanpa
+          nabrak node berikutnya di jalur (sudah dicek jarak antar-node). */}
       <foreignObject
         x={index % 2 === 0 ? pos.x + 56 : pos.x - 200}
         y={pos.y - 34}
         width="180"
-        height="88"
+        height="130"
+        style={{ overflow: 'visible' }}
       >
         <div
           xmlns="http://www.w3.org/1999/xhtml"
@@ -96,6 +107,7 @@ const NodeBadge = ({ index, topic, topicProgress, trackColor, onClick }) => {
             padding: '10px 14px',
             boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
             backdropFilter: 'blur(8px)',
+            wordBreak: 'break-word',
           }}
         >
           <p style={{
@@ -113,6 +125,7 @@ const NodeBadge = ({ index, topic, topicProgress, trackColor, onClick }) => {
             fontSize: '11px',
             color: '#6C757D',
             margin: '4px 0 0 0',
+            lineHeight: 1.35,
           }}>
             {topic.description}
           </p>
@@ -174,7 +187,7 @@ const TrackOverview = () => {
   const trackProgress = progress[trackId];
 
   return (
-    <div className="min-h-screen py-6 px-4" data-testid={`track-${trackId}-page`}>
+    <div className="min-h-screen py-6 px-4 responsive-page-pad" data-testid={`track-${trackId}-page`}>
       <div className="max-w-2xl mx-auto">
 
         {/* Tombol Kembali */}

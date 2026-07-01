@@ -3,18 +3,9 @@ import { motion } from 'framer-motion';
 import { audioManager } from '../utils/audioManager';
 
 // ============================================================================
-// Mimo — the PreE-du mascot. A chibi gray-white kitten with a bell collar.
-//
-// Replaces the old flat-color, hand-drawn-looking SVG (single fill per shape,
-// no gradient, no shine, realistic body proportions) with a proper chibi
-// character: oversized head, big gradient-shaded eyes with a highlight glint,
-// soft fur gradients, and a tail/paws that actually read as a sitting cat.
-// Visual language (155deg gradients, offset depth, soft rim highlight) is
-// shared with GameButton.jsx / GameTile.jsx so Mimo sits naturally next to
-// the rest of the tactile gameplay system rather than looking imported.
-//
-// Prop API is unchanged from the previous component (mood / message / size)
-// so none of the 13 call sites across games/pages need to change.
+// Mimo — the PreE-du mascot. Cool & Energetic Edition for Boys!
+// President University colors with sporty vibes and fun animations.
+// Less kawaii, more adventurous!
 // ============================================================================
 
 const SIZE_MAP = {
@@ -23,9 +14,9 @@ const SIZE_MAP = {
   large: 200,
 };
 
-// Shared gradient/def block — identical across all four moods, defined once.
 const MimoDefs = () => (
   <defs>
+    {/* Fur Gradients - Preserved from Reference */}
     <linearGradient id="mimo-furBody" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#F4F5F7" />
       <stop offset="55%" stopColor="#E2E5EA" />
@@ -44,110 +35,223 @@ const MimoDefs = () => (
       <stop offset="0%" stopColor="#FFFFFF" />
       <stop offset="100%" stopColor="#F7F4EF" />
     </linearGradient>
+    
+    {/* Sporty Cheek Blush - Orange instead of Pink! */}
     <radialGradient id="mimo-cheekBlush" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stopColor="#FFB3A7" stopOpacity="0.65" />
-      <stop offset="100%" stopColor="#FFB3A7" stopOpacity="0" />
+      <stop offset="0%" stopColor="#FFA500" stopOpacity="0.7" />
+      <stop offset="100%" stopColor="#FFA500" stopOpacity="0" />
     </radialGradient>
+    
+    {/* President University Colors */}
+    <linearGradient id="president-navy" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#2C5282" />
+      <stop offset="100%" stopColor="#1E3A8A" />
+    </linearGradient>
+    <linearGradient id="president-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#FFE066" />
+      <stop offset="50%" stopColor="#FFD700" />
+      <stop offset="100%" stopColor="#F6AD55" />
+    </linearGradient>
+    
+    {/* Sporty Collar with Racing Stripes */}
     <linearGradient id="mimo-collarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#FFB199" />
-      <stop offset="100%" stopColor="#FF8C42" />
+      <stop offset="0%" stopColor="#FF8C42" />
+      <stop offset="100%" stopColor="#FF6B35" />
     </linearGradient>
     <linearGradient id="mimo-bellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#FFE899" />
       <stop offset="100%" stopColor="#FFD166" />
     </linearGradient>
+    <radialGradient id="mimo-eyeShine" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#9FE8F5" />
+      <stop offset="60%" stopColor="#5FC9E0" />
+      <stop offset="100%" stopColor="#3DA8C2" />
+    </radialGradient>
   </defs>
 );
 
-// Body + ears + collar — identical across all four moods. Only the face
-// (eyes/brows/nose/mouth) and cheek blush differ per mood, passed as children.
 const MimoBody = ({ children }) => (
   <>
-    {/* soft contact shadow */}
+    {/* Soft contact shadow */}
     <ellipse cx="100" cy="193" rx="48" ry="7" fill="#000000" opacity="0.10" />
 
-    {/* tail, curled around right side, behind body */}
+    {/* Tail, curled around right side */}
     <path
-      d="M138 178 Q170 186 180 156 Q188 130 170 108 Q158 98 150 104 Q165 112 168 132 Q170 154 152 168 Q146 174 138 178 Z"
+      d="M132 190 Q168 190 178 164 Q188 138 178 114 Q172 98 156 96 Q148 95 144 101 Q158 102 166 118 Q172 134 164 152 Q156 170 138 184 Q135 187 132 190 Z"
       fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
     />
-    <ellipse cx="155" cy="112" rx="9" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <path d="M154 116 Q163 122 166 138" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
+    <path d="M152 100 Q168 108 174 128" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.5" />
 
-    {/* back paws peeking */}
-    <ellipse cx="66" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <ellipse cx="134" cy="184" rx="17" ry="11" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    {/* Back paws peeking */}
+    <ellipse cx="70" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
+    <ellipse cx="130" cy="178" rx="19" ry="14" fill="url(#mimo-furBody)" stroke="#C3C9D1" strokeWidth="2" />
 
-    {/* body */}
-    <ellipse cx="100" cy="148" rx="52" ry="46" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
+    {/* Body — Full, round, and healthy! */}
+    <ellipse cx="100" cy="145" rx="55" ry="48" fill="url(#mimo-furBody)" stroke="#B8BEC8" strokeWidth="2.5" />
 
-    {/* belly patch */}
-    <ellipse cx="100" cy="160" rx="32" ry="30" fill="url(#mimo-bellyFur)" />
+    {/* Belly patch */}
+    <ellipse cx="100" cy="158" rx="33" ry="31" fill="url(#mimo-bellyFur)" />
 
-    {/* front paws */}
-    <ellipse cx="75" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <ellipse cx="125" cy="184" rx="16" ry="13" fill="url(#mimo-bellyFur)" stroke="#B8BEC8" strokeWidth="2.5" />
-    <path d="M69 187 Q75 191 81 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-    <path d="M119 187 Q125 191 131 187" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+    {/* Front paws with NEUTRAL TOE BEANS (Grey instead of Pink!) 🐾 */}
+    <g>
+      <ellipse cx="78" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
+      <path d="M71 185 Q78 189 85 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <ellipse cx="78" cy="184" rx="5" ry="3.5" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="72" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="78" cy="177" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="84" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+    </g>
+    <g>
+      <ellipse cx="122" cy="181" rx="18" ry="15" fill="url(#mimo-bellyFur)" stroke="#C3C9D1" strokeWidth="2" />
+      <path d="M115 185 Q122 189 129 185" stroke="#C9CDD4" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      <ellipse cx="122" cy="184" rx="5" ry="3.5" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="116" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="122" cy="177" r="2" fill="#A0AEC0" opacity="0.7" />
+      <circle cx="128" cy="179" r="2" fill="#A0AEC0" opacity="0.7" />
+    </g>
 
-    {/* left ear (head circle drawn after, overlapping the base, so there's no seam) */}
-    <path
-      d="M52 64 Q36 22 66 12 Q86 18 82 54 Q67 50 52 64 Z"
-      fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
-    />
-    <path d="M58 54 Q50 30 66 22 Q77 28 74 48 Q66 44 58 54 Z" fill="url(#mimo-earInner)" />
+    {/* Left ear */}
+    <path d="M46 58 Q22 18 60 4 Q92 8 86 50 Q66 46 46 58 Z" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round" />
+    <path d="M54 48 Q40 22 62 10 Q80 16 76 44 Q64 40 54 48 Z" fill="url(#mimo-earInner)" />
 
-    {/* right ear */}
-    <path
-      d="M148 64 Q164 22 134 12 Q114 18 118 54 Q133 50 148 64 Z"
-      fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round"
-    />
-    <path d="M142 54 Q150 30 134 22 Q123 28 126 48 Q134 44 142 54 Z" fill="url(#mimo-earInner)" />
+    {/* Right ear */}
+    <path d="M154 58 Q178 18 140 4 Q108 8 114 50 Q134 46 154 58 Z" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" strokeLinejoin="round" />
+    <path d="M146 48 Q160 22 138 10 Q120 16 124 44 Q136 40 146 48 Z" fill="url(#mimo-earInner)" />
 
-    {/* head */}
-    <circle cx="100" cy="96" r="60" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" />
+    {/* Head */}
+    <circle cx="100" cy="96" r="62" fill="url(#mimo-furHead)" stroke="#B8BEC8" strokeWidth="2.5" />
 
-    {/* tabby brow-stripe marking, subtle, on every mood */}
+    {/* Tabby brow-stripe marking */}
     <path d="M84 48 Q89 39 94 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
     <path d="M106 48 Q111 39 116 48" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7" />
     <path d="M97 39 L100 54 L103 39" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.6" />
 
-    {/* per-mood face content (blush, eyes, brows, nose, mouth, extras) */}
+    {/* Per-mood face content */}
     {children}
 
-    {/* whiskers */}
-    <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
-    <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" fill="none" />
+    {/* Whiskers - Thicker and more confident */}
+    <path d="M30 98 Q47 96 58 101 M30 109 Q47 109 58 109" stroke="#B8BEC8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    <path d="M170 98 Q153 96 142 101 M170 109 Q153 109 142 109" stroke="#B8BEC8" strokeWidth="2.5" strokeLinecap="round" fill="none" />
 
-    {/* collar + bell, sitting with a visible neck gap below the chin */}
-    <path d="M66 134 Q100 148 134 134 L131 144 Q100 156 69 144 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.5" />
-    <circle cx="100" cy="149" r="8.5" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="1.5" />
-    <path d="M95.5 149 L104.5 149 M100 146.5 L100 151.5" stroke="#E8AE3D" strokeWidth="1.3" strokeLinecap="round" />
-    <circle cx="100" cy="152.5" r="1.4" fill="#B8842A" />
+    {/* Sporty Collar with Racing Stripes */}
+    <path d="M70 138 Q100 148 130 138 L128 145 Q100 154 72 145 Z" fill="url(#mimo-collarGrad)" stroke="#E8763D" strokeWidth="1.5" opacity="0.95" />
+    <path d="M75 141 Q100 150 125 141" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
+    
+    {/* Swinging Bell */}
+    <g transform="translate(100, 142)">
+      <animateTransform 
+        attributeName="transform" type="rotate" values="-12; 12; -12" 
+        keyTimes="0; 0.5; 1" calcMode="spline" keySplines="0.4 0 0.6 1; 0.4 0 0.6 1" 
+        dur="2s" repeatCount="indefinite" additive="sum" 
+      />
+      <g transform="translate(-100, -142)">
+        <circle cx="100" cy="149" r="10" fill="url(#mimo-bellGrad)" stroke="#E8AE3D" strokeWidth="2" />
+        <path d="M94 149 L106 149 M100 145 L100 153" stroke="#E8AE3D" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="100" cy="154" r="2" fill="#B8842A" />
+        <circle cx="96" cy="145" r="2.5" fill="#FFFFFF" opacity="0.7" />
+      </g>
+    </g>
+
+    {/* 🎓 GRADUATION CAP (Mortarboard) - President University Colors - COOL EDITION */}
+    <g transform="translate(100, 38)">
+      {/* Cap base (skull cap) */}
+      <ellipse cx="0" cy="8" rx="40" ry="15" fill="url(#president-navy)" stroke="#1A365D" strokeWidth="2" />
+      
+      {/* Mortarboard (square top) */}
+      <path 
+        d="M -44 -2 L 44 -2 L 40 14 L -40 14 Z" 
+        fill="url(#president-navy)" 
+        stroke="#1A365D" 
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      
+      {/* BOLD Gold stripe on top board */}
+      <path 
+        d="M -40 3 L 40 3" 
+        stroke="url(#president-gold)" 
+        strokeWidth="4" 
+        strokeLinecap="round"
+      />
+      
+      {/* ⭐ STAR EMBLEM in center */}
+      <path 
+        d="M 0 -2 L 2 4 L 8 4 L 3 7 L 5 13 L 0 9 L -5 13 L -3 7 L -8 4 L -2 4 Z" 
+        fill="url(#president-gold)" 
+        stroke="#D69E2E" 
+        strokeWidth="1"
+      />
+      
+      {/* Button on top (holds tassel) */}
+      <circle cx="0" cy="2" r="5" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1.5" />
+      <circle cx="-1" cy="1" r="2" fill="#FFFFFF" opacity="0.5" />
+      
+      {/* 🎓 Animated Tassel (Rumbai) - Longer and more dramatic */}
+      <g transform="translate(0, 2)">
+        <animateTransform 
+          attributeName="transform" 
+          type="rotate" 
+          values="-10; 10; -10" 
+          keyTimes="0; 0.5; 1"
+          calcMode="spline"
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1"
+          dur="2.5s" 
+          repeatCount="indefinite"
+        />
+        <g transform="translate(0, -2)">
+          {/* Tassel cord */}
+          <path d="M 0 2 Q 18 25 15 40" stroke="url(#president-gold)" strokeWidth="3" fill="none" strokeLinecap="round" />
+          
+          {/* Tassel fringe (berumbai) */}
+          <path d="M 15 40 L 10 52 M 15 40 L 12 52 M 15 40 L 15 52 M 15 40 L 18 52 M 15 40 L 20 52" 
+                stroke="url(#president-gold)" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                fill="none" 
+          />
+          
+          {/* Tassel knot */}
+          <circle cx="15" cy="40" r="4" fill="url(#president-gold)" stroke="#D69E2E" strokeWidth="1" />
+        </g>
+      </g>
+    </g>
   </>
 );
 
 // ---- Per-mood face content ----
-
 const FaceIdle = () => (
   <>
-    <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
-    <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="58" cy="111" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
+    <ellipse cx="142" cy="111" rx="14" ry="10" fill="url(#mimo-cheekBlush)" />
 
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="#3A3F4B" />
-    <ellipse cx="76" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="76" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
-    <circle cx="81" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="71" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+    {/* Left Eye with BLINK & 3 HIGHLIGHTS */}
+    <g transform="translate(75, 95)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.03; 0.06; 1" dur="4s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-75, -95)">
+        <ellipse cx="75" cy="95" rx="17" ry="20" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="75" cy="95" rx="17" ry="20" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+        <ellipse cx="77" cy="99" rx="10" ry="12" fill="#1E5266" opacity="0.85" />
+        <ellipse cx="81" cy="86" rx="6" ry="7" fill="#FFFFFF" opacity="0.95" />
+        <circle cx="70" cy="102" r="3" fill="#FFFFFF" opacity="0.85" />
+        <circle cx="82" cy="105" r="1.5" fill="#FFFFFF" opacity="0.9" />
+      </g>
+    </g>
 
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="#3A3F4B" />
-    <ellipse cx="124" cy="94" rx="15" ry="17" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="124" cy="102" rx="12" ry="4.5" fill="#7FD4E8" opacity="0.55" />
-    <circle cx="129" cy="86" r="5.5" fill="#FFFFFF" />
-    <circle cx="119" cy="98" r="2.2" fill="#FFFFFF" opacity="0.8" />
+    {/* Right Eye with BLINK & 3 HIGHLIGHTS */}
+    <g transform="translate(125, 95)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.03; 0.06; 1" dur="4s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-125, -95)">
+        <ellipse cx="125" cy="95" rx="17" ry="20" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="125" cy="95" rx="17" ry="20" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+        <ellipse cx="123" cy="99" rx="10" ry="12" fill="#1E5266" opacity="0.85" />
+        <ellipse cx="119" cy="86" rx="6" ry="7" fill="#FFFFFF" opacity="0.95" />
+        <circle cx="130" cy="102" r="3" fill="#FFFFFF" opacity="0.85" />
+        <circle cx="118" cy="105" r="1.5" fill="#FFFFFF" opacity="0.9" />
+      </g>
+    </g>
 
-    <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
-    <path d="M100 123 Q100 128 91 129 M100 123 Q100 128 109 129" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M93 117 Q100 113 107 117 Q103 123 100 124 Q97 123 93 117 Z" fill="#FF9E92" />
+    <path d="M89 122 Q95 130 100 130 Q106 131 113 121" stroke="#7A7F8C" strokeWidth="2.3" strokeLinecap="round" fill="none" />
   </>
 );
 
@@ -156,34 +260,58 @@ const FaceHappy = () => (
     <ellipse cx="58" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
     <ellipse cx="142" cy="106" rx="15" ry="11" fill="url(#mimo-cheekBlush)" />
 
+    {/* Big confident smile */}
     <path d="M62 94 Q76 78 90 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
     <path d="M110 94 Q124 78 138 94" fill="none" stroke="#3A3F4B" strokeWidth="5" strokeLinecap="round" />
 
     <path d="M93 110 Q100 106 107 110 Q103 116 100 117 Q97 116 93 110 Z" fill="#FF9E92" />
 
-    <path d="M84 116 Q100 134 116 116 Q108 126 100 126 Q92 126 84 116 Z" fill="#C76B5D" />
-    <path d="M84 116 Q100 134 116 116" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
-    <ellipse cx="100" cy="120" rx="6" ry="3.5" fill="#FF8A7D" />
+    {/* Wide open mouth - more energetic */}
+    <path d="M80 116 Q100 140 120 116 Q110 130 100 130 Q90 130 80 116 Z" fill="#C76B5D" />
+    <path d="M80 116 Q100 140 120 116" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
+    <ellipse cx="100" cy="122" rx="7" ry="4" fill="#FF8A7D" />
+
+    {/* ⚡ LIGHTNING BOLTS around head - Cool effect! */}
+    <g opacity="0.8">
+      <animateTransform attributeName="transform" type="scale" values="1; 1.2; 1" dur="0.8s" repeatCount="indefinite" />
+      <path d="M 40 60 L 45 55 L 43 65 L 48 62" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M 160 60 L 155 55 L 157 65 L 152 62" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    </g>
+
+    {/* 😎 SUNGLASSES (appears in happy mood!) */}
+    <g>
+      <ellipse cx="75" cy="95" rx="20" ry="15" fill="#1A202C" stroke="#2D3748" strokeWidth="2" />
+      <ellipse cx="125" cy="95" rx="20" ry="15" fill="#1A202C" stroke="#2D3748" strokeWidth="2" />
+      <path d="M 95 95 L 105 95" stroke="#2D3748" strokeWidth="3" strokeLinecap="round" />
+      {/* Shine on sunglasses */}
+      <path d="M 65 88 L 70 88" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+      <path d="M 115 88 L 120 88" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+    </g>
   </>
 );
 
 const FaceSad = () => (
   <>
-    {/* no blush when sad */}
     <path d="M62 92 Q76 86 90 94" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-    <ellipse cx="76" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <ellipse cx="76" cy="98" rx="15" ry="15" fill="url(#mimo-eyeShine)" opacity="0.8" />
     <path d="M63 92 Q76 86 89 92 L89 98 Q76 91 63 98 Z" fill="url(#mimo-furHead)" />
-    <ellipse cx="76" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
-    <circle cx="80" cy="98" r="3.8" fill="#FFFFFF" />
+    <ellipse cx="76" cy="100" rx="8" ry="9" fill="#1E5266" opacity="0.8" />
+    <circle cx="80" cy="98" r="4" fill="#FFFFFF" />
 
     <path d="M110 94 Q124 86 138 92" fill="none" stroke="#3A3F4B" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-    <ellipse cx="124" cy="98" rx="13" ry="13" fill="#3A3F4B" />
+    <ellipse cx="124" cy="98" rx="15" ry="15" fill="url(#mimo-eyeShine)" opacity="0.8" />
     <path d="M111 92 Q124 86 137 92 L137 98 Q124 91 111 98 Z" fill="url(#mimo-furHead)" />
-    <ellipse cx="124" cy="104" rx="10" ry="3.2" fill="#7FD4E8" opacity="0.5" />
-    <circle cx="128" cy="98" r="3.8" fill="#FFFFFF" />
+    <ellipse cx="124" cy="100" rx="8" ry="9" fill="#1E5266" opacity="0.8" />
+    <circle cx="128" cy="98" r="4" fill="#FFFFFF" />
 
     <path d="M64 80 Q76 84 86 80" fill="none" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
     <path d="M114 80 Q124 84 136 80" fill="none" stroke="#C9CDD4" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+
+    {/* Animated Tear */}
+    <path d="M64 105 Q60 115 64 120 Q68 115 64 105 Z" fill="#9FE8F5" opacity="0.8">
+      <animate attributeName="opacity" values="0; 0.8; 0" dur="2.5s" repeatCount="indefinite" />
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 10; 0 15" dur="2.5s" repeatCount="indefinite" />
+    </path>
 
     <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
     <path d="M88 128 Q100 119 112 128" stroke="#7A7F8C" strokeWidth="2.5" strokeLinecap="round" fill="none" />
@@ -195,26 +323,50 @@ const FaceThinking = () => (
     <ellipse cx="58" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
     <ellipse cx="142" cy="110" rx="14" ry="10" fill="url(#mimo-cheekBlush)" opacity="0.7" />
 
-    <ellipse cx="76" cy="94" rx="14" ry="16" fill="#3A3F4B" />
-    <ellipse cx="76" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="80" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
-    <circle cx="83" cy="85" r="5" fill="#FFFFFF" />
+    <g transform="translate(76, 94)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.03; 0.06; 1" dur="5s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-76, -94)">
+        <ellipse cx="76" cy="94" rx="16" ry="18" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="76" cy="94" rx="16" ry="18" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+        <ellipse cx="80" cy="92" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
+        <circle cx="83" cy="85" r="5" fill="#FFFFFF" />
+        <circle cx="74" cy="100" r="2" fill="#FFFFFF" />
+      </g>
+    </g>
 
-    <ellipse cx="124" cy="94" rx="14" ry="16" fill="#3A3F4B" />
-    <ellipse cx="124" cy="94" rx="14" ry="16" fill="none" stroke="#2B2D3A" strokeWidth="1" />
-    <ellipse cx="128" cy="89" rx="10" ry="4" fill="#7FD4E8" opacity="0.5" />
-    <circle cx="131" cy="85" r="5" fill="#FFFFFF" />
+    <g transform="translate(124, 94)">
+      <animateTransform attributeName="transform" type="scale" values="1 1; 1 0.1; 1 1; 1 1" keyTimes="0; 0.03; 0.06; 1" dur="5s" repeatCount="indefinite" additive="sum" />
+      <g transform="translate(-124, -94)">
+        <ellipse cx="124" cy="94" rx="16" ry="18" fill="url(#mimo-eyeShine)" />
+        <ellipse cx="124" cy="94" rx="16" ry="18" fill="none" stroke="#2B7A91" strokeWidth="1.5" />
+        <ellipse cx="128" cy="92" rx="9" ry="11" fill="#1E5266" opacity="0.85" />
+        <circle cx="131" cy="85" r="5" fill="#FFFFFF" />
+        <circle cx="122" cy="100" r="2" fill="#FFFFFF" />
+      </g>
+    </g>
 
-    {/* one raised brow for a curious/pondering look */}
     <path d="M108 76 Q124 68 138 75" fill="none" stroke="#C9CDD4" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
 
     <path d="M93 116 Q100 112 107 116 Q103 122 100 123 Q97 122 93 116 Z" fill="#FF9E92" />
     <ellipse cx="100" cy="125" rx="4.5" ry="3.5" fill="none" stroke="#7A7F8C" strokeWidth="2" strokeLinecap="round" />
 
-    {/* thought-dot trail, floating in open space above the head */}
-    <circle cx="148" cy="28" r="3.5" fill="#C9CDD4" opacity="0.8" />
-    <circle cx="158" cy="18" r="2.5" fill="#C9CDD4" opacity="0.6" />
-    <circle cx="166" cy="9" r="1.7" fill="#C9CDD4" opacity="0.45" />
+    {/* ⚙️ GEAR in Thought Bubbles - More techy for boys! */}
+    <circle cx="148" cy="28" r="3.5" fill="#C9CDD4" opacity="0.8">
+      <animate attributeName="cy" values="28; 24; 28" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="158" cy="18" r="2.5" fill="#C9CDD4" opacity="0.6">
+      <animate attributeName="cy" values="18; 14; 18" dur="2s" begin="0.3s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="166" cy="9" r="1.7" fill="#C9CDD4" opacity="0.45">
+      <animate attributeName="cy" values="9; 5; 9" dur="2s" begin="0.6s" repeatCount="indefinite" />
+    </circle>
+    
+    {/* Lightbulb moment */}
+    <g transform="translate(170, 5)">
+      <animate attributeName="opacity" values="0.6; 1; 0.6" dur="1.5s" repeatCount="indefinite" />
+      <circle cx="0" cy="0" r="4" fill="#FFD700" />
+      <path d="M 0 -4 L 0 -6 M -3 -3 L -4 -4 M 3 -3 L 4 -4" stroke="#FFD700" strokeWidth="1" strokeLinecap="round" />
+    </g>
   </>
 );
 
@@ -228,12 +380,31 @@ const FACES = {
 const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
   const pixelSize = SIZE_MAP[size] || SIZE_MAP.medium;
   const Face = FACES[mood] || FACES.idle;
-
+  
   const variants = {
-    idle: { y: [0, -10, 0], rotate: [0, 1.5, 0, -1.5, 0], transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } },
-    happy: { scale: [1, 1.15, 1], y: [0, -18, 0], rotate: [0, -6, 6, 0], transition: { duration: 0.6 } },
-    sad: { y: [0, 4, 0], rotate: [-4, 4, -4], transition: { duration: 1.6, repeat: Infinity } },
-    thinking: { rotate: [0, -8, 8, 0], y: [0, -4, 0], transition: { duration: 2.6, repeat: Infinity } },
+    idle: { 
+      y: [0, -8, 0], 
+      scaleY: [1, 0.98, 1], 
+      scaleX: [1, 1.02, 1], 
+      rotate: [0, 1.5, 0, -1.5, 0], 
+      transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } 
+    },
+    happy: { 
+      scale: [1, 1.15, 1], 
+      y: [0, -25, 0], // Higher bounce!
+      rotate: [0, -8, 8, 0], 
+      transition: { duration: 0.5, repeat: Infinity, ease: 'easeInOut' } 
+    },
+    sad: { 
+      y: [0, 4, 0], 
+      rotate: [-4, 4, -4], 
+      transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } 
+    },
+    thinking: { 
+      rotate: [0, -8, 8, 0], 
+      y: [0, -4, 0], 
+      transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } 
+    },
   };
 
   const handleClick = async () => {
@@ -246,19 +417,20 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
       <motion.div
         animate={variants[mood] || variants.idle}
         onClick={handleClick}
-        whileHover={{ scale: 1.06, rotate: 4 }}
-        whileTap={{ scale: 0.94 }}
+        whileHover={{ scale: 1.08, rotate: 6 }}
+        whileTap={{ scale: 0.92 }}
         className="cursor-pointer"
-        style={{ filter: 'drop-shadow(0px 10px 14px rgba(0,0,0,0.18))' }}
+        style={{ filter: 'drop-shadow(0px 12px 16px rgba(0,0,0,0.2))', transformOrigin: 'bottom center' }}
       >
         <svg
           width={pixelSize}
-          height={pixelSize * (212 / 200)}
-          viewBox="0 0 200 212"
+          height={pixelSize * (220 / 200)}
+          viewBox="0 0 200 220"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          aria-label={`Mimo si maskot, sedang ${mood === 'idle' ? 'santai' : mood === 'happy' ? 'senang' : mood === 'sad' ? 'sedih' : 'berpikir'}`}
+          className="mascot-figure max-w-full h-auto"
+          aria-label={`Mimo si maskot lulusan, sedang ${mood === 'idle' ? 'santai' : mood === 'happy' ? 'senang' : mood === 'sad' ? 'sedih' : 'berpikir'}`}
         >
           <MimoDefs />
           <MimoBody>
@@ -266,15 +438,19 @@ const Mascot = ({ mood = 'idle', message = '', size = 'medium' }) => {
           </MimoBody>
         </svg>
 
-        {/* Bubble Chat */}
+        {/* Bubble Chat - Orange border for sporty look.
+            max-width + w-max dibatasi ke lebar viewport (bukan
+            whitespace-nowrap yang bisa memaksa 1 baris panjang dan
+            "kepotong" keluar layar di HP sempit) supaya teks pesan apa pun
+            panjangnya tetap terlihat penuh & tetap center di atas mascot. */}
         {message && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow-xl border-2 border-blue-300 whitespace-nowrap z-20"
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow-xl border-3 border-orange-500 z-20 w-max max-w-[min(80vw,240px)] text-center"
           >
-            <p className="text-sm font-bold text-gray-700">{message}</p>
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-b-2 border-r-2 border-blue-300 rotate-45"></div>
+            <p className="text-sm font-bold text-gray-700 break-words">{message}</p>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-b-3 border-r-3 border-orange-500 rotate-45"></div>
           </motion.div>
         )}
       </motion.div>
