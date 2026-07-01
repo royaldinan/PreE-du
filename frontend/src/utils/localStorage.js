@@ -31,13 +31,51 @@ const DEFAULT_PROGRESS = {
   totalStars: 0
 };
 
+// Deep-merge stored progress on top of the default shape so older or
+// partially-corrupted localStorage data (e.g. saved before a new topic
+// was added, or a manually-edited/truncated value) always ends up with
+// every track.topics.topic key present. Without this, updateTopicProgress
+// throws "Cannot read properties of undefined" the moment it touches a
+// topic that isn't in the stored data.
+const mergeTopic = (defaultTopic, storedTopic) => {
+  if (!storedTopic || typeof storedTopic !== 'object') return { ...defaultTopic };
+  return {
+    completed: typeof storedTopic.completed === 'boolean' ? storedTopic.completed : defaultTopic.completed,
+    stars: typeof storedTopic.stars === 'number' ? storedTopic.stars : defaultTopic.stars,
+  };
+};
+
+const mergeTrack = (defaultTrack, storedTrack) => {
+  if (!storedTrack || typeof storedTrack !== 'object') return structuredClone(defaultTrack);
+  const storedTopics = storedTrack.topics && typeof storedTrack.topics === 'object' ? storedTrack.topics : {};
+  const topics = Object.keys(defaultTrack.topics).reduce((acc, topicKey) => {
+    acc[topicKey] = mergeTopic(defaultTrack.topics[topicKey], storedTopics[topicKey]);
+    return acc;
+  }, {});
+  return {
+    completed: typeof storedTrack.completed === 'number' ? storedTrack.completed : defaultTrack.completed,
+    topics,
+  };
+};
+
+const mergeWithDefaults = (stored) => {
+  if (!stored || typeof stored !== 'object') return structuredClone(DEFAULT_PROGRESS);
+  const merged = Object.keys(DEFAULT_PROGRESS).reduce((acc, key) => {
+    if (key === 'totalStars') return acc;
+    acc[key] = mergeTrack(DEFAULT_PROGRESS[key], stored[key]);
+    return acc;
+  }, {});
+  merged.totalStars = typeof stored.totalStars === 'number' ? stored.totalStars : 0;
+  return merged;
+};
+
 export const getProgress = () => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : DEFAULT_PROGRESS;
+    return stored ? mergeWithDefaults(JSON.parse(stored)) : structuredClone(DEFAULT_PROGRESS);
   } catch (error) {
     console.error('Error reading progress:', error);
-    return DEFAULT_PROGRESS;
+    return structuredClone(DEFAULT_PROGRESS);
   }
 };
 
@@ -70,8 +108,9 @@ export const updateTopicProgress = (track, topic, stars) => {
 };
 
 export const resetProgress = () => {
-  saveProgress(DEFAULT_PROGRESS);
-  return DEFAULT_PROGRESS;
+  const fresh = structuredClone(DEFAULT_PROGRESS);
+  saveProgress(fresh);
+  return fresh;
 };
 
 export const getTrackProgress = (track) => {
