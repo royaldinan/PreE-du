@@ -70,7 +70,7 @@ const Home = () => {
         >
           <div className="flex-1 text-center md:text-left">
             <h1 className="heading-font text-4xl sm:text-5xl lg:text-6xl text-[#2B2D42] mb-4">
-              PreE-du <motion.span
+              PreE-du Thinking Skills <motion.span
                 className="inline-block"
                 animate={{ rotate: [0, 15, -15, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5 }}

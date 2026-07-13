@@ -71,7 +71,7 @@ const PatternGame = ({ onComplete }) => {
   };
 
   useEffect(() => {
-    if (currentRound <= 10 && !gameComplete) {
+    if (currentRound <= 5 && !gameComplete) {
       const { visiblePattern, answer, allOptions } = generateRound(currentRound);
       setPattern(visiblePattern);
       setCorrectAnswer(answer);
@@ -99,11 +99,11 @@ const PatternGame = ({ onComplete }) => {
       setMascotMood('happy');
 
       setTimeout(() => {
-        if (currentRound < 10) {
+        if (currentRound < 5) {
           setCurrentRound(currentRound + 1);
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
-          const totalStars = newScore >= 8 ? 3 : newScore >= 5 ? 2 : newScore >= 1 ? 1 : 0;
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
@@ -135,7 +135,7 @@ const PatternGame = ({ onComplete }) => {
           🎉 Hebat! Kamu sudah menyelesaikan semua ronde!
         </h3>
         <p className="body-font text-lg text-[#6C757D] mb-6">
-          Skor kamu: {score} dari 10
+          Skor kamu: {score} dari 5
         </p>
         <GameButton onClick={resetGame} variant="blue" size="pill">
           Main Lagi
@@ -154,7 +154,7 @@ const PatternGame = ({ onComplete }) => {
 
       <div className="flex justify-between items-center mb-6">
         <span className="body-font text-lg text-[#6C757D]">
-          Ronde {currentRound}/10
+          Ronde {currentRound}/5
         </span>
         <span className="body-font text-lg text-[#6C757D]">
           Skor: {score}

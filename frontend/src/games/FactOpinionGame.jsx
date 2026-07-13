@@ -22,12 +22,7 @@ const FactOpinionGame = ({ onComplete }) => {
     { sentence: 'Kucing itu lucu', isFact: false, explanation: 'Ini opini karena perasaan tiap orang beda!' },
     { sentence: 'Matahari terbit dari timur', isFact: true, explanation: 'Ini fakta karena selalu benar!' },
     { sentence: 'Es krim rasa cokelat paling enak', isFact: false, explanation: 'Ini opini karena selera beda-beda!' },
-    { sentence: 'Air diperlukan untuk hidup', isFact: true, explanation: 'Ini fakta karena semua makhluk butuh air!' },
-    { sentence: 'Sepak bola olahraga paling seru', isFact: false, explanation: 'Ini opini karena tiap orang punya olahraga favorit!' },
-    { sentence: 'Satu minggu ada 7 hari', isFact: true, explanation: 'Ini fakta karena sudah ditentukan!' },
-    { sentence: 'Hari Senin hari yang membosankan', isFact: false, explanation: 'Ini opini karena ada yang suka hari Senin!' },
-    { sentence: 'Bumi mengelilingi Matahari', isFact: true, explanation: 'Ini fakta karena sudah terbukti ilmiah!' },
-    { sentence: 'Warna biru warna paling cantik', isFact: false, explanation: 'Ini opini karena warna favorit beda-beda!' }
+    { sentence: 'Air diperlukan untuk hidup', isFact: true, explanation: 'Ini fakta karena semua makhluk butuh air!' }
   ];
 
   const handleChoice = (choice, event) => {
@@ -46,14 +41,14 @@ const FactOpinionGame = ({ onComplete }) => {
       setFeedback(`Benar! ${current.explanation} 🎉`);
       setMascotMood('happy');
       setTimeout(() => {
-        if (currentRound < 10) {
+        if (currentRound < 5) {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
           setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
-          const totalStars = newScore >= 8 ? 3 : newScore >= 5 ? 2 : newScore >= 1 ? 1 : 0;
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
@@ -83,7 +78,7 @@ const FactOpinionGame = ({ onComplete }) => {
       <div className="text-center py-8">
         <Mascot mood="happy" size="large" />
         <h3 className="heading-font text-2xl text-[#2B2D42] mb-4">🎉 Hebat! Semua ronde selesai!</h3>
-        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 10</p>
+        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 5</p>
         <GameButton onClick={resetGame} variant="blue" size="pill">Main Lagi</GameButton>
       </div>
     );
@@ -95,7 +90,7 @@ const FactOpinionGame = ({ onComplete }) => {
     <div className="text-center">
       <div className="mb-4"><Mascot mood={mascotMood} size="medium" /></div>
       <div className="flex justify-between items-center mb-4">
-        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/10</span>
+        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/5</span>
         <span className="body-font text-lg text-[#6C757D]">Skor: {score}</span>
       </div>
       <AnimatePresence mode="wait">

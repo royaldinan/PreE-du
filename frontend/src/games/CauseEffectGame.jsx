@@ -22,10 +22,7 @@ const CauseEffectGame = ({ onComplete }) => {
     { cause: 'Belajar setiap hari', effects: ['Menjadi pintar', 'Menjadi lapar terus', 'Bisa tidur siang'], correct: 0 },
     { cause: 'Hujan deras turun', effects: ['Tanah menjadi kering', 'Jalanan basah', 'Matahari bersinar'], correct: 1 },
     { cause: 'Makan terlalu banyak permen', effects: ['Gigi sehat', 'Gigi sakit', 'Rambut tumbuh cepat'], correct: 1 },
-    { cause: 'Tidur larut malam', effects: ['Bangun segar', 'Mengantuk di sekolah', 'Lapar terus'], correct: 1 },
-    { cause: 'Olahraga teratur', effects: ['Tubuh lemah', 'Tubuh sehat dan kuat', 'Susah berjalan'], correct: 1 },
-    { cause: 'Tidak sarapan pagi', effects: ['Semangat belajar', 'Lemas dan sulit konsentrasi', 'Menjadi lebih tinggi'], correct: 1 },
-    { cause: 'Menyiram tanaman setiap hari', effects: ['Tanaman layu', 'Tanaman tumbuh subur', 'Tanaman hilang'], correct: 1 }
+    { cause: 'Tidur larut malam', effects: ['Bangun segar', 'Mengantuk di sekolah', 'Lapar terus'], correct: 1 }
   ];
 
   const handleChoice = (index, event) => {
@@ -42,14 +39,14 @@ const CauseEffectGame = ({ onComplete }) => {
       setFeedback('Benar! Itu akibat yang tepat! 🎉');
       setMascotMood('happy');
       setTimeout(() => {
-        if (currentRound < 8) {
+        if (currentRound < 5) {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
           setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
-          const totalStars = newScore >= 6 ? 3 : newScore >= 4 ? 2 : newScore >= 1 ? 1 : 0;
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
@@ -79,7 +76,7 @@ const CauseEffectGame = ({ onComplete }) => {
       <div className="text-center py-8">
         <Mascot mood="happy" size="large" />
         <h3 className="heading-font text-2xl text-[#2B2D42] mb-4">🎉 Hebat! Semua ronde selesai!</h3>
-        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 8</p>
+        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 5</p>
         <GameButton onClick={resetGame} variant="blue" size="pill">Main Lagi</GameButton>
       </div>
     );
@@ -91,7 +88,7 @@ const CauseEffectGame = ({ onComplete }) => {
     <div className="text-center">
       <div className="mb-4"><Mascot mood={mascotMood} size="medium" /></div>
       <div className="flex justify-between items-center mb-4">
-        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/8</span>
+        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/5</span>
         <span className="body-font text-lg text-[#6C757D]">Skor: {score}</span>
       </div>
       <AnimatePresence mode="wait">

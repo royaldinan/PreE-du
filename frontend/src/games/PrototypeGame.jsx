@@ -23,31 +23,51 @@ const PrototypeGame = ({ onComplete }) => {
   // Tiap level: "parts" adalah semua pilihan yang ditampilkan, "correctParts"
   // adalah bagian-bagian yang benar-benar relevan untuk solusi (dicocokkan
   // by value, bukan posisi index — sebelumnya ini bug, lihat PROGRESS.md).
+  //
+  // Konten dirombak total (versi sebelumnya kayu/klip/penggaris untuk
+  // "buku jatuh" itu gak nyambung sama sekali secara logika). Sekarang
+  // tiap correctPart harus punya hubungan sebab-akibat yang jelas dan bisa
+  // dijelasin ke anak SD kenapa part itu membantu menyelesaikan masalahnya
+  // — bukan cuma benda acak yang kebetulan ada di daftar.
   const levels = [
     {
       problem: 'Buku sering jatuh dari meja',
-      correctParts: ['🪵 Kayu', '📎 Klip', '📏 Penggaris'],
-      parts: ['📚 Buku', '🪵 Kayu', '📎 Klip', '🧻 Kertas', '📏 Penggaris'],
+      // Kenapa benar: penyangga menahan buku biar berdiri, alas karet
+      // bikin gak licin/geser, papan kayu jadi rak kecil penahan.
+      correctParts: ['📚 Penyangga Buku', '🧴 Alas Karet', '📐 Papan Kayu'],
+      parts: ['📚 Penyangga Buku', '🧴 Alas Karet', '📐 Papan Kayu', '🎈 Balon', '🍬 Permen'],
     },
     {
       problem: 'Pensil sering patah',
-      correctParts: ['🔧 Obeng', '📦 Kotak', '🧵 Benang'],
-      parts: ['✏️ Pensil', '🔧 Obeng', '📦 Kotak', '🎨 Cat', '🧵 Benang'],
+      // Kenapa benar: rautan bikin ujung pensil rapi (gak gampang patah),
+      // kotak pensil melindungi dari tekanan di dalam tas, busa lembut
+      // jadi bantalan tambahan di dalam kotak.
+      correctParts: ['🖊️ Rautan', '📦 Kotak Pensil', '🧽 Busa Lembut'],
+      parts: ['🖊️ Rautan', '📦 Kotak Pensil', '🧽 Busa Lembut', '🔧 Obeng', '⚽ Bola'],
     },
     {
-      problem: 'Sepatu cepat kotor',
-      correctParts: ['🧼 Sabun', '🌂 Payung', '👟 Sepatu'],
-      parts: ['👟 Sepatu', '🧼 Sabun', '🌂 Payung', '🍕 Pizza', '⚽ Bola'],
+      problem: 'Sepatu basah dan kotor kalau hujan',
+      // Kenapa benar: payung menghalangi air hujan langsung kena sepatu,
+      // pelapis anti air melindungi sepatu dari basah, sikat sepatu
+      // membersihkan lumpur/kotoran yang menempel.
+      correctParts: ['🌂 Payung', '🥾 Pelapis Anti Air', '🧽 Sikat Sepatu'],
+      parts: ['🌂 Payung', '🥾 Pelapis Anti Air', '🧽 Sikat Sepatu', '🍕 Pizza', '📱 HP'],
     },
     {
-      problem: 'Tas terlalu berat',
-      correctParts: ['🎈 Balon', '⚙️ Roda', '🎒 Tas'],
-      parts: ['🎒 Tas', '🎈 Balon', '⚙️ Roda', '🍭 Permen', '📱 HP'],
+      problem: 'Tas terlalu berat dibawa',
+      // Kenapa benar: roda bikin tas bisa ditarik/didorong (gak perlu
+      // diangkat), tali empuk bikin lebih nyaman di bahu, pegangan tarik
+      // memudahkan menarik tas seperti koper.
+      correctParts: ['⚙️ Roda', '🎒 Tali Empuk', '🧳 Pegangan Tarik'],
+      parts: ['⚙️ Roda', '🎒 Tali Empuk', '🧳 Pegangan Tarik', '🍭 Permen', '📱 HP'],
     },
     {
       problem: 'Kamar gelap di siang hari',
-      correctParts: ['💡 Lampu', '🪞 Cermin', '🚪 Pintu'],
-      parts: ['💡 Lampu', '🪞 Cermin', '🖼️ Lukisan', '🛏️ Kasur', '🚪 Pintu'],
+      // Kenapa benar: gorden tipis membiarkan cahaya matahari masuk,
+      // lampu jadi sumber cahaya tambahan, cermin memantulkan cahaya
+      // yang ada supaya menyebar ke seluruh ruangan.
+      correctParts: ['🪟 Gorden Tipis', '💡 Lampu', '🪞 Cermin'],
+      parts: ['🪟 Gorden Tipis', '💡 Lampu', '🪞 Cermin', '🖼️ Lukisan', '🛏️ Kasur'],
     },
   ];
 

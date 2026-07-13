@@ -21,10 +21,7 @@ const OddOneOutGame = ({ onComplete }) => {
     { items: ['🐱', '🐶', '🐮', '🌸'], correct: 3, explanation: 'Bunga bukan hewan!' },
     { items: ['📕', '📓', '✏️', '🍕'], correct: 3, explanation: 'Pizza bukan alat tulis!' },
     { items: ['👟', '👞', '🧤', '👠'], correct: 2, explanation: 'Sarung tangan bukan sepatu!' },
-    { items: ['☀️', '🌙', '⭐', '🐟'], correct: 3, explanation: 'Ikan bukan benda langit!' },
-    { items: ['🎸', '🎹', '⚽', '🎺'], correct: 2, explanation: 'Bola bukan alat musik!' },
-    { items: ['🥕', '🌽', '🍦', '🥬'], correct: 2, explanation: 'Es krim bukan sayuran!' },
-    { items: ['🚲', '🚗', '✈️', '🛋️'], correct: 3, explanation: 'Sofa bukan kendaraan!' }
+    { items: ['☀️', '🌙', '⭐', '🐟'], correct: 3, explanation: 'Ikan bukan benda langit!' }
   ];
 
   const handleChoice = (index, event) => {
@@ -41,14 +38,14 @@ const OddOneOutGame = ({ onComplete }) => {
       setFeedback(`Benar! ${rounds[currentRound - 1].explanation} 🎉`);
       setMascotMood('happy');
       setTimeout(() => {
-        if (currentRound < 8) {
+        if (currentRound < 5) {
           setCurrentRound(currentRound + 1);
           setFeedback('');
           setLockChoice(false);
           setTileStatus({});
         } else {
           // 0 jawaban benar -> kalah (0 bintang). Selain itu -> menang.
-          const totalStars = newScore >= 6 ? 3 : newScore >= 4 ? 2 : newScore >= 1 ? 1 : 0;
+          const totalStars = newScore >= 4 ? 3 : newScore >= 2 ? 2 : newScore >= 1 ? 1 : 0;
           setGameComplete(true);
           onComplete(totalStars);
         }
@@ -78,7 +75,7 @@ const OddOneOutGame = ({ onComplete }) => {
       <div className="text-center py-8">
         <Mascot mood="happy" size="large" />
         <h3 className="heading-font text-2xl text-[#2B2D42] mb-4">🎉 Hebat! Semua ronde selesai!</h3>
-        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 8</p>
+        <p className="body-font text-lg text-[#6C757D] mb-6">Skor kamu: {score} dari 5</p>
         <GameButton onClick={resetGame} variant="blue" size="pill">Main Lagi</GameButton>
       </div>
     );
@@ -90,7 +87,7 @@ const OddOneOutGame = ({ onComplete }) => {
     <div className="text-center">
       <div className="mb-4"><Mascot mood={mascotMood} size="medium" /></div>
       <div className="flex justify-between items-center mb-4">
-        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/8</span>
+        <span className="body-font text-lg text-[#6C757D]">Ronde {currentRound}/5</span>
         <span className="body-font text-lg text-[#6C757D]">Skor: {score}</span>
       </div>
       <AnimatePresence mode="wait">
