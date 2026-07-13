@@ -20,21 +20,94 @@ const IdeationGame = ({ onComplete }) => {
   // status, bukan cuma re-render dengan array animate yang sama).
   const [buttonStatus, setButtonStatus] = useState(null);
 
+  // Tiap masalah punya bank ide konkrit sendiri (bukan cuma emoji acak yang
+  // gak nyambung ke masalahnya). Bank sengaja dibuat 8 ide per masalah supaya
+  // anak masih bisa dapat ide baru tiap klik sampai mendekati batas waktu.
   const problems = [
-    'Tas sekolah terlalu berat',
-    'Lupa bawa pensil ke sekolah',
-    'Kamar berantakan',
-    'Bosan saat hujan',
-    'Susah bangun pagi',
-    'Sepatu cepat kotor'
+    {
+      problem: 'Tas sekolah terlalu berat',
+      ideas: [
+        '🎒 Pakai tas beroda',
+        '📚 Bawa buku sesuai jadwal aja',
+        '🗄️ Simpan buku cadangan di loker',
+        '📱 Pakai e-book buat buku tebal',
+        '⚖️ Timbang tas tiap pagi',
+        '🎈 Tas dari bahan ringan',
+        '📋 Bikin checklist barang wajib',
+        '👨‍👩‍👧 Bagi barang bawa gantian sama teman',
+      ],
+    },
+    {
+      problem: 'Lupa bawa pensil ke sekolah',
+      ideas: [
+        '📝 Sedia pensil cadangan di tas',
+        '🗒️ Tempel catatan pengingat di pintu',
+        '🖊️ Simpan 1 pensil permanen di laci sekolah',
+        '⏰ Cek perlengkapan pas alarm bangun',
+        '🎒 Gantung pensil case di tas',
+        '👬 Pinjam teman sebangku',
+        '📦 Sedia kotak alat tulis di rumah',
+        '✅ Checklist sebelum berangkat',
+      ],
+    },
+    {
+      problem: 'Kamar berantakan',
+      ideas: [
+        '🗃️ Sedia kotak untuk tiap kategori barang',
+        '⏱️ Rapikan 5 menit tiap malam',
+        '🏷️ Kasih label di rak',
+        '🧸 Mainan balik ke keranjang habis main',
+        '👕 Baju kotor langsung ke keranjang cucian',
+        '📅 Jadwal beres-beres mingguan',
+        '🎵 Rapikan sambil dengar musik',
+        '👨‍👩‍👧 Beres-beres bareng keluarga',
+      ],
+    },
+    {
+      problem: 'Bosan saat hujan',
+      ideas: [
+        '🎨 Menggambar atau mewarnai',
+        '📖 Baca buku cerita',
+        '🧩 Main puzzle',
+        '🎲 Main board game keluarga',
+        '🍪 Bikin camilan sederhana',
+        '🎬 Nonton film favorit',
+        '🖐️ Origami atau kerajinan tangan',
+        '📞 Telepon teman untuk ngobrol',
+      ],
+    },
+    {
+      problem: 'Susah bangun pagi',
+      ideas: [
+        '⏰ Alarm diletakkan jauh dari tempat tidur',
+        '🌅 Buka gorden malam sebelum tidur',
+        '🛏️ Tidur lebih awal',
+        '🎵 Alarm dengan lagu favorit',
+        '💧 Minum air putih begitu bangun',
+        '📅 Siapkan baju sekolah malam sebelumnya',
+        '🧘 Peregangan ringan begitu bangun',
+        '👨‍👩‍👧 Minta dibangunkan orang tua',
+      ],
+    },
+    {
+      problem: 'Sepatu cepat kotor',
+      ideas: [
+        '🧼 Bersihkan sepatu tiap minggu',
+        '☔ Pakai pelindung sepatu saat hujan',
+        '👟 Sedia sepatu khusus main di luar',
+        '🧽 Semprot anti air di sepatu',
+        '🚪 Sedia keset di depan pintu',
+        '🧦 Ganti kaus kaki tiap hari',
+        '📦 Simpan sepatu di rak tertutup',
+        '👞 Punya sepatu cadangan',
+      ],
+    },
   ];
 
   // Sebelumnya problem selalu index 0 ("Tas sekolah terlalu berat") karena
   // currentRound tidak pernah berubah selama sesi bermain. Sekarang dipilih
   // acak sekali per sesi supaya bervariasi tiap kali game dimulai/diulang.
   const [problemIndex, setProblemIndex] = useState(() => Math.floor(Math.random() * problems.length));
-
-  const ideaEmojis = ['💡', '✨', '🌟', '🎨', '🚀', '⭐', '🔥', '💫', '🎯', '🏆'];
 
   useEffect(() => {
     let timer;
@@ -63,8 +136,17 @@ const IdeationGame = ({ onComplete }) => {
     audioManager.playSfx('correct');
     sparkleAt(event.currentTarget, { count: 6 });
     celebrateCorrectAnswer();
-    const randomEmoji = ideaEmojis[Math.floor(Math.random() * ideaEmojis.length)];
-    setIdeas((prev) => [...prev, randomEmoji]);
+
+    const pool = problems[problemIndex].ideas;
+    // Prioritaskan ide yang belum pernah muncul di sesi ini supaya anak
+    // lihat variasi ide baru tiap klik. Kalau semua 8 ide di pool sudah
+    // pernah muncul, baru boleh ambil random dari seluruh pool lagi
+    // (tombol tetap bisa dipencet sampai waktu habis).
+    const unused = pool.filter((idea) => !ideas.includes(idea));
+    const source = unused.length > 0 ? unused : pool;
+    const nextIdea = source[Math.floor(Math.random() * source.length)];
+
+    setIdeas((prev) => [...prev, nextIdea]);
     setMascotMood('happy');
     setButtonStatus('pulse');
     setTimeout(() => {
@@ -103,7 +185,7 @@ const IdeationGame = ({ onComplete }) => {
     );
   }
 
-  const currentProblem = problems[problemIndex];
+  const currentProblem = problems[problemIndex].problem;
 
   return (
     <div className="text-center">
@@ -132,14 +214,23 @@ const IdeationGame = ({ onComplete }) => {
           <GameTile tone="well" className="mt-6 p-4 min-h-[64px]">
             <div className="flex flex-wrap justify-center gap-2">
               <AnimatePresence>
-                {ideas.map((emoji, i) => (
+                {ideas.map((idea, i) => (
                   <motion.span
-                    key={i}
+                    key={`${idea}-${i}`}
                     initial={{ opacity: 0, scale: 0, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className="text-3xl"
+                    className="text-white px-3 py-1.5 rounded-lg font-bold text-sm relative overflow-hidden inline-block text-left"
+                    style={{
+                      background: 'linear-gradient(155deg, #FFD874 0%, #F5A623 60%, #F5A623 100%)',
+                      boxShadow: '0 2px 0 0 #C97F0E, 0 3px 6px rgba(0,0,0,0.12)',
+                      color: '#5A3B00',
+                    }}
                   >
-                    {emoji}
+                    <span
+                      className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50"
+                      style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)' }}
+                    />
+                    <span className="relative z-10">{idea}</span>
                   </motion.span>
                 ))}
               </AnimatePresence>

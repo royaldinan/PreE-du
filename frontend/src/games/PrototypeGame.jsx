@@ -66,8 +66,12 @@ const PrototypeGame = ({ onComplete }) => {
     const current = levels[currentLevel - 1];
     const correctCount = selectedParts.filter((p) => current.correctParts.includes(p)).length;
 
-    // Butuh minimal 2 dari 3 part yang dipilih benar-benar relevan dengan solusi.
-    if (correctCount >= 2) {
+    // Ketiga part yang dipilih harus benar-benar bagian dari solusi.
+    // (Sebelumnya threshold >=2 meloloskan 7 dari 10 kombinasi 3-dari-5
+    // yang mungkin — termasuk yang menyelipkan 1 part gak relevan — jadi
+    // hampir semua pilihan dianggap "benar". Exact match memastikan hanya
+    // kombinasi correctParts yang lolos, 1 dari 10 kemungkinan.)
+    if (correctCount === 3) {
       setLockChoice(true);
       setSolutionStatus('correct');
       audioManager.playSfx('correct');
